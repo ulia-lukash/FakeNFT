@@ -26,7 +26,7 @@ final class BasketTableViewCell: UITableViewCell {
     
     private lazy var nameNFTLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = UIColor.segmentActive
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         label.text = "Test"
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -43,7 +43,7 @@ final class BasketTableViewCell: UITableViewCell {
     
     private lazy var stubNFTLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = UIColor.segmentActive
         label.text = "Цена"
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -52,7 +52,7 @@ final class BasketTableViewCell: UITableViewCell {
     
     private lazy var quantityNFTLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = UIColor.segmentActive
         label.text = "1,23 ETH"
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -62,6 +62,7 @@ final class BasketTableViewCell: UITableViewCell {
     private lazy var deleteNFTButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "tabler_trash-x"), for: .normal)
+        button.tintColor = UIColor.segmentActive
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()

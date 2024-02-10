@@ -27,8 +27,9 @@ final class BasketViewController: UIViewController {
     private var paymentButton: UIButton = {
         var button = UIButton(type: .system)
         button.backgroundColor = UIColor.segmentActive
-        button.tintColor = .white
+        button.tintColor = UIColor.whiteModeThemes
         button.setTitle("К оплате", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(didTapPayButton), for: .touchUpInside)
@@ -49,7 +50,7 @@ final class BasketViewController: UIViewController {
         var label = UILabel()
         label.text = "\(quantityNft) ETH"
         label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .green
+        label.textColor = UIColor.greenUniversal
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -59,7 +60,6 @@ final class BasketViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
-        tableView.isScrollEnabled = false
         tableView.showsVerticalScrollIndicator = false
         tableView.backgroundColor = .systemBackground
         tableView.register(BasketTableViewCell.self, forCellReuseIdentifier: BasketTableViewCell.identifier)
@@ -67,6 +67,23 @@ final class BasketViewController: UIViewController {
         return tableView
     }()
     
+    private lazy var stubLabel: UILabel = {
+        var label = UILabel()
+        label.text = "Корзина пуста"
+        label.font = .systemFont(ofSize: 17, weight: .bold)
+        label.textColor = UIColor.segmentActive
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var scrollView: UIScrollView = {
+        let scroll = UIScrollView()
+        scroll.isMultipleTouchEnabled = false
+        scroll.isScrollEnabled = true
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        scroll.decelerationRate = .init(rawValue: 1)
+        return scroll
+    }()
     
     // MARK: - Initializers
     
@@ -93,24 +110,32 @@ final class BasketViewController: UIViewController {
     // MARK: - Private Methods
     
     private func setupView() {
+        view.addSubview(scrollView)
         view.addSubview(bottomView)
         view.addSubview(quantityNftLabel)
         view.addSubview(amountNftLabel)
         view.addSubview(paymentButton)
-        view.addSubview(tableView)
+        scrollView.addSubview(tableView)
+       // view.addSubview(stubLabel)
     }
     
     private func setupConstraints() {
+        
         NSLayoutConstraint.activate([
             bottomView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             bottomView.heightAnchor.constraint(equalToConstant: 76),
             
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 108),
-            tableView.heightAnchor.constraint(equalToConstant: 400),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 108),
+            scrollView.bottomAnchor.constraint(equalTo: bottomView.topAnchor),
+            
+            tableView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: scrollView.frameLayoutGuide.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomView.topAnchor),
             
             quantityNftLabel.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 16),
             quantityNftLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
@@ -123,6 +148,10 @@ final class BasketViewController: UIViewController {
             paymentButton.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -16),
             paymentButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -16),
             paymentButton.leadingAnchor.constraint(equalTo: amountNftLabel.trailingAnchor, constant: 24)
+            
+//            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+//            stubLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            
         ])
     }
     
@@ -137,7 +166,7 @@ final class BasketViewController: UIViewController {
             target: self,
             action: #selector(didTapSortButton)
         )
-        rightButton.tintColor = .black
+        rightButton.tintColor = UIColor.segmentActive
         navigationItem.rightBarButtonItem = rightButton
         
     }
@@ -154,14 +183,16 @@ final class BasketViewController: UIViewController {
 //MARK: - UITableViewDelegate
 
 extension BasketViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        140
+    }
 }
 
 //MARK: - UITableViewDataSource
 
 extension BasketViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        2
+        10
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -171,6 +202,4 @@ extension BasketViewController: UITableViewDataSource {
         
         return cell
     }
-    
-    
 }
