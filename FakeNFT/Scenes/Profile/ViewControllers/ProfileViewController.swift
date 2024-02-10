@@ -17,7 +17,7 @@ final class ProfileViewController: UIViewController {
         static let textViewLineSpacing = CGFloat(5)
         static let userImageSize = CGFloat(70)
         static let heigtTableCell = CGFloat(54)
-        static let countCellTableView = 3
+        static let countCellTableView = CGFloat(3)
     }
     private lazy var editProfileButton: UIButton = {
         let editProfileButton = UIButton()
@@ -87,6 +87,7 @@ final class ProfileViewController: UIViewController {
         let nftTableView = UITableView()
         nftTableView.translatesAutoresizingMaskIntoConstraints = false
         nftTableView.backgroundColor = .clear
+        nftTableView.separatorStyle = .none
         nftTableView.register(ProfileTableViewCell.self,
                               forCellReuseIdentifier: "\(ProfileTableViewCell.self)")
         nftTableView.delegate = self
@@ -154,9 +155,11 @@ private extension ProfileViewController {
     func setupTableView() {
         view.addSubview(nftTableView)
         NSLayoutConstraint.activate([
-            nftTableView.topAnchor.constraint(equalTo: linkLabelView.bottomAnchor, constant: 40),
+            nftTableView.topAnchor.constraint(equalTo: verticalStackView.bottomAnchor, constant: 40),
             nftTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            nftTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            nftTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            nftTableView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.countCellTableView
+                                                 * ConstantsProfileVC.heigtTableCell)
         ])
     }
 }
@@ -168,12 +171,11 @@ extension ProfileViewController: NSLayoutManagerDelegate {
 }
 
 extension ProfileViewController: UITableViewDelegate {
-    
 }
 
 extension ProfileViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        ConstantsProfileVC.countCellTableView
+        Int(ConstantsProfileVC.countCellTableView)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

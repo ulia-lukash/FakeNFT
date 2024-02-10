@@ -9,25 +9,27 @@ import Foundation
 import UIKit
 
 final class ProfileTableViewCell: UITableViewCell {
+    private enum ConstansCell {
+        static let selectImage = UIImage(named: "chevron.forward")
+    }
     private lazy var myNFTLabel: UILabel = {
         let myNFTLabel = UILabel()
+        myNFTLabel.textColor = .blackUniversal
         myNFTLabel.font = .bodyBold
-        // TODO: - delete
-//        myNFTLabel.text = ConstLocalizable.profileCellMyNFT + "\(10)"
         
         return myNFTLabel
     }()
     
     private lazy var selectImageView: UIImageView = {
         let selectImageView = UIImageView()
-        selectImageView.image = UIImage(named: "chevron.forward")
+        selectImageView.image = ConstansCell.selectImage
         
         return selectImageView
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .yellow
+        backgroundColor = .clear
         setupUIItem()
     }
     
@@ -46,9 +48,11 @@ extension ProfileTableViewCell {
         }
         NSLayoutConstraint.activate([
             myNFTLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            myNFTLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            myNFTLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             selectImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            selectImageView.centerXAnchor.constraint(equalTo: centerXAnchor)
+            selectImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            selectImageView.heightAnchor.constraint(equalToConstant: 13.86),
+            selectImageView.widthAnchor.constraint(equalToConstant: 7.98)
         ])
     }
     
