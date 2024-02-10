@@ -17,7 +17,8 @@ final class ProfileViewController: UIViewController {
         static let linkFont = UIFont.systemFont(ofSize: 15)
         static let horisontalStackSpacing = CGFloat(20)
         static let verticalStackSpacing = CGFloat(10)
-        static let userImageSize = CGSize(width: 70, height: 70)
+        static let textViewLineSpacing = CGFloat(5)
+        static let userImageSize = CGFloat(70)
     }
     private lazy var editProfileButton: UIButton = {
         let editProfileButton = UIButton()
@@ -48,7 +49,7 @@ final class ProfileViewController: UIViewController {
         fullNameLabelView.text = "Mashuk Grigoriy"
         fullNameLabelView.textAlignment = .left
         fullNameLabelView.font = ConstantsProfileVC.fullNameFont
-        fullNameLabelView.textColor = .black
+        fullNameLabelView.textColor = .blackUniversal
         
         return fullNameLabelView
     }()
@@ -66,8 +67,8 @@ final class ProfileViewController: UIViewController {
         descriptionTextView.textAlignment = .left
         descriptionTextView.layoutManager.delegate = self
         descriptionTextView.font = ConstantsProfileVC.descriptionFont
-        descriptionTextView.text = "sbcahvupw';';'aasqw[qpwruituiweurytXmnbvajhdbdfbdfbdfdfbdfbbdfbdfbdfbdfbeoiuotsdjfgwueyrtcvnbsdfhaewrtyuetfg"
-        descriptionTextView.textColor = .black
+        descriptionTextView.text = "sbcahvupw';';'aasqw[qpwruituiweurytXmnbvadfhaewrtyuetfg"
+        descriptionTextView.textColor = .blackUniversal
         
         return descriptionTextView
     }()
@@ -76,7 +77,7 @@ final class ProfileViewController: UIViewController {
         let linkLabelView = UILabel()
         linkLabelView.font = .systemFont(ofSize: 13)
         linkLabelView.text = "www.yandex.ru"
-        linkLabelView.textColor = .blue
+        linkLabelView.textColor = .blueUniversal
         return linkLabelView
     }()
     
@@ -113,8 +114,8 @@ private extension ProfileViewController {
         }
         NSLayoutConstraint.activate([
             userImageView.leadingAnchor.constraint(equalTo: horisontalStackView.leadingAnchor),
-            userImageView.widthAnchor.constraint(equalToConstant: 70),
-            userImageView.heightAnchor.constraint(equalToConstant: 70)
+            userImageView.widthAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize),
+            userImageView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize)
         ])
     }
     
@@ -138,6 +139,6 @@ private extension ProfileViewController {
 
 extension ProfileViewController: NSLayoutManagerDelegate {
     func layoutManager(_ layoutManager: NSLayoutManager, lineSpacingAfterGlyphAt glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
-        5
+        ConstantsProfileVC.textViewLineSpacing
     }
 }
