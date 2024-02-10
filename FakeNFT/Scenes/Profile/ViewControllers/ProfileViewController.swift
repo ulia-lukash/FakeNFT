@@ -46,6 +46,7 @@ final class ProfileViewController: UIViewController {
     
     private lazy var fullNameLabelView: UILabel = {
         let fullNameLabelView = UILabel()
+        // TODO: - delete
         fullNameLabelView.text = "Mashuk Grigoriy"
         fullNameLabelView.textAlignment = .left
         fullNameLabelView.font = ConstantsProfileVC.fullNameFont
@@ -67,6 +68,7 @@ final class ProfileViewController: UIViewController {
         descriptionTextView.textAlignment = .left
         descriptionTextView.layoutManager.delegate = self
         descriptionTextView.font = ConstantsProfileVC.descriptionFont
+        // TODO: - delete
         descriptionTextView.text = "sbcahvupw';';'aasqw[qpwruituiweurytXmnbvadfhaewrtyuetfg"
         descriptionTextView.textColor = .blackUniversal
         
@@ -76,6 +78,7 @@ final class ProfileViewController: UIViewController {
     private lazy var linkLabelView: UILabel = {
         let linkLabelView = UILabel()
         linkLabelView.font = .systemFont(ofSize: 13)
+        // TODO: - delete
         linkLabelView.text = "www.yandex.ru"
         linkLabelView.textColor = .blueUniversal
         return linkLabelView
