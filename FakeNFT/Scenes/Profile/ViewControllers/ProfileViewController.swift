@@ -12,13 +12,12 @@ final class ProfileViewController: UIViewController {
     private enum ConstantsProfileVC {
         static let editImage = "EditDark"
         static let stubImage = "User Pic"
-        static let fullNameFont = UIFont.boldSystemFont(ofSize: 22)
-        static let descriptionFont = UIFont.systemFont(ofSize: 13)
-        static let linkFont = UIFont.systemFont(ofSize: 15)
         static let horisontalStackSpacing = CGFloat(20)
         static let verticalStackSpacing = CGFloat(10)
         static let textViewLineSpacing = CGFloat(5)
         static let userImageSize = CGFloat(70)
+        static let heigtTableCell = CGFloat(54)
+        static let countCellTableView = 3
     }
     private lazy var editProfileButton: UIButton = {
         let editProfileButton = UIButton()
@@ -49,7 +48,7 @@ final class ProfileViewController: UIViewController {
         // TODO: - delete
         fullNameLabelView.text = "Mashuk Grigoriy"
         fullNameLabelView.textAlignment = .left
-        fullNameLabelView.font = ConstantsProfileVC.fullNameFont
+        fullNameLabelView.font = .headline3
         fullNameLabelView.textColor = .blackUniversal
         
         return fullNameLabelView
@@ -67,7 +66,7 @@ final class ProfileViewController: UIViewController {
         let descriptionTextView = UITextView()
         descriptionTextView.textAlignment = .left
         descriptionTextView.layoutManager.delegate = self
-        descriptionTextView.font = ConstantsProfileVC.descriptionFont
+        descriptionTextView.font = .caption2
         // TODO: - delete
         descriptionTextView.text = "sbcahvupw';';'aasqw[qpwruituiweurytXmnbvadfhaewrtyuetfg"
         descriptionTextView.textColor = .blackUniversal
@@ -84,6 +83,18 @@ final class ProfileViewController: UIViewController {
         return linkLabelView
     }()
     
+    private lazy var nftTableView: UITableView = {
+        let nftTableView = UITableView()
+        nftTableView.translatesAutoresizingMaskIntoConstraints = false
+        nftTableView.backgroundColor = .clear
+        nftTableView.register(ProfileTableViewCell.self,
+                              forCellReuseIdentifier: "\(ProfileTableViewCell.self)")
+        nftTableView.delegate = self
+        nftTableView.dataSource = self
+        
+        return nftTableView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -96,6 +107,7 @@ private extension ProfileViewController {
         setupEditProfileImageView()
         setupHorisontalStack()
         setupVerticalStackView()
+        setupTableView()
     }
     
     func setupEditProfileImageView() {
@@ -138,10 +150,43 @@ private extension ProfileViewController {
             descriptionTextView.heightAnchor.constraint(equalToConstant: 72)
         ])
     }
+    
+    func setupTableView() {
+        view.addSubview(nftTableView)
+        NSLayoutConstraint.activate([
+            nftTableView.topAnchor.constraint(equalTo: linkLabelView.bottomAnchor, constant: 40),
+            nftTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            nftTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
 }
 
 extension ProfileViewController: NSLayoutManagerDelegate {
     func layoutManager(_ layoutManager: NSLayoutManager, lineSpacingAfterGlyphAt glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
         ConstantsProfileVC.textViewLineSpacing
     }
+}
+
+extension ProfileViewController: UITableViewDelegate {
+    
+}
+
+extension ProfileViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        ConstantsProfileVC.countCellTableView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        ConstantsProfileVC.heigtTableCell
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "\(ProfileTableViewCell.self)") as? ProfileTableViewCell else { return UITableViewCell()}
+        //TODO: - FIX (add viewModel)
+        let cellModel = ProfileCellModel(text: "stub")
+        cell.config(with: cellModel)
+        return cell
+    }
+    
+    
 }

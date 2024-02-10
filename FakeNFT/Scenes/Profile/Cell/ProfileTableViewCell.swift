@@ -13,7 +13,7 @@ final class ProfileTableViewCell: UITableViewCell {
         let myNFTLabel = UILabel()
         myNFTLabel.font = .bodyBold
         // TODO: - delete
-        myNFTLabel.text = ConstLocalizable.profileCellMyNFT + "\(10)"
+//        myNFTLabel.text = ConstLocalizable.profileCellMyNFT + "\(10)"
         
         return myNFTLabel
     }()
@@ -27,6 +27,7 @@ final class ProfileTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .yellow
         setupUIItem()
     }
     
