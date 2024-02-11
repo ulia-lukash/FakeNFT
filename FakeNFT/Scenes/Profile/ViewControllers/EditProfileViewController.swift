@@ -8,11 +8,13 @@
 import UIKit
 
 final class EditProfileViewController: UIViewController {
-    private enum ConstansEditVC {
+    private enum ConstansEditVC: String {
         static let editButtonSize = CGSize(width: 42, height: 42)
         static let editImageViewSize = CGSize(width: 70, height: 70)
-        static let exitImage = UIImage(named: "close")
         static let editImageViewAlphaComponent = CGFloat(0.6)
+        static let spacingStackView = CGFloat(22)
+        static let editLabelNumberOfLines = 2
+        case close
     }
     
     private lazy var exitButton: UIButton = {
@@ -30,11 +32,62 @@ final class EditProfileViewController: UIViewController {
         return userImageView
     }()
     
-    private lazy var userEditImageView: UIView = {
-        let userEditImageView = UIView(frame: CGRect(origin: .zero,
-                                                     size: ConstansEditVC.editImageViewSize))
+    private lazy var userEditLabelView: UILabel = {
+        let userEditLabelView = UILabel(frame: CGRect(origin: .zero,
+                                                      size: ConstansEditVC.editImageViewSize))
+        userEditLabelView.text = ConstLocalizable.editUserImage
+        userEditLabelView.numberOfLines = ConstansEditVC.editLabelNumberOfLines
+        userEditLabelView.textAlignment = .center
+        userEditLabelView.textColor = .whiteUniversal
+        userEditLabelView.font = .headline6
+        userEditLabelView.frame = userImageView.frame
         
-        return userEditImageView
+        return userEditLabelView
+    }()
+    
+    private lazy var verticalStackView: UIStackView = {
+        let verticalStackView = UIStackView()
+        verticalStackView.spacing = ConstansEditVC.spacingStackView
+        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
+        verticalStackView.backgroundColor = .clear
+        
+        return verticalStackView
+    }()
+    
+    private lazy var nameLabelView: UILabel = {
+        let nameLabelView = UILabel()
+        
+        return nameLabelView
+    }()
+    
+    private lazy var nameTextField: UITextField = {
+        let nameTextField = UITextField()
+        
+        return nameTextField
+    }()
+    
+    private lazy var descriptionLabelView: UILabel = {
+        let descriptionLabelView = UILabel()
+        
+        return descriptionLabelView
+    }()
+    
+    private lazy var descriptionTextField: UITextField = {
+        let descriptionTextField = UITextField()
+        
+        return descriptionTextField
+    }()
+    
+    private lazy var linkLabelView: UILabel = {
+        let linkLabelView = UILabel()
+        
+        return linkLabelView
+    }()
+    
+    private lazy var linkTextField: UITextField = {
+        let linkTextField = UITextField()
+        
+        return linkTextField
     }()
     
     override func viewDidLoad() {
@@ -45,7 +98,7 @@ final class EditProfileViewController: UIViewController {
 }
 
 private extension EditProfileViewController {
-    private func setupUIItem() {
+    func setupUIItem() {
         setupExitButton()
         setupUserImageView()
         setupUserEditImageView()
@@ -55,7 +108,8 @@ private extension EditProfileViewController {
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         exitButton.backgroundColor = .clear
         exitButton.tintColor = .blackUniversal
-        exitButton.setImage(ConstansEditVC.exitImage, for: .normal)
+        exitButton.setImage(UIImage(named: ConstansEditVC.close.rawValue),
+                            for: .normal)
         view.addSubview(exitButton)
         NSLayoutConstraint.activate([
             exitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -73,13 +127,24 @@ private extension EditProfileViewController {
             userImageView.heightAnchor.constraint(equalToConstant: 70),
             userImageView.widthAnchor.constraint(equalToConstant: 70)
         ])
+        setupUserImageTap()
     }
     
     func setupUserEditImageView() {
-        userImageView.addSubview(userEditImageView)
-        userEditImageView.translatesAutoresizingMaskIntoConstraints = false
-        userEditImageView.backgroundColor =
+        userImageView.addSubview(userEditLabelView)
+        userEditLabelView.backgroundColor =
             .blackUniversal.withAlphaComponent(ConstansEditVC.editImageViewAlphaComponent)
-        userEditImageView.center = userImageView.center
+    }
+    
+    func setupUserImageTap() {
+        let labelTap = UITapGestureRecognizer(target: self, action: #selector(self.userImageTapped(_:)))
+        self.userImageView.isUserInteractionEnabled = true
+        self.userImageView.addGestureRecognizer(labelTap)
+    }
+    
+    @objc
+    func userImageTapped(_ sender: UITapGestureRecognizer) {
+        //TODO: - fix
+        print(#function)
     }
 }
