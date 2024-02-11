@@ -10,3 +10,7 @@
 "Edit.name" = "Имя";
 "Edit.description" = "Описание";
 "Edit.link" = "Ссылка";
+"Catalog.sort" = "Сортировка";
+"Catalog.sort.byName" = "По названию";
+"Catalog.sort.byNftNumber" = "По количеству NFT";
+"Close" = "Закрыть";

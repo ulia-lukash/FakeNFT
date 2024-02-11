@@ -16,9 +16,19 @@ extension ReuseIdentifying where Self: UICollectionViewCell {
     }
 }
 
+extension ReuseIdentifying where Self: UITableViewHeaderFooterView {
+    static var defaultReuseIdentifier: String {
+        NSStringFromClass(self).components(separatedBy: ".").last ?? NSStringFromClass(self)
+    }
+}
+
 extension UITableView {
     func register<T: UITableViewCell>(_: T.Type) where T: ReuseIdentifying {
         register(T.self, forCellReuseIdentifier: T.defaultReuseIdentifier)
+    }
+
+    func register<T: UITableViewHeaderFooterView>(_: T.Type) where T: ReuseIdentifying {
+        register(T.self, forHeaderFooterViewReuseIdentifier: T.defaultReuseIdentifier)
     }
 
     func dequeueReusableCell<T: UITableViewCell>() -> T where T: ReuseIdentifying {
@@ -27,6 +37,14 @@ extension UITableView {
             return T()
         }
         return cell
+    }
+
+    func dequeueReusableHeaderFooterView<T: UITableViewHeaderFooterView>() -> T where T: ReuseIdentifying {
+        guard let headerFooterView = dequeueReusableHeaderFooterView(withIdentifier: T.defaultReuseIdentifier) as? T else {
+            assertionFailure("Could not dequeue header/footer with identifier: \(T.defaultReuseIdentifier)")
+            return T()
+        }
+        return headerFooterView
     }
 }
 

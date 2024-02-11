@@ -31,10 +31,10 @@ extension UIColor {
     private static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
     private static let yaWhiteLight = UIColor(hexString: "#FFFFFF")
     private static let yaWhiteDark = UIColor(hexString: "#2C2C2E")
-    
+
     // Background Colors
     static let backgroundUniversal = UIColor(red: 26 / 255, green: 27 / 255, blue: 34 / 255, alpha: 0.5)
-    
+
     // Universal Colors
     static let grayUniversal = UIColor(hexString: "#625C5C")
     static let redUniversal = UIColor(hexString: "#F56B6C")
@@ -43,8 +43,8 @@ extension UIColor {
     static let blackUniversal = UIColor(hexString: "#1A1B22")
     static let whiteUniversal = UIColor(hexString: "#FFFFFF")
     static let yellowUniversal = UIColor(hexString: "#FEEF0D")
-    
-    //Light || Dark Mode
+
+    // Light || Dark Mode
     static let segmentActive = UIColor { traits in
         return traits.userInterfaceStyle == .dark
         ? .yaBlackDark
@@ -62,11 +62,11 @@ extension UIColor {
         ? .yaBlackDark
         : .yaBlackLight
     }
-    
+
     static let whiteModeThemes = UIColor { traits in
         return traits.userInterfaceStyle == .dark
         ? .yaWhiteDark
         : .yaWhiteLight
-        
+
     }
 }

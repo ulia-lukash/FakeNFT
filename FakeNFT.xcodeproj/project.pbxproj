@@ -24,6 +24,10 @@
 		0CFCB74B2A780EA80009A829 /* UIView+Constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFCB74A2A780EA80009A829 /* UIView+Constraints.swift */; };
 		0CFCB74E2A7817DC0009A829 /* NftStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFCB74D2A7817DC0009A829 /* NftStorage.swift */; };
 		1A0F47332B779F8F00ED5DCC /* ConstLocalizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F47322B779F8F00ED5DCC /* ConstLocalizable.swift */; };
+		26930E812B78E40E00C7DC36 /* CatalogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26930E802B78E40E00C7DC36 /* CatalogTableViewCell.swift */; };
+		26930E832B78E42C00C7DC36 /* CatalogTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26930E822B78E42C00C7DC36 /* CatalogTableFooterView.swift */; };
+		26930E852B78E48000C7DC36 /* CatalogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26930E842B78E48000C7DC36 /* CatalogViewController.swift */; };
+		26930E872B78E4D700C7DC36 /* NftCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26930E862B78E4D700C7DC36 /* NftCollection.swift */; };
 		3F478ECF29DB474E00F6D39E /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F478ECE29DB474E00F6D39E /* Colors.swift */; };
 		3F478ED129DB476500F6D39E /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F478ED029DB476500F6D39E /* Fonts.swift */; };
 		3F603CCD29DB4A53000C43D7 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 3F603CCC29DB4A53000C43D7 /* ProgressHUD */; };
@@ -83,6 +87,10 @@
 		0CFCB74A2A780EA80009A829 /* UIView+Constraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Constraints.swift"; sourceTree = "<group>"; };
 		0CFCB74D2A7817DC0009A829 /* NftStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftStorage.swift; sourceTree = "<group>"; };
 		1A0F47322B779F8F00ED5DCC /* ConstLocalizable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstLocalizable.swift; sourceTree = "<group>"; };
+		26930E802B78E40E00C7DC36 /* CatalogTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogTableViewCell.swift; sourceTree = "<group>"; };
+		26930E822B78E42C00C7DC36 /* CatalogTableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogTableFooterView.swift; sourceTree = "<group>"; };
+		26930E842B78E48000C7DC36 /* CatalogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogViewController.swift; sourceTree = "<group>"; };
+		26930E862B78E4D700C7DC36 /* NftCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftCollection.swift; sourceTree = "<group>"; };
 		3F478ECE29DB474E00F6D39E /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		3F478ED029DB476500F6D39E /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		3F68069329CBBAF100B4F915 /* FakeNFT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FakeNFT.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -179,7 +187,9 @@
 		0CFCB7472A7808870009A829 /* Catalog */ = {
 			isa = PBXGroup;
 			children = (
+				26930E7F2B78E3EF00C7DC36 /* Views */,
 				0CFCB7482A7808900009A829 /* TestCatalogController.swift */,
+				26930E842B78E48000C7DC36 /* CatalogViewController.swift */,
 			);
 			path = Catalog;
 			sourceTree = "<group>";
@@ -190,6 +200,15 @@
 				0CFCB74D2A7817DC0009A829 /* NftStorage.swift */,
 			);
 			path = MemoryStorage;
+			sourceTree = "<group>";
+		};
+		26930E7F2B78E3EF00C7DC36 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				26930E802B78E40E00C7DC36 /* CatalogTableViewCell.swift */,
+				26930E822B78E42C00C7DC36 /* CatalogTableFooterView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		3F478ECD29DB473000F6D39E /* DesignSystem */ = {
@@ -319,6 +338,7 @@
 			isa = PBXGroup;
 			children = (
 				0CFCB7412A78013E0009A829 /* Nft.swift */,
+				26930E862B78E4D700C7DC36 /* NftCollection.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -527,6 +547,7 @@
 				3FC8C38B29D242E90081F015 /* ProductDetailsTableViewCell.swift in Sources */,
 				3F478ECF29DB474E00F6D39E /* Colors.swift in Sources */,
 				0C79EE662A76DDFF00EE90EA /* NftDetailViewController.swift in Sources */,
+				26930E832B78E42C00C7DC36 /* CatalogTableFooterView.swift in Sources */,
 				E1A1B9DA2AA01CE400C3AFBC /* TabBarController.swift in Sources */,
 				3F478ED129DB476500F6D39E /* Fonts.swift in Sources */,
 				0C79EE6A2A76DE1000EE90EA /* NftDetailAssembly.swift in Sources */,
@@ -534,15 +555,18 @@
 				0CFCB7422A78013E0009A829 /* Nft.swift in Sources */,
 				0CF2C2DD2A783CE600FDC837 /* ErrorView.swift in Sources */,
 				0C79EE682A76DE0900EE90EA /* NftDetailPresenter.swift in Sources */,
+				26930E872B78E4D700C7DC36 /* NftCollection.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,
 				0CFCB7402A78002A0009A829 /* NftService.swift in Sources */,
 				3F6806D529CBBEC700B4F915 /* NetworkTask.swift in Sources */,
 				0CF2C2DB2A783C1B00FDC837 /* LoadingView.swift in Sources */,
 				3F68069729CBBAF100B4F915 /* AppDelegate.swift in Sources */,
+				26930E852B78E48000C7DC36 /* CatalogViewController.swift in Sources */,
 				3F68069929CBBAF100B4F915 /* SceneDelegate.swift in Sources */,
 				0C79EE6C2A76DE2E00EE90EA /* ServicesAssemly.swift in Sources */,
 				0CFCB74E2A7817DC0009A829 /* NftStorage.swift in Sources */,
 				3FC8C39129D2453B0081F015 /* ExampleRequest.swift in Sources */,
+				26930E812B78E40E00C7DC36 /* CatalogTableViewCell.swift in Sources */,
 				0CFCB7462A78064B0009A829 /* NftDetailCellModel.swift in Sources */,
 				0CFCB74B2A780EA80009A829 /* UIView+Constraints.swift in Sources */,
 				3F6806D729CBC50A00B4F915 /* CellsReusingUtils.swift in Sources */,
