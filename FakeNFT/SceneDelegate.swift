@@ -12,7 +12,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //        let tabBarController = window?.rootViewController as? TabBarController
 //        tabBarController?.servicesAssembly = servicesAssembly
         
-        let profile = ProfileViewController()
-        window?.rootViewController = profile
+        let vc = EditProfileViewController()
+        window?.rootViewController = vc
     }
 }
