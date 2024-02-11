@@ -9,19 +9,18 @@ import UIKit
 import Kingfisher
 
 final class ProfileViewController: UIViewController {
-    private enum ConstantsProfileVC {
-        static let editImage = "EditDark"
-        static let stubImage = "User Pic"
+    private enum ConstantsProfileVC: String {
         static let horisontalStackSpacing = CGFloat(20)
         static let verticalStackSpacing = CGFloat(10)
         static let textViewLineSpacing = CGFloat(5)
         static let userImageSize = CGFloat(70)
         static let heigtTableCell = CGFloat(54)
         static let countCellTableView = CGFloat(3)
+        case editDark
     }
     private lazy var editProfileButton: UIButton = {
         let editProfileButton = UIButton()
-        editProfileButton.setImage(UIImage(named: ConstantsProfileVC.editImage),
+        editProfileButton.setImage(UIImage(named: ConstantsProfileVC.editDark.rawValue),
                                    for: .normal)
         
         return editProfileButton
@@ -36,9 +35,9 @@ final class ProfileViewController: UIViewController {
     }()
     
     private lazy var userImageView: UIImageView = {
-        let userImageView = UIImageView(image: UIImage(named: ConstantsProfileVC.stubImage))
-        userImageView.layer.cornerRadius = userImageView.bounds.width / 2
-        userImageView.layer.masksToBounds = true
+        let userImageView = UserImageView(image: nil)
+        let userImageModel = UserImageModel(url: nil)
+        userImageView.config(with: userImageModel)
         
         return userImageView
     }()
@@ -98,11 +97,12 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteUniversal
         setupUIItem()
     }
 }
 
+//MARK: - extension
 private extension ProfileViewController {
     func setupUIItem() {
         setupEditProfileImageView()
@@ -164,15 +164,18 @@ private extension ProfileViewController {
     }
 }
 
+//MARK: - NSLayoutManagerDelegate
 extension ProfileViewController: NSLayoutManagerDelegate {
     func layoutManager(_ layoutManager: NSLayoutManager, lineSpacingAfterGlyphAt glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
         ConstantsProfileVC.textViewLineSpacing
     }
 }
 
+//MARK: - UITableViewDelegate
 extension ProfileViewController: UITableViewDelegate {
 }
 
+//MARK: - UITableViewDataSource
 extension ProfileViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         Int(ConstantsProfileVC.countCellTableView)
@@ -189,6 +192,4 @@ extension ProfileViewController: UITableViewDataSource {
         cell.config(with: cellModel)
         return cell
     }
-    
-    
 }
