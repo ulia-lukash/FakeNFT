@@ -13,6 +13,7 @@ final class EditProfileViewController: UIViewController {
         static let editImageViewSize = CGSize(width: 70, height: 70)
         static let editImageViewAlphaComponent = CGFloat(0.6)
         static let spacingStackView = CGFloat(22)
+        static let textFieldCornerRadius = CGFloat(12)
         static let editLabelNumberOfLines = 2
         case close
     }
@@ -56,6 +57,7 @@ final class EditProfileViewController: UIViewController {
     
     private lazy var nameLabelView: UILabel = {
         let nameLabelView = UILabel()
+        nameLabelView.backgroundColor = .clear
         
         return nameLabelView
     }()
@@ -68,6 +70,7 @@ final class EditProfileViewController: UIViewController {
     
     private lazy var descriptionLabelView: UILabel = {
         let descriptionLabelView = UILabel()
+        descriptionLabelView.backgroundColor = .clear
         
         return descriptionLabelView
     }()
@@ -80,6 +83,7 @@ final class EditProfileViewController: UIViewController {
     
     private lazy var linkLabelView: UILabel = {
         let linkLabelView = UILabel()
+        linkLabelView.backgroundColor = .clear
         
         return linkLabelView
     }()
@@ -102,6 +106,7 @@ private extension EditProfileViewController {
         setupExitButton()
         setupUserImageView()
         setupUserEditImageView()
+        setupStackView()
     }
     
     func setupExitButton() {
@@ -134,6 +139,21 @@ private extension EditProfileViewController {
         userImageView.addSubview(userEditLabelView)
         userEditLabelView.backgroundColor =
             .blackUniversal.withAlphaComponent(ConstansEditVC.editImageViewAlphaComponent)
+    }
+    
+    func setupStackView() {
+        view.addSubview(verticalStackView)
+        [nameLabelView, nameTextField,
+         descriptionLabelView, descriptionTextField,
+         linkLabelView, linkTextField].forEach {
+            verticalStackView.addArrangedSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        [nameTextField, descriptionTextField, linkTextField].forEach {
+            $0.layer.masksToBounds = true
+            $0.layer.cornerRadius = ConstansEditVC.textFieldCornerRadius
+//            $0.backgroundColor = .
+        }
     }
     
     func setupUserImageTap() {
