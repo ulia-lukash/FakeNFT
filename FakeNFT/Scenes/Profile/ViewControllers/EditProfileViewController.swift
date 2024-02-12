@@ -13,7 +13,9 @@ final class EditProfileViewController: UIViewController {
         static let editImageViewSize = CGSize(width: 70, height: 70)
         static let editImageViewAlphaComponent = CGFloat(0.6)
         static let spacingStackView = CGFloat(22)
+        static let textViewLineSpacing = CGFloat(5)
         static let textFieldCornerRadius = CGFloat(12)
+        static let paddingTextView = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
         static let editLabelNumberOfLines = 2
         static let numberOfTapsRequired = 1
         case close
@@ -91,14 +93,20 @@ final class EditProfileViewController: UIViewController {
         return descriptionLabelView
     }()
     
-    private lazy var descriptionTextField: UITextField = {
-        let descriptionTextField = UITextField()
-        descriptionTextField.resignFirstResponder()
-        descriptionTextField.textAlignment = .left
-        descriptionTextField.clearButtonMode = .whileEditing
-        descriptionTextField.text = "Thanks for your help! There was extra space on the end of the string (which in my case was causing a horizontal centering issue), but I fixed it by changing the range to NSMakeRange(0, text.characters.count - 1"
+    private lazy var descriptionTextView: UITextView = {
+        let descriptionTextView = UITextView()
+        descriptionTextView.leftSpace(insets: ConstansEditVC.paddingTextView)
+        descriptionTextView.resignFirstResponder()
+        descriptionTextView.textAlignment = .left
+        descriptionTextView.layer.cornerRadius = ConstansEditVC.textFieldCornerRadius
+        descriptionTextView.layer.masksToBounds = true
+        descriptionTextView.layoutManager.delegate = self
+        descriptionTextView.font = .bodyRegular
+        descriptionTextView.textColor = .blackUniversal
+        descriptionTextView.backgroundColor = .segmentInactive
+        descriptionTextView.text = "Thanks for your help! There was extra space on the end of the string (which in my case was causing a horizontal centering issue), but I fixed it by changing the range to NSMakeRange(0, text.characters.count - 1"
         
-        return descriptionTextField
+        return descriptionTextView
     }()
     
     private lazy var linkLabelView: UILabel = {
@@ -175,7 +183,7 @@ private extension EditProfileViewController {
     
     func setupTextField() {
         nameTextField.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        descriptionTextField.heightAnchor.constraint(equalToConstant: 132).isActive = true
+        descriptionTextView.heightAnchor.constraint(equalToConstant: 132).isActive = true
         linkTextField.heightAnchor.constraint(equalToConstant: 44).isActive = true
     }
     
@@ -184,22 +192,20 @@ private extension EditProfileViewController {
         [nameLabelView,
          nameTextField,
          descriptionLabelView,
-         descriptionTextField,
+         descriptionTextView,
          linkLabelView,
          linkTextField].forEach {
             verticalStackView.addArrangedSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        [nameTextField,
-         descriptionTextField,
-         linkTextField].forEach {
-            $0.layer.masksToBounds = true
+        [nameTextField, linkTextField].forEach {
             $0.layer.cornerRadius = ConstansEditVC.textFieldCornerRadius
+            $0.layer.masksToBounds = true
             $0.textColor = .blackUniversal
             $0.backgroundColor = .segmentInactive
         }
-        
+
         [nameLabelView,
          descriptionLabelView,
          linkLabelView].forEach {
@@ -232,5 +238,11 @@ private extension EditProfileViewController {
     func userImageTapped(_ sender: UITapGestureRecognizer) {
         //TODO: - fix
         print(#function)
+    }
+}
+
+extension EditProfileViewController: NSLayoutManagerDelegate {
+    func layoutManager(_ layoutManager: NSLayoutManager, lineSpacingAfterGlyphAt glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
+        ConstansEditVC.textViewLineSpacing
     }
 }

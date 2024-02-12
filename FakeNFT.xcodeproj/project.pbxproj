@@ -25,6 +25,7 @@
 		0CFCB74E2A7817DC0009A829 /* NftStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFCB74D2A7817DC0009A829 /* NftStorage.swift */; };
 		1A0F47352B77AF4A00ED5DCC /* ConstLocalizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F47342B77AF4A00ED5DCC /* ConstLocalizable.swift */; };
 		1A3634772B778CFE00C64F92 /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3634762B778CFE00C64F92 /* ProfileTableViewCell.swift */; };
+		1A64C88A2B7A5E2B00DE3242 /* UITextView+Padding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A64C8892B7A5E2B00DE3242 /* UITextView+Padding.swift */; };
 		1A7A90842B77BDB8000E3EA6 /* ProfileCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7A90832B77BDB8000E3EA6 /* ProfileCellModel.swift */; };
 		1AABF3922B7659BB003C71C3 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AABF3912B7659BB003C71C3 /* ProfileViewController.swift */; };
 		1AE6EE872B77DD7F003E0E3C /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE6EE862B77DD7F003E0E3C /* EditProfileViewController.swift */; };
@@ -90,6 +91,7 @@
 		0CFCB74D2A7817DC0009A829 /* NftStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftStorage.swift; sourceTree = "<group>"; };
 		1A0F47342B77AF4A00ED5DCC /* ConstLocalizable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstLocalizable.swift; sourceTree = "<group>"; };
 		1A3634762B778CFE00C64F92 /* ProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableViewCell.swift; sourceTree = "<group>"; };
+		1A64C8892B7A5E2B00DE3242 /* UITextView+Padding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Padding.swift"; sourceTree = "<group>"; };
 		1A7A90832B77BDB8000E3EA6 /* ProfileCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCellModel.swift; sourceTree = "<group>"; };
 		1AABF3912B7659BB003C71C3 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1AE6EE862B77DD7F003E0E3C /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
@@ -348,6 +350,7 @@
 				0CFCB74C2A7817C30009A829 /* MemoryStorage */,
 				3F6806CF29CBBDB100B4F915 /* NetworkClient */,
 				3F6806D629CBC50A00B4F915 /* CellsReusingUtils.swift */,
+				1A64C8892B7A5E2B00DE3242 /* UITextView+Padding.swift */,
 				1A0F47342B77AF4A00ED5DCC /* ConstLocalizable.swift */,
 				3FC8C39229D246BA0081F015 /* DateFormatters+Presets.swift */,
 				0CFCB74A2A780EA80009A829 /* UIView+Constraints.swift */,
@@ -595,6 +598,7 @@
 				1A7A90842B77BDB8000E3EA6 /* ProfileCellModel.swift in Sources */,
 				3F68069929CBBAF100B4F915 /* SceneDelegate.swift in Sources */,
 				0C79EE6C2A76DE2E00EE90EA /* ServicesAssemly.swift in Sources */,
+				1A64C88A2B7A5E2B00DE3242 /* UITextView+Padding.swift in Sources */,
 				0CFCB74E2A7817DC0009A829 /* NftStorage.swift in Sources */,
 				3FC8C39129D2453B0081F015 /* ExampleRequest.swift in Sources */,
 				0CFCB7462A78064B0009A829 /* NftDetailCellModel.swift in Sources */,
