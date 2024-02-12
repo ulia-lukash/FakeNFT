@@ -7,11 +7,16 @@
 
 import UIKit
 
+protocol BasketTableViewCellDelegate: AnyObject {
+    func deleteButtonClicked()
+}
+
 final class BasketTableViewCell: UITableViewCell {
     
     // MARK: - Identifier
     
     static let identifier = "BasketTableViewCell"
+    weak var delegate: BasketTableViewCellDelegate?
     
     //MARK: - UI
     
@@ -63,6 +68,7 @@ final class BasketTableViewCell: UITableViewCell {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "tabler_trash-x"), for: .normal)
         button.tintColor = UIColor.segmentActive
+        button.addTarget(self, action: #selector(didTapDeleteButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -126,6 +132,10 @@ final class BasketTableViewCell: UITableViewCell {
             deleteNFTButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             deleteNFTButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 50)
         ])
+    }
+    
+    @objc private func didTapDeleteButton() {
+        delegate?.deleteButtonClicked()
     }
     
 }

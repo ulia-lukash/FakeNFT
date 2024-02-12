@@ -47,6 +47,7 @@
 		E1CD40DC2A96BECC00BE7FE8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E1CD40DB2A96BECC00BE7FE8 /* Localizable.strings */; };
 		E206F2B12B76B0F5009D7716 /* BasketViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E206F2AF2B76B0B2009D7716 /* BasketViewController.swift */; };
 		E206F2B22B76B0F8009D7716 /* BasketTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E206F2B02B76B0B2009D7716 /* BasketTableViewCell.swift */; };
+		E249F6972B7A2396006A8DE8 /* BasketDeleteCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E249F6962B7A2396006A8DE8 /* BasketDeleteCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +112,7 @@
 		E1CD40DB2A96BECC00BE7FE8 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E206F2AF2B76B0B2009D7716 /* BasketViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasketViewController.swift; sourceTree = "<group>"; };
 		E206F2B02B76B0B2009D7716 /* BasketTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasketTableViewCell.swift; sourceTree = "<group>"; };
+		E249F6962B7A2396006A8DE8 /* BasketDeleteCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasketDeleteCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -368,6 +370,7 @@
 			children = (
 				E206F2AF2B76B0B2009D7716 /* BasketViewController.swift */,
 				E206F2B02B76B0B2009D7716 /* BasketTableViewCell.swift */,
+				E249F6962B7A2396006A8DE8 /* BasketDeleteCardView.swift */,
 			);
 			path = Basket;
 			sourceTree = "<group>";
@@ -543,6 +546,7 @@
 				0C79EE6A2A76DE1000EE90EA /* NftDetailAssembly.swift in Sources */,
 				3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */,
 				0CFCB7422A78013E0009A829 /* Nft.swift in Sources */,
+				E249F6972B7A2396006A8DE8 /* BasketDeleteCardView.swift in Sources */,
 				0CF2C2DD2A783CE600FDC837 /* ErrorView.swift in Sources */,
 				0C79EE682A76DE0900EE90EA /* NftDetailPresenter.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,

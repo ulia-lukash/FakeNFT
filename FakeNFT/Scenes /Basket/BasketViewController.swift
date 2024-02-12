@@ -12,7 +12,6 @@ final class BasketViewController: UIViewController {
     let servicesAssembly: ServicesAssembly
     var counterNft: Int = 0
     var quantityNft: Double = 0
-    
     // MARK: - UI
     
     private var bottomView: UIView = {
@@ -24,7 +23,7 @@ final class BasketViewController: UIViewController {
         return view
     }()
     
-    private var paymentButton: UIButton = {
+    private lazy var paymentButton: UIButton = {
         var button = UIButton(type: .system)
         button.backgroundColor = UIColor.segmentActive
         button.tintColor = UIColor.whiteModeThemes
@@ -85,6 +84,14 @@ final class BasketViewController: UIViewController {
         return scroll
     }()
     
+    private lazy var blurEffectView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        let view = UIVisualEffectView(effect: blurEffect)
+        return view
+    }()
+    
+    private var deleteCardView = BasketDeleteCardView()
+    
     // MARK: - Initializers
     
     init(servicesAssembly: ServicesAssembly) {
@@ -104,8 +111,9 @@ final class BasketViewController: UIViewController {
         navBarItem()
         setupView()
         setupConstraints()
-        
+        deleteCardView.delegate = self
     }
+   
     
     // MARK: - Private Methods
     
@@ -147,17 +155,16 @@ final class BasketViewController: UIViewController {
             paymentButton.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 16),
             paymentButton.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -16),
             paymentButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -16),
-            paymentButton.leadingAnchor.constraint(equalTo: amountNftLabel.trailingAnchor, constant: 24)
+            paymentButton.leadingAnchor.constraint(equalTo: amountNftLabel.trailingAnchor, constant: 24),
             
 //            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//            stubLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+//            stubLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
         ])
     }
     
     private func navBarItem() {
         guard let navigationBar = navigationController?.navigationBar else { return }
-        navigationBar.prefersLargeTitles = true
         navigationBar.topItem?.largeTitleDisplayMode = .always
         
         let rightButton = UIBarButtonItem(
@@ -171,6 +178,21 @@ final class BasketViewController: UIViewController {
         
     }
     
+    private func setupBlurView() {
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        tabBarController?.view.addSubview(blurEffectView)
+        tabBarController?.view.addSubview(deleteCardView)
+        deleteCardView.translatesAutoresizingMaskIntoConstraints = false
+       
+        NSLayoutConstraint.activate([
+            deleteCardView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            deleteCardView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            deleteCardView.topAnchor.constraint(equalTo: view.topAnchor),
+            deleteCardView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            ])
+    }
+     
     @objc private func didTapSortButton() {
         //TODO
     }
@@ -199,7 +221,21 @@ extension BasketViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: BasketTableViewCell.identifier) as? BasketTableViewCell else {
             return UITableViewCell()
         }
-        
+        cell.delegate = self
         return cell
+    }
+}
+
+
+extension BasketViewController: BasketTableViewCellDelegate {
+    func deleteButtonClicked() {
+        setupBlurView()
+    }
+}
+
+extension BasketViewController: BasketDeleteCardViewDelegate {
+    func backButtonClicked() {
+        blurEffectView.removeFromSuperview()
+        deleteCardView.removeFromSuperview()
     }
 }
