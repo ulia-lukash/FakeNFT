@@ -66,7 +66,7 @@ final class BasketTableViewCell: UITableViewCell {
     
     private lazy var deleteNFTButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(named: "tabler_trash-x"), for: .normal)
+        button.setImage(UIImage(named: "deleteCard"), for: .normal)
         button.tintColor = UIColor.segmentActive
         button.addTarget(self, action: #selector(didTapDeleteButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
