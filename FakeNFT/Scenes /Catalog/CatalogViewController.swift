@@ -10,6 +10,7 @@ import UIKit
 
 final class CatalogViewController: UIViewController {
 
+    
     private lazy var burgerButton: UIButton = {
         let button = UIButton()
         let image = UIImage(systemName: "text.justify.leading")
