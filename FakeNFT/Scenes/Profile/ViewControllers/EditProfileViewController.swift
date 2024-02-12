@@ -15,6 +15,7 @@ final class EditProfileViewController: UIViewController {
         static let spacingStackView = CGFloat(22)
         static let textFieldCornerRadius = CGFloat(12)
         static let editLabelNumberOfLines = 2
+        static let numberOfTapsRequired = 1
         case close
     }
     
@@ -33,21 +34,34 @@ final class EditProfileViewController: UIViewController {
         return userImageView
     }()
     
-    private lazy var userEditLabelView: UILabel = {
-        let userEditLabelView = UILabel(frame: CGRect(origin: .zero,
+    private lazy var userImageEditLabelView: UILabel = {
+        let userImageEditLabelView = UILabel(frame: CGRect(origin: .zero,
                                                       size: ConstansEditVC.editImageViewSize))
-        userEditLabelView.text = ConstLocalizable.editUserImage
-        userEditLabelView.numberOfLines = ConstansEditVC.editLabelNumberOfLines
-        userEditLabelView.textAlignment = .center
-        userEditLabelView.textColor = .whiteUniversal
-        userEditLabelView.font = .headline6
-        userEditLabelView.frame = userImageView.frame
+        userImageEditLabelView.text = ConstLocalizable.editUserImage
+        userImageEditLabelView.numberOfLines = ConstansEditVC.editLabelNumberOfLines
+        userImageEditLabelView.textAlignment = .center
+        userImageEditLabelView.textColor = .whiteUniversal
+        userImageEditLabelView.font = .headline6
+        userImageEditLabelView.frame = userImageView.frame
         
-        return userEditLabelView
+        return userImageEditLabelView
+    }()
+    
+    private lazy var editLoadImageLabel: UILabel = {
+        let editLoadImageLabel = UILabel()
+        editLoadImageLabel.backgroundColor = .clear
+        editLoadImageLabel.textColor = .blackUniversal
+        editLoadImageLabel.translatesAutoresizingMaskIntoConstraints = false
+        editLoadImageLabel.font = .bodyRegular
+        editLoadImageLabel.text = ConstLocalizable.editVCLoadImage
+        editLoadImageLabel.textAlignment = .center
+        
+        return editLoadImageLabel
     }()
     
     private lazy var verticalStackView: UIStackView = {
         let verticalStackView = UIStackView()
+        verticalStackView.axis = .vertical
         verticalStackView.spacing = ConstansEditVC.spacingStackView
         verticalStackView.translatesAutoresizingMaskIntoConstraints = false
         verticalStackView.backgroundColor = .clear
@@ -58,6 +72,7 @@ final class EditProfileViewController: UIViewController {
     private lazy var nameLabelView: UILabel = {
         let nameLabelView = UILabel()
         nameLabelView.backgroundColor = .clear
+        nameLabelView.text = ConstLocalizable.editName
         
         return nameLabelView
     }()
@@ -71,12 +86,17 @@ final class EditProfileViewController: UIViewController {
     private lazy var descriptionLabelView: UILabel = {
         let descriptionLabelView = UILabel()
         descriptionLabelView.backgroundColor = .clear
+        descriptionLabelView.text = ConstLocalizable.editDescription
         
         return descriptionLabelView
     }()
     
     private lazy var descriptionTextField: UITextField = {
         let descriptionTextField = UITextField()
+        descriptionTextField.resignFirstResponder()
+        descriptionTextField.textAlignment = .left
+        descriptionTextField.clearButtonMode = .whileEditing
+        descriptionTextField.text = "Thanks for your help! There was extra space on the end of the string (which in my case was causing a horizontal centering issue), but I fixed it by changing the range to NSMakeRange(0, text.characters.count - 1"
         
         return descriptionTextField
     }()
@@ -84,6 +104,7 @@ final class EditProfileViewController: UIViewController {
     private lazy var linkLabelView: UILabel = {
         let linkLabelView = UILabel()
         linkLabelView.backgroundColor = .clear
+        linkLabelView.text = ConstLocalizable.editLink
         
         return linkLabelView
     }()
@@ -102,11 +123,14 @@ final class EditProfileViewController: UIViewController {
 }
 
 private extension EditProfileViewController {
+    //MARK: - Setup UIItem
     func setupUIItem() {
         setupExitButton()
         setupUserImageView()
-        setupUserEditImageView()
+        setupuserImageEditLabelView()
+        setupEditLoadImageLabel()
         setupStackView()
+        setupTextField()
     }
     
     func setupExitButton() {
@@ -135,29 +159,71 @@ private extension EditProfileViewController {
         setupUserImageTap()
     }
     
-    func setupUserEditImageView() {
-        userImageView.addSubview(userEditLabelView)
-        userEditLabelView.backgroundColor =
+    func setupuserImageEditLabelView() {
+        userImageView.addSubview(userImageEditLabelView)
+        userImageEditLabelView.backgroundColor =
             .blackUniversal.withAlphaComponent(ConstansEditVC.editImageViewAlphaComponent)
+    }
+    
+    func setupEditLoadImageLabel() {
+        view.addSubview(editLoadImageLabel)
+        NSLayoutConstraint.activate([
+            editLoadImageLabel.topAnchor.constraint(equalTo: userImageView.bottomAnchor, constant: 15),
+            editLoadImageLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+    
+    func setupTextField() {
+        nameTextField.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        descriptionTextField.heightAnchor.constraint(equalToConstant: 132).isActive = true
+        linkTextField.heightAnchor.constraint(equalToConstant: 44).isActive = true
     }
     
     func setupStackView() {
         view.addSubview(verticalStackView)
-        [nameLabelView, nameTextField,
-         descriptionLabelView, descriptionTextField,
-         linkLabelView, linkTextField].forEach {
+        [nameLabelView,
+         nameTextField,
+         descriptionLabelView,
+         descriptionTextField,
+         linkLabelView,
+         linkTextField].forEach {
             verticalStackView.addArrangedSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-        [nameTextField, descriptionTextField, linkTextField].forEach {
+        
+        [nameTextField,
+         descriptionTextField,
+         linkTextField].forEach {
             $0.layer.masksToBounds = true
             $0.layer.cornerRadius = ConstansEditVC.textFieldCornerRadius
-//            $0.backgroundColor = .
+            $0.textColor = .blackUniversal
+            $0.backgroundColor = .segmentInactive
         }
+        
+        [nameLabelView,
+         descriptionLabelView,
+         linkLabelView].forEach {
+            $0.font = .headline3
+            $0.textColor = .blackUniversal
+            $0.textAlignment = .left
+        }
+        
+        let customSpacing = CGFloat(13)
+        verticalStackView.setCustomSpacing(customSpacing, after: nameLabelView)
+        verticalStackView.setCustomSpacing(customSpacing, after: descriptionLabelView)
+        verticalStackView.setCustomSpacing(customSpacing, after: linkLabelView)
+        
+        NSLayoutConstraint.activate([
+            verticalStackView.topAnchor.constraint(equalTo: editLoadImageLabel.bottomAnchor, constant: -14),
+            verticalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            verticalStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
     }
     
+    //MARK: - function
     func setupUserImageTap() {
         let labelTap = UITapGestureRecognizer(target: self, action: #selector(self.userImageTapped(_:)))
+        labelTap.numberOfTapsRequired = ConstansEditVC.numberOfTapsRequired
         self.userImageView.isUserInteractionEnabled = true
         self.userImageView.addGestureRecognizer(labelTap)
     }
