@@ -1,4 +1,5 @@
 import UIKit
+import ProgressHUD
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -9,6 +10,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     )
 
     func scene(_: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
+        ProgressHUD.animationType = .circleSpinFade
+        ProgressHUD.colorAnimation = .blueUniversal
         let tabBarController = window?.rootViewController as? TabBarController
         tabBarController?.servicesAssembly = servicesAssembly
     }

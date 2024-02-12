@@ -10,7 +10,7 @@ import UIKit
 
 final class CatalogViewController: UIViewController {
 
-    
+    private let viewModel = CatalogViewControllerViewModel()
     private lazy var burgerButton: UIButton = {
         let button = UIButton()
         let image = UIImage(systemName: "text.justify.leading")
@@ -34,6 +34,18 @@ final class CatalogViewController: UIViewController {
         nftCollection.dataSource = self
         nftCollection.delegate = self
         setUp()
+
+        bind()
+        viewModel.getCollections()
+    }
+
+    // MARK: - Private Methods
+
+    private func bind() {
+
+        viewModel.onChange = { [weak self] in
+            self?.nftCollection.reloadData()
+        }
     }
 
     private func setUp() {
@@ -58,178 +70,13 @@ final class CatalogViewController: UIViewController {
         ])
     }
 
-    private var mockCollections: [NftCollection] = [
-        NftCollection(createdAt: "2023-04-20T02:22:27Z", name: "Beige", cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/ÐžÐ±Ð»Ð¾Ð¶ÐºÐ¸_ÐºÐ¾Ð»Ð»ÐµÐºÑ†Ð¸Ð¹/Beige.png", nfts: [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20",
-            "21"
-        ], description: "A series of one-of-a-kind NFTs featuring historic moments in sports history.", author: "6", id: "1"),
-        NftCollection(createdAt: "2023-04-20T02:22:27Z",
-                      name: "Blue",
-                      cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/ÐžÐ±Ð»Ð¾Ð¶ÐºÐ¸_ÐºÐ¾Ð»Ð»ÐµÐºÑ†Ð¸Ð¹/Blue.png",
-                      nfts: [
-                        "22",
-                        "23",
-                        "24",
-                        "25",
-                        "26"
-                      ],
-                      description: "A collection of virtual trading cards featuring popular characters from movies and TV shows.",
-                      author: "9",
-                      id: "2"),
-        NftCollection(
-            createdAt: "2023-04-20T02:22:27Z",
-            name: "Gray",
-            cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/ÐžÐ±Ð»Ð¾Ð¶ÐºÐ¸_ÐºÐ¾Ð»Ð»ÐµÐºÑ†Ð¸Ð¹/Gray.png",
-            nfts: [
-                "27",
-                "28",
-                "29",
-                "30",
-                "31",
-                "32",
-                "33",
-                "34",
-                "35",
-                "36",
-                "37",
-                "38",
-                "39",
-                "40",
-                "41",
-                "42",
-                "43",
-                "44",
-                "45"
-            ],
-            description: "A set of limited edition digital stamps featuring famous landmarks from around the world.",
-            author: "12",
-            id: "3"),
-        NftCollection(createdAt: "2023-04-20T02:22:27Z",
-                      name: "Green",
-                      cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/ÐžÐ±Ð»Ð¾Ð¶ÐºÐ¸_ÐºÐ¾Ð»Ð»ÐµÐºÑ†Ð¸Ð¹/Green.png",
-                      nfts: [
-                        "46",
-                        "47",
-                        "48"
-                      ],
-                      description: "A collection of unique 3D sculptures that can be displayed in virtual reality.",
-                      author: "15",
-                      id: "4"),
-        NftCollection(createdAt: "2023-04-20T02:22:27Z",
-                      name: "Peach",
-                      cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/ÐžÐ±Ð»Ð¾Ð¶ÐºÐ¸_ÐºÐ¾Ð»Ð»ÐµÐºÑ†Ð¸Ð¹/Peach.png",
-                      nfts: [
-                        "49",
-                        "50",
-                        "51",
-                        "52",
-                        "53",
-                        "54",
-                        "55",
-                        "56",
-                        "57",
-                        "58",
-                        "59"
-                      ],
-                      description: "A series of NFTs featuring original music compositions from up-and-coming musicians.",
-                      author: "18",
-                      id: "5"),
-        NftCollection(createdAt: "2023-04-20T02:22:27Z",
-                      name: "Pink",
-                      cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/ÐžÐ±Ð»Ð¾Ð¶ÐºÐ¸_ÐºÐ¾Ð»Ð»ÐµÐºÑ†Ð¸Ð¹/Pink.png",
-                      nfts: [
-                        "60",
-                        "61",
-                        "62",
-                        "63",
-                        "64",
-                        "65",
-                        "66",
-                        "67",
-                        "68",
-                        "69",
-                        "70",
-                        "71",
-                        "72",
-                        "73"
-                      ],
-                      description: "A collection of virtual clothing items that can be worn in online games and social networks.",
-                      author: "21",
-                      id: "6"),
-        NftCollection(createdAt: "2023-04-20T02:22:27Z",
-                      name: "White",
-                      cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/ÐžÐ±Ð»Ð¾Ð¶ÐºÐ¸_ÐºÐ¾Ð»Ð»ÐµÐºÑ†Ð¸Ð¹/White.png",
-                      nfts: [
-                        "74",
-                        "75",
-                        "76",
-                        "77",
-                        "78",
-                        "79",
-                        "80"
-                      ],
-                      description: "A set of rare NFTs featuring the work of famous street artists from around the world.",
-                      author: "24",
-                      id: "7"),
-        NftCollection(createdAt: "2023-04-20T02:22:27Z",
-                      name: "Yellow",
-                      cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/ÐžÐ±Ð»Ð¾Ð¶ÐºÐ¸_ÐºÐ¾Ð»Ð»ÐµÐºÑ†Ð¸Ð¹/Yellow.png",
-                      nfts: [
-                        "81",
-                        "82",
-                        "83",
-                        "84",
-                        "85",
-                        "86",
-                        "87",
-                        "88"
-                      ],
-                      description: "A series of digital pet NFTs that can be raised and trained in a virtual world.",
-                      author: "27",
-                      id: "8"),
-        NftCollection(createdAt: "2023-04-20T02:22:27Z",
-                      name: "Brown",
-                      cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/ÐžÐ±Ð»Ð¾Ð¶ÐºÐ¸_ÐºÐ¾Ð»Ð»ÐµÐºÑ†Ð¸Ð¹/Brown.png",
-                      nfts: [
-                        "89",
-                        "90",
-                        "91",
-                        "92",
-                        "93",
-                        "94",
-                        "95"
-                      ],
-                      description: "A collection of limited edition NFTs featuring the work of world-renowned photographers.",
-                      author: "30",
-                      id: "9")
-    ]
-
     private func filterByName() {
-        mockCollections.sort(by: {$0.name < $1.name})
+        viewModel.collectionsFilterdByName()
         self.nftCollection.reloadData()
     }
 
     private func filterByNumber() {
-        mockCollections.sort(by: {$0.nfts.count < $1.nfts.count})
+        viewModel.collectionsFileterByNumber()
         self.nftCollection.reloadData()
     }
 
@@ -250,7 +97,7 @@ final class CatalogViewController: UIViewController {
 
 extension CatalogViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        mockCollections.count
+        viewModel.collectionsNumber()
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         1
@@ -258,7 +105,7 @@ extension CatalogViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell() as CatalogTableViewCell
-        let collection = mockCollections[indexPath.section]
+        let collection = viewModel.collections[indexPath.section]
         cell.configure(for: collection.name)
         return cell
     }
@@ -271,7 +118,7 @@ extension CatalogViewController: UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
 
-        let collection = mockCollections[section]
+        let collection = viewModel.collections[section]
         let name = collection.name
         let count = collection.nfts.count
         let footerString = "\(name) (\(count))"

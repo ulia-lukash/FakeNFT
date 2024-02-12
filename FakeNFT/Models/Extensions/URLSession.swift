@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ProgressHUD
 
 extension URLSession {
     func objectTask<T: Decodable>(
@@ -17,6 +18,7 @@ extension URLSession {
                 completion(result)
             }
         }
+        ProgressHUD.show()
         let task = dataTask(with: request, completionHandler: { data, response, error in
             if let data = data,
                let response = response,
@@ -26,6 +28,7 @@ extension URLSession {
                     do {
                         let decoder = JSONDecoder()
                         let result = try decoder.decode(T.self, from: data)
+                        ProgressHUD.dismiss()
                         fulfillCompletion(.success(result))
                     } catch {
                         fulfillCompletion(.failure(NetworkError.urlRequestError(error)))
