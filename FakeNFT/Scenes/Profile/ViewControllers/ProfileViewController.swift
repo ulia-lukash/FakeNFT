@@ -16,11 +16,12 @@ final class ProfileViewController: UIViewController {
         static let userImageSize = CGFloat(70)
         static let heigtTableCell = CGFloat(54)
         static let countCellTableView = CGFloat(3)
-        case editDark
+        case editProfile
     }
     private lazy var editProfileButton: UIButton = {
         let editProfileButton = UIButton()
-        editProfileButton.setImage(UIImage(named: ConstantsProfileVC.editDark.rawValue),
+        editProfileButton.addTarget(nil, action: #selector(self.didEditTap), for: .touchUpInside)
+        editProfileButton.setImage(UIImage(named: ConstantsProfileVC.editProfile.rawValue),
                                    for: .normal)
         
         return editProfileButton
@@ -161,6 +162,13 @@ private extension ProfileViewController {
             nftTableView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.countCellTableView
                                                  * ConstantsProfileVC.heigtTableCell)
         ])
+    }
+    
+    @objc
+    func didEditTap() {
+        let editVC = EditProfileViewController()
+        editVC.modalPresentationStyle = .formSheet
+        present(editVC, animated: true)
     }
 }
 

@@ -15,7 +15,7 @@ final class EditProfileViewController: UIViewController {
         static let spacingStackView = CGFloat(22)
         static let textViewLineSpacing = CGFloat(5)
         static let textFieldCornerRadius = CGFloat(12)
-        static let paddingTextView = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
+        static let paddingTextView = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 0)
         static let editLabelNumberOfLines = 2
         static let numberOfTapsRequired = 1
         case close
