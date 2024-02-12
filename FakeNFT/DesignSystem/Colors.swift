@@ -25,12 +25,12 @@ extension UIColor {
         )
     }
 
-    static let yaBlackLight = UIColor(hexString: "1A1B22")
-    static let yaBlackDark = UIColor(hexString: "#FFFFFF")
-    static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
-    static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
-    static let yaWhiteLight = UIColor(hexString: "#FFFFFF")
-    static let yaWhiteDark = UIColor(hexString: "#2C2C2E")
+    private static let yaBlackLight = UIColor(hexString: "1A1B22")
+    private static let yaBlackDark = UIColor(hexString: "#FFFFFF")
+    private static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
+    private static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
+    private static let yaWhiteLight = UIColor(hexString: "#FFFFFF")
+    private static let yaWhiteDark = UIColor(hexString: "#2C2C2E")
     
     // Background Colors
     static let backgroundUniversal = UIColor(red: 26 / 255, green: 27 / 255, blue: 34 / 255, alpha: 0.5)
