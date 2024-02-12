@@ -38,6 +38,8 @@ final class CatalogViewControllerViewModel {
     }
 
     func collectionsFilterdByName() {
+        
+// Видела, что у АПИшки есть возможность сортировать запросом, но в нашем случае, когда массив маленький и легко сортируется внутри, не вижу смысла делать новый запрос - это замедлит работу
         collections.sort(by: {$0.name < $1.name})
     }
 
