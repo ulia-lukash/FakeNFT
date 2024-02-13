@@ -10,9 +10,13 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     )
 
     func scene(_: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
-        ProgressHUD.animationType = .circleSpinFade
-        ProgressHUD.colorAnimation = .blueUniversal
+        setUpProgreeHUD()
         let tabBarController = window?.rootViewController as? TabBarController
         tabBarController?.servicesAssembly = servicesAssembly
+    }
+
+    private func setUpProgreeHUD() {
+        ProgressHUD.animationType = .circleSpinFade
+        ProgressHUD.colorAnimation = .blueUniversal
     }
 }

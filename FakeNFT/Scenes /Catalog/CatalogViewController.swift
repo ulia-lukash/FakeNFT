@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import ProgressHUD
 
 final class CatalogViewController: UIViewController {
 
@@ -34,7 +35,7 @@ final class CatalogViewController: UIViewController {
         nftCollection.dataSource = self
         nftCollection.delegate = self
         setUp()
-
+        ProgressHUD.show()
         bind()
         viewModel.getCollections()
     }
@@ -45,6 +46,7 @@ final class CatalogViewController: UIViewController {
 
         viewModel.onChange = { [weak self] in
             self?.nftCollection.reloadData()
+            ProgressHUD.dismiss()
         }
     }
 
@@ -64,8 +66,8 @@ final class CatalogViewController: UIViewController {
             burgerButton.widthAnchor.constraint(equalToConstant: 42),
             burgerButton.heightAnchor.constraint(equalToConstant: 42),
             nftCollection.topAnchor.constraint(equalTo: burgerButton.bottomAnchor, constant: 20),
-            nftCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            nftCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            nftCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            nftCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             nftCollection.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
@@ -81,7 +83,6 @@ final class CatalogViewController: UIViewController {
     }
 
     @objc private func didPressBurgerButton() {
-        // TODO: Add localized strings
 
         let alert = UIAlertController(title: nil, message: NSLocalizedString("Catalog.sort", comment: ""), preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Catalog.sort.byName", comment: ""), style: .default, handler: {_ in
@@ -107,6 +108,7 @@ extension CatalogViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell() as CatalogTableViewCell
         let collection = viewModel.collections[indexPath.section]
         cell.configure(for: collection.name)
+        cell.selectionStyle = .none
         return cell
     }
 }

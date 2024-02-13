@@ -33,7 +33,7 @@ final class CatalogTableFooterView: UITableViewHeaderFooterView, ReuseIdentifyin
     private func configureFooter() {
         addSubview(footerLabel)
         NSLayoutConstraint.activate([
-            footerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            footerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             footerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
             footerLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])

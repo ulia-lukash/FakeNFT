@@ -18,7 +18,7 @@ final class NftCollectionsService {
     private (set) var collections: [NftCollection] = []
     private var task: URLSessionTask?
     private let urlSession = URLSession.shared
-    private let dateFormatter = ISO8601DateFormatter()
+    private let defaults = UserDefaults.standard
 
     // MARK: - Public Methods
     func fetchCollections() {
@@ -33,7 +33,6 @@ final class NftCollectionsService {
             switch result {
             case .success(let collections):
                 self.mapCollections(collections)
-                print(self.collections)
                 NotificationCenter.default.post(name: NftCollectionsService.didChangeNotification, object: self, userInfo: ["collections": self.collections] )
             case .failure(let error):
                 print(error)
@@ -45,9 +44,15 @@ final class NftCollectionsService {
     }
 
     private func mapCollections(_ collections: [NftCollectionResponse]) {
-        self.collections = collections.map { item in
+        let cols = collections.map { item in
             return NftCollection(createdAt: item.createdAt, name: item.name, cover: item.cover, nfts: item.nfts, description: item.description, author: item.author, id: item.id)
         }
+        if let shouldFilterByName = defaults.object(forKey: "ShouldFilterByName") {
+            self.collections = cols.sorted(by: {$0.name < $1.name})
+        } else {
+            self.collections = cols.sorted(by: {$0.nfts.count > $1.nfts.count})
+        }
+
     }
 
 }
@@ -64,6 +69,7 @@ extension NftCollectionsService {
             assertionFailure("failed to assemble request url")
             return nil
         }
+
         var request = URLRequest(url: url)
 
         request.setValue("\(RequestConstants.token)", forHTTPHeaderField: "X-Practicum-Mobile-Token")

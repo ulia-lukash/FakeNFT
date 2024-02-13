@@ -11,7 +11,7 @@ final class CatalogViewControllerViewModel {
 
     private let service = NftCollectionsService.shared
     private var nftCollectionsServiceObserver: NSObjectProtocol?
-
+    private let defaults = UserDefaults.standard
     var onChange: (() -> Void)?
 
     private(set) var collections: [NftCollection] = [] {
@@ -38,12 +38,12 @@ final class CatalogViewControllerViewModel {
     }
 
     func collectionsFilterdByName() {
-        
-// Видела, что у АПИшки есть возможность сортировать запросом, но в нашем случае, когда массив маленький и легко сортируется внутри, не вижу смысла делать новый запрос - это замедлит работу
+        defaults.set(true, forKey: "ShouldFilterByName")
         collections.sort(by: {$0.name < $1.name})
     }
 
     func collectionsFileterByNumber() {
-        collections.sort(by: {$0.nfts.count < $1.nfts.count})
+        defaults.removeObject(forKey: "ShouldFilterByName")
+        collections.sort(by: {$0.nfts.count > $1.nfts.count})
     }
 }

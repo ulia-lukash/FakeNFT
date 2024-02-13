@@ -53,18 +53,17 @@ final class CatalogTableViewCell: UITableViewCell, ReuseIdentifying {
                     print("Job failed: \(error.localizedDescription)")
                 }
             }
-
     }
     // MARK: - Private Methods
 
     private func configureCellLayout() {
-
         contentView.addSubview(cover)
 
         NSLayoutConstraint.activate([
+
             cover.topAnchor.constraint(equalTo: contentView.topAnchor),
-            cover.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            cover.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            cover.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            cover.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             cover.heightAnchor.constraint(equalToConstant: 140),
             contentView.heightAnchor.constraint(equalToConstant: 145)
         ])

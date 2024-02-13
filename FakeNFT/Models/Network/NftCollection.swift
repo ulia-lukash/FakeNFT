@@ -8,7 +8,7 @@
 import Foundation
 
 struct NftCollection: Codable {
-    let createdAt: Date
+    let createdAt: Date?
     let name: String
     let cover: URL
     let nfts: [String]
@@ -17,8 +17,8 @@ struct NftCollection: Codable {
     let id: String
 
     init(createdAt: String, name: String, cover: String, nfts: [String], description: String, author: String, id: String) {
-        let dateFormatter = ISO8601DateFormatter()
-        let date = dateFormatter.date(from: createdAt)!
+
+        let date = DateFormatter.defaultDateFormatter.date(from: createdAt)!
 
         let coverUrl = URL(string: cover)!
 
