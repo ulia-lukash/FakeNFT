@@ -1,12 +1,17 @@
 import UIKit
 
 final class TabBarController: UITabBarController {
-
     var servicesAssembly: ServicesAssembly!
 
     private let catalogTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.catalog", comment: ""),
         image: UIImage(systemName: "square.stack.3d.up.fill"),
+        tag: 0
+    )
+
+    private let statisticsTabBarItem = UITabBarItem(
+        title: NSLocalizedString("Tab.statistics", comment: ""),
+        image: UIImage(named: "statisticsTabBarItem"),
         tag: 0
     )
 
@@ -18,7 +23,10 @@ final class TabBarController: UITabBarController {
         )
         catalogController.tabBarItem = catalogTabBarItem
 
-        viewControllers = [catalogController]
+        let ratingViewController = RatingViewController()
+        ratingViewController.tabBarItem = statisticsTabBarItem
+
+        viewControllers = [catalogController, ratingViewController]
 
         view.backgroundColor = .systemBackground
     }
