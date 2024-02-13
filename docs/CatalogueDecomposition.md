@@ -12,21 +12,21 @@
 #### Верстка
 1. Верстка главного экрана каталога
     
- - Сверстать TableView  (est: 40 min; fact: x min)
+ - Сверстать TableView  (est: 40 min; fact: 50 min)
 
     - [ ] Footer
     - [ ] Cell
     - [ ] Delegate, DataSource
 
         
- - Сверстать "Бургер" (est: 7 min; fact: x min)
+ - Сверстать "Бургер" (est: 7 min; fact: 5 min)
 
 2. Проработать сетевой слой
 
-    - [ ] получение NFT (est: 60 min; fact: x min)
+    - [ ] получение NFT (est: 60 min; fact: 30 min)
 3. Всплывашка для фильтров
-    - [ ] UI (est: 7 min; fact: x min)
-    - [ ] Логика (фильтр запросы)  (est: 40 min; fact: x min)
+    - [ ] UI (est: 7 min; fact: 10 min)
+    - [ ] Логика (фильтр запросы)  (est: 40 min; fact: 10 min)
 
 
 `Total:` est: 154 min; fact: x min.

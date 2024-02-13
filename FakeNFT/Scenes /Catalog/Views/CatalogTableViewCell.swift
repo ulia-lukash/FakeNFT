@@ -15,6 +15,7 @@ final class CatalogTableViewCell: UITableViewCell, ReuseIdentifying {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 12
+        imageView.layer.masksToBounds = true
         return imageView
     }()
 
@@ -39,7 +40,6 @@ final class CatalogTableViewCell: UITableViewCell, ReuseIdentifying {
 
         let processor = ResizingImageProcessor(referenceSize: CGSize(width: contentView.frame.width, height: 140), mode: .aspectFill)
         |> CroppingImageProcessor(size: CGSize(width: contentView.frame.width, height: 140))
-        |> RoundCornerImageProcessor(cornerRadius: 12)
         cover.kf.indicatorType = .activity
         cover.kf.setImage(
             with: url,
