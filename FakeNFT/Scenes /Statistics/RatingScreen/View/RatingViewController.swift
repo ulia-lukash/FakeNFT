@@ -21,6 +21,7 @@ final class RatingViewController: UIViewController {
         tableView.rowHeight = Constants.tableViewRowHeight
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
         tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
         return tableView
     }()
 
@@ -78,6 +79,7 @@ extension RatingViewController: UITableViewDataSource {
 
         let rating = String(indexPath.row + 1)
         let username = mockUsernames[indexPath.row]
+        // swiftlint:disable:next force_unwrapping
         let avatar = mockAvatars[indexPath.row] ?? UIImage(systemName: "person.crop.circle")!
         let nftAmount = mockNFTAmount[indexPath.row]
 
