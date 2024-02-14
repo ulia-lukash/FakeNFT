@@ -116,6 +116,18 @@ final class RatingCell: UITableViewCell {
             nftAmoutLabel.heightAnchor.constraint(equalToConstant: Constants.cellElementHeight)
         ])
     }
+
+    func setupCell(
+        rating: String,
+        username: String,
+        avatar: UIImage,
+        nftAmount: String
+    ) {
+        ratingPositionLabel.text = rating
+        avatarImageView.image = avatar
+        usernameLabel.text = username
+        nftAmoutLabel.text = nftAmount
+    }
 }
 
 private enum Constants {
