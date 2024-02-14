@@ -4,6 +4,7 @@ final class RatingViewController: UIViewController {
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .systemBackground
         return tableView
     }()
 
@@ -15,7 +16,9 @@ final class RatingViewController: UIViewController {
     }
 
     private func setupTableView() {
-        tableView.backgroundColor = .lightGray
+        tableView.register(RatingCell.self, forCellReuseIdentifier: "ratingCell")
+        tableView.rowHeight = Constants.tableViewRowHeight
+        tableView.separatorStyle = .none
         tableView.dataSource = self
 
         view.addSubview(tableView)
@@ -43,4 +46,5 @@ extension RatingViewController: UITableViewDataSource {
 
 private enum Constants {
     static let tableViewInset: CGFloat = 16
+    static let tableViewRowHeight: CGFloat = 88
 }
