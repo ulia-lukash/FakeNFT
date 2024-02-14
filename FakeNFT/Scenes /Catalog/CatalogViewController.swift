@@ -116,7 +116,11 @@ extension CatalogViewController: UITableViewDataSource {
 extension CatalogViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
+        let collection = viewModel.collections[indexPath.section]
+        let vc = CollectionViewController()
+        let navigationController = UINavigationController(rootViewController: vc)
+        navigationController.modalPresentationStyle = .fullScreen
+        self.present(navigationController, animated: true, completion: nil)
     }
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
 
