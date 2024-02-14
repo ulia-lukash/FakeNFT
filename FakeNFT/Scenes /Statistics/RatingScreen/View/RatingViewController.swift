@@ -18,6 +18,9 @@ final class RatingViewController: UIViewController {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .systemBackground
+        tableView.rowHeight = Constants.tableViewRowHeight
+        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
+        tableView.separatorStyle = .none
         return tableView
     }()
 
@@ -31,6 +34,13 @@ final class RatingViewController: UIViewController {
     }
 
     private func setupNavBar() {
+        navigationController?.navigationBar.setBackgroundImage(
+            UIImage(),
+            for: UIBarPosition.any,
+            barMetrics: UIBarMetrics.default
+        )
+        navigationController?.navigationBar.shadowImage = UIImage()
+
         let sortButton = UIBarButtonItem(
             image: UIImage(named: "sortButton"),
             style: .plain,
@@ -43,19 +53,17 @@ final class RatingViewController: UIViewController {
 
     private func setupTableView() {
         tableView.register(RatingCell.self, forCellReuseIdentifier: "ratingCell")
-        tableView.rowHeight = Constants.tableViewRowHeight
-        tableView.separatorStyle = .none
         tableView.dataSource = self
 
         view.addSubview(tableView)
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.leadingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.tableViewInset
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.tableViewHorizontalInset
             ),
             tableView.trailingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.tableViewInset)
+                equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.tableViewHorizontalInset)
         ])
     }
 }
@@ -88,6 +96,7 @@ extension RatingViewController: UITableViewDataSource {
 }
 
 private enum Constants {
-    static let tableViewInset: CGFloat = 16
+    static let tableViewHorizontalInset: CGFloat = 16
+    static let tableViewTopInset: CGFloat = 12
     static let tableViewRowHeight: CGFloat = 88
 }
