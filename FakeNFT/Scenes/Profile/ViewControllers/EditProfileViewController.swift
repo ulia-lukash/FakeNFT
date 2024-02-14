@@ -95,7 +95,7 @@ final class EditProfileViewController: UIViewController {
     
     private lazy var descriptionTextView: UITextView = {
         let descriptionTextView = UITextView()
-        descriptionTextView.leftSpace(insets: ConstansEditVC.paddingTextView)
+        descriptionTextView.setPadding(insets: ConstansEditVC.paddingTextView)
         descriptionTextView.resignFirstResponder()
         descriptionTextView.textAlignment = .left
         descriptionTextView.layer.cornerRadius = ConstansEditVC.textFieldCornerRadius

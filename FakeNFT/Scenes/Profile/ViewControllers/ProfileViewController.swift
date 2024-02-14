@@ -10,14 +10,20 @@ import Kingfisher
 
 final class ProfileViewController: UIViewController {
     private enum ConstantsProfileVC: String {
+        static let assertionMEssage = "can't move to initial state"
         static let horisontalStackSpacing = CGFloat(20)
         static let verticalStackSpacing = CGFloat(10)
         static let textViewLineSpacing = CGFloat(5)
         static let userImageSize = CGFloat(70)
         static let heigtTableCell = CGFloat(54)
-        static let countCellTableView = CGFloat(3)
+        static let countCellTableView = 3
         case editProfile
     }
+    
+    private let viewModel: ProfileViewModelProtocol
+    
+    internal lazy var activityIndicator = UIActivityIndicatorView()
+    
     private lazy var editProfileButton: UIButton = {
         let editProfileButton = UIButton()
         editProfileButton.addTarget(nil, action: #selector(self.didEditTap), for: .touchUpInside)
@@ -35,7 +41,7 @@ final class ProfileViewController: UIViewController {
         return horisontalStackView
     }()
     
-    private lazy var userImageView: UIImageView = {
+    private lazy var userImageView: UserImageView = {
         let userImageView = UserImageView(image: nil)
         let userImageModel = UserImageModel(url: nil)
         userImageView.config(with: userImageModel)
@@ -96,15 +102,77 @@ final class ProfileViewController: UIViewController {
         return nftTableView
     }()
     
+    // MARK: - Init
+    init(viewModel: ProfileViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
+        bind()
         view.backgroundColor = .whiteUniversal
         setupUIItem()
+        viewModel.loading()
     }
 }
 
-//MARK: - extension
 private extension ProfileViewController {
+    //MARK: - private function
+    func bind() {
+        guard let viewModel = viewModel as? ProfileViewModel else { return }
+        viewModel.$state.bind { [weak self] state in
+            guard let self else { return }
+            switch state {
+            case .initial:
+                assertionFailure(ConstantsProfileVC.assertionMEssage)
+            case .loading:
+                self.showLoading()
+                //TODO: - insert id
+                viewModel.loadProfile(id: "1")
+            case .failed(let error):
+                self.hideLoading()
+                let errorModel = viewModel.makeErrorModel(error: error)
+                self.showError(errorModel)
+            case .data(let profile):
+                self.hideLoading()
+                let profileUIModel = viewModel.makeProfileUIModel(networkModel: profile)
+                let cellModel = viewModel.makeTableCellModel(networkModel: profile)
+                viewModel.setCellModel(cellModel: cellModel)
+                self.displayProfile(model: profileUIModel)
+            }
+        }
+        
+        viewModel.$cellModel.bind { [weak self] cellModel in
+            guard let self else { return }
+            nftTableView.reloadData()
+        }
+    }
+    
+    @objc
+    func didEditTap() {
+        let editVC = EditProfileViewController()
+        editVC.modalPresentationStyle = .formSheet
+        present(editVC, animated: true)
+    }
+    
+    func displayProfile(model: ProfileUIModel) {
+        userImageView.config(with: UserImageModel(url: model.url))
+        fullNameLabelView.text = model.name
+        descriptionTextView.text = model.description
+        linkLabelView.text = model.link
+    }
+    
+    func displayTableCell(model: ProfileCellModel) {
+        
+    }
+    
+    //MARK: - setupUI function
     func setupUIItem() {
         setupEditProfileImageView()
         setupHorisontalStack()
@@ -159,16 +227,9 @@ private extension ProfileViewController {
             nftTableView.topAnchor.constraint(equalTo: verticalStackView.bottomAnchor, constant: 40),
             nftTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             nftTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            nftTableView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.countCellTableView
+            nftTableView.heightAnchor.constraint(equalToConstant: CGFloat(ConstantsProfileVC.countCellTableView)
                                                  * ConstantsProfileVC.heigtTableCell)
         ])
-    }
-    
-    @objc
-    func didEditTap() {
-        let editVC = EditProfileViewController()
-        editVC.modalPresentationStyle = .formSheet
-        present(editVC, animated: true)
     }
 }
 
@@ -194,10 +255,28 @@ extension ProfileViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "\(ProfileTableViewCell.self)") as? ProfileTableViewCell else { return UITableViewCell()}
-        //TODO: - FIX (add viewModel)
-        let cellModel = ProfileCellModel(text: "stub")
-        cell.config(with: cellModel)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "\(ProfileTableViewCell.self)") as? ProfileTableViewCell,
+              let viewModel = viewModel as? ProfileViewModel,
+              let cellModel = viewModel.cellModel
+        else { return UITableViewCell()}
+        switch indexPath.row {
+        case 0:
+            let text = ConstLocalizable.profileCellMyNFT + cellModel.countNFT
+            let profileCellModel = ProfileCellModel(text: text)
+            cell.config(with: profileCellModel)
+        case 1:
+            let text = ConstLocalizable.profileCellFavoritesNFT + cellModel.countFavoritesNFT
+            let profileCellModel = ProfileCellModel(text: text)
+            cell.config(with: profileCellModel)
+        case 2:
+            let profileCellModel = ProfileCellModel(text: ConstLocalizable.profileCellDeveloper )
+            cell.config(with: profileCellModel)
+        default:
+            break
+        }
         return cell
     }
 }
+ 
+// MARK: - ErrorView, LoadingView
+extension ProfileViewController: ErrorView, LoadingView {}
