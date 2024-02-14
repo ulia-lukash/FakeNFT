@@ -25,7 +25,20 @@ final class RatingViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .systemBackground
+
+        setupNavBar()
         setupTableView()
+    }
+
+    private func setupNavBar() {
+        let sortButton = UIBarButtonItem(
+            image: UIImage(named: "sortButton"),
+            style: .plain,
+            target: nil,
+            action: nil)
+        sortButton.tintColor = UIColor.segmentActive
+
+        navigationItem.rightBarButtonItem = sortButton
     }
 
     private func setupTableView() {

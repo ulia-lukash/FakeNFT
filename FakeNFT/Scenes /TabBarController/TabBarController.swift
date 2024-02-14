@@ -23,7 +23,7 @@ final class TabBarController: UITabBarController {
         )
         catalogController.tabBarItem = catalogTabBarItem
 
-        let ratingViewController = RatingViewController()
+        let ratingViewController = UINavigationController(rootViewController: RatingViewController())
         ratingViewController.tabBarItem = statisticsTabBarItem
 
         viewControllers = [catalogController, ratingViewController]
