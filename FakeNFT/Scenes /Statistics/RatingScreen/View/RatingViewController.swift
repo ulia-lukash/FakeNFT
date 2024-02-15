@@ -45,8 +45,8 @@ final class RatingViewController: UIViewController {
         let sortButton = UIBarButtonItem(
             image: UIImage(named: "sortButton"),
             style: .plain,
-            target: nil,
-            action: nil)
+            target: self,
+            action: #selector(Self.presentSortAlertController))
         sortButton.tintColor = UIColor.segmentActive
 
         navigationItem.rightBarButtonItem = sortButton
@@ -66,6 +66,27 @@ final class RatingViewController: UIViewController {
             tableView.trailingAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.tableViewHorizontalInset)
         ])
+    }
+
+    @objc private func presentSortAlertController() {
+        let alert = UIAlertController(
+            title: NSLocalizedString("SortAlert.title", comment: "sort alert title"),
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("Sort.byName", comment: "sort user by name"),
+            style: .default) { _ in })
+
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("Sort.byRating", comment: "sort user by rating"),
+            style: .default) { _ in })
+
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("SortAlert.close", comment: "close alert"),
+            style: .cancel) { _ in })
+
+        present(alert, animated: true, completion: nil)
     }
 }
 

@@ -13,3 +13,7 @@
 "Edit.link" = "Ссылка";
 "Edit.editImage" = "Сменить фото";
 "Edit.loadImage" = "Загрузить изображение";
+"Sort.byName" = "По имени";
+"Sort.byRating" = "По рейтингу";
+"SortAlert.title" = "Сортировка";
+"SortAlert.close" = "Закрыть";
