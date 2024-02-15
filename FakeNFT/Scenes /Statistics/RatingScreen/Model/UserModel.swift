@@ -14,12 +14,24 @@ final class UserModel {
     ]
     // swiftlint:enable force_unwrapping
 
+    let defaults = UserDefaults.standard
 
     func getUsers() -> [User] {
-        mockUsersDB
+        if let sortType = defaults.string(forKey: "SortType") {
+            switch sortType {
+            case "byName":
+                return sortUsersByName()
+            case "byRating":
+                return sortUsersByRating()
+            default:
+                return mockUsersDB
+            }
+        }
+        return mockUsersDB
     }
 
     func sortUsersByName() -> [User] {
+        defaults.set("byName", forKey: "SortType")
         let sortedUsersList = mockUsersDB.sorted {
             $0.username < $1.username
         }
@@ -27,6 +39,7 @@ final class UserModel {
     }
 
     func sortUsersByRating() -> [User] {
+        defaults.set("byRating", forKey: "SortType")
         let sortedUsersList = mockUsersDB.sorted {
             $0.rating < $1.rating
         }
