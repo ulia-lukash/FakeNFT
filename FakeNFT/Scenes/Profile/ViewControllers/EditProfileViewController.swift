@@ -7,6 +7,9 @@
 
 import UIKit
 
+protocol EditProfileVCDelegate: AnyObject {
+}
+ 
 final class EditProfileViewController: UIViewController {
     private enum ConstansEditVC: String {
         static let editButtonSize = CGSize(width: 42, height: 42)
@@ -21,6 +24,8 @@ final class EditProfileViewController: UIViewController {
         case close
     }
     
+    weak var delegate: EditProfileVCDelegate?
+    
     private lazy var exitButton: UIButton = {
         let exitButton = UIButton(frame: CGRect(origin: .zero,
                                                 size: ConstansEditVC.editButtonSize))
@@ -28,7 +33,7 @@ final class EditProfileViewController: UIViewController {
         return exitButton
     }()
     
-    private lazy var userImageView: UIImageView = {
+    private lazy var userImageView: UserImageView = {
         let userImageView = UserImageView(image: nil)
         let userImageModel = UserImageModel(url: nil)
         userImageView.config(with: userImageModel)
@@ -122,6 +127,15 @@ final class EditProfileViewController: UIViewController {
         
         return linkTextField
     }()
+    
+    init(delegate: EditProfileVCDelegate) {
+        self.delegate = delegate
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -236,13 +250,24 @@ private extension EditProfileViewController {
     
     @objc
     func userImageTapped(_ sender: UITapGestureRecognizer) {
-        //TODO: - fix
-        print(#function)
+    }
+    
+    func displayProfile(model: ProfileUIModel) {
+        userImageView.config(with: UserImageModel(url: model.url))
+        nameLabelView.text = model.name
+        descriptionTextView.text = model.description
+        linkLabelView.text = model.link
     }
 }
 
 extension EditProfileViewController: NSLayoutManagerDelegate {
     func layoutManager(_ layoutManager: NSLayoutManager, lineSpacingAfterGlyphAt glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
         ConstansEditVC.textViewLineSpacing
+    }
+}
+
+extension EditProfileViewController: ProfileVCDelegate {
+    func setDataUI(model: ProfileUIModel) {
+        displayProfile(model: model)
     }
 }

@@ -24,12 +24,30 @@ final class ProfileServiceImpl: ProfileService {
     }
 
     func loadProfile(id: String, completion: @escaping ProfileCompletion) {
-        if let nft = storage.getProfile(with: id) {
-            completion(.success(nft))
+        if let profile = storage.getProfile(with: id) {
+            completion(.success(profile))
             return
         }
 
-        let request = NFTRequest(id: id)
+        let request = ProfileRequest(id: id)
+        networkClient.send(request: request, type: Profile.self) { [weak storage] result in
+            switch result {
+            case .success(let profile):
+                storage?.saveProfile(profile: profile)
+                completion(.success(profile))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func setProfile(id: String, completion: @escaping ProfileCompletion) {
+        if let profile = storage.getProfile(with: id) {
+            completion(.success(profile))
+            return
+        }
+
+        let request = ProfileRequest(id: id)
         networkClient.send(request: request, type: Profile.self) { [weak storage] result in
             switch result {
             case .success(let profile):

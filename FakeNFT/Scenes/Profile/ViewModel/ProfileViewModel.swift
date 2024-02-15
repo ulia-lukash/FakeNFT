@@ -13,7 +13,10 @@ protocol ProfileViewModelProtocol {
     func makeProfileUIModel(networkModel: Profile) -> ProfileUIModel
     func makeTableCellModel(networkModel: Profile) -> TableCellModel
     func setCellModel(cellModel: TableCellModel)
-    func loading()
+    func createTextCell(text: String, count: String) -> String
+    func setProfileUIModel(model: ProfileUIModel)
+    func getProfileUIModel() -> ProfileUIModel?
+    func setStateLoading()
 }
 
 enum ProfileState {
@@ -21,8 +24,12 @@ enum ProfileState {
 }
 
 final class ProfileViewModel {
-    @Observable<TableCellModel?> private(set) var cellModel: TableCellModel?
+    @Observable<TableCellModel>
+    private(set) var cellModel: TableCellModel = TableCellModel(countNFT: "",
+                                                                countFavoritesNFT: "")
     @Observable<ProfileState> private(set) var state: ProfileState = .initial
+    
+    private(set) var profileUIModel: ProfileUIModel?
     
     private let service: ProfileService
     
@@ -76,11 +83,23 @@ extension ProfileViewModel: ProfileViewModelProtocol {
                        countFavoritesNFT: "\(networkModel.likes.count)")
     }
     
+    func createTextCell(text: String, count: String) -> String {
+        text + "  " + "(\(count))"
+    }
+    
+    func setProfileUIModel(model: ProfileUIModel) {
+        self.profileUIModel = model
+    }
+    
     func setCellModel(cellModel: TableCellModel) {
         self.cellModel = cellModel
     }
     
-    func loading() {
+    func setStateLoading() {
         self.state = .loading
+    }
+    
+    func getProfileUIModel() -> ProfileUIModel? {
+        self.profileUIModel
     }
 }

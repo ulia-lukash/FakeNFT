@@ -8,6 +8,10 @@
 import UIKit
 import Kingfisher
 
+protocol ProfileVCDelegate: AnyObject {
+    func setDataUI(model: ProfileUIModel)
+}
+
 final class ProfileViewController: UIViewController {
     private enum ConstantsProfileVC: String {
         static let assertionMEssage = "can't move to initial state"
@@ -16,9 +20,12 @@ final class ProfileViewController: UIViewController {
         static let textViewLineSpacing = CGFloat(5)
         static let userImageSize = CGFloat(70)
         static let heigtTableCell = CGFloat(54)
+        static let paddingTextView = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         static let countCellTableView = 3
         case editProfile
     }
+    
+    weak var delegate: ProfileVCDelegate?
     
     private let viewModel: ProfileViewModelProtocol
     
@@ -73,8 +80,9 @@ final class ProfileViewController: UIViewController {
         descriptionTextView.textAlignment = .left
         descriptionTextView.layoutManager.delegate = self
         descriptionTextView.font = .caption2
+        descriptionTextView.setPadding(insets: ConstantsProfileVC.paddingTextView)
         // TODO: - delete
-        descriptionTextView.text = "sbcahvupw';';'aasqw[qpwruituiweurytXmnbvadfhaewrtyuetfg"
+        descriptionTextView.text = "sbcahvupw';';'aasqw[qpwruituiweThanks a bunch! always used addSubview positioning stuff inside of my cells, but contentView.addSubview is what worked. +1 for linked tutorial as well –"
         descriptionTextView.textColor = .blackUniversal
         
         return descriptionTextView
@@ -107,7 +115,7 @@ final class ProfileViewController: UIViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -115,10 +123,10 @@ final class ProfileViewController: UIViewController {
     // MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        bind()
+        //        bind()
         view.backgroundColor = .whiteUniversal
         setupUIItem()
-        viewModel.loading()
+        viewModel.setStateLoading()
     }
 }
 
@@ -133,7 +141,6 @@ private extension ProfileViewController {
                 assertionFailure(ConstantsProfileVC.assertionMEssage)
             case .loading:
                 self.showLoading()
-                //TODO: - insert id
                 viewModel.loadProfile(id: "1")
             case .failed(let error):
                 self.hideLoading()
@@ -142,6 +149,7 @@ private extension ProfileViewController {
             case .data(let profile):
                 self.hideLoading()
                 let profileUIModel = viewModel.makeProfileUIModel(networkModel: profile)
+                viewModel.setProfileUIModel(model: profileUIModel)
                 let cellModel = viewModel.makeTableCellModel(networkModel: profile)
                 viewModel.setCellModel(cellModel: cellModel)
                 self.displayProfile(model: profileUIModel)
@@ -156,9 +164,14 @@ private extension ProfileViewController {
     
     @objc
     func didEditTap() {
-        let editVC = EditProfileViewController()
+        let editVC = EditProfileViewController(delegate: self)
+        self.delegate = editVC
         editVC.modalPresentationStyle = .formSheet
-        present(editVC, animated: true)
+        present(editVC, animated: true) { [weak self] in
+            guard let self,
+                  let model = self.viewModel.getProfileUIModel() else { return }
+            delegate?.setDataUI(model: model)
+        }
     }
     
     func displayProfile(model: ProfileUIModel) {
@@ -166,10 +179,6 @@ private extension ProfileViewController {
         fullNameLabelView.text = model.name
         descriptionTextView.text = model.description
         linkLabelView.text = model.link
-    }
-    
-    func displayTableCell(model: ProfileCellModel) {
-        
     }
     
     //MARK: - setupUI function
@@ -256,27 +265,32 @@ extension ProfileViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "\(ProfileTableViewCell.self)") as? ProfileTableViewCell,
-              let viewModel = viewModel as? ProfileViewModel,
-              let cellModel = viewModel.cellModel
+              let viewModel = viewModel as? ProfileViewModel
         else { return UITableViewCell()}
+        let cellModel = viewModel.cellModel
         switch indexPath.row {
         case 0:
-            let text = ConstLocalizable.profileCellMyNFT + cellModel.countNFT
+            let text = viewModel.createTextCell(text: ConstLocalizable.profileCellMyNFT,
+                                                count: cellModel.countNFT)
             let profileCellModel = ProfileCellModel(text: text)
             cell.config(with: profileCellModel)
         case 1:
-            let text = ConstLocalizable.profileCellFavoritesNFT + cellModel.countFavoritesNFT
+            let text = viewModel.createTextCell(text: ConstLocalizable.profileCellFavoritesNFT,
+                                                count: cellModel.countFavoritesNFT)
             let profileCellModel = ProfileCellModel(text: text)
             cell.config(with: profileCellModel)
         case 2:
             let profileCellModel = ProfileCellModel(text: ConstLocalizable.profileCellDeveloper )
             cell.config(with: profileCellModel)
         default:
-            break
+            assertionFailure("")
         }
         return cell
     }
 }
- 
+
 // MARK: - ErrorView, LoadingView
 extension ProfileViewController: ErrorView, LoadingView {}
+
+
+extension ProfileViewController: EditProfileVCDelegate {}
