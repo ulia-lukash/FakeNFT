@@ -1,18 +1,7 @@
 import UIKit
 
 final class RatingViewController: UIViewController {
-    private let mockUsernames = ["Alex", "Bill", "Alla", "Mads", "Timothèe", "Lea", "Eric", "Somebody"]
-    private let mockNFTAmount = ["112", "98", "72", "71", "51", "23", "11", "0"]
-    private let mockAvatars = [
-        UIImage(named: "UserpickAlex"),
-        UIImage(named: "noAvatar"),
-        UIImage(named: "noAvatar"),
-        UIImage(named: "UserpickMads"),
-        UIImage(named: "UserpickTimon"),
-        UIImage(named: "UserpickLea"),
-        UIImage(named: "UserpickEric"),
-        UIImage(named: "noAvatar")
-    ]
+    private let viewModel: RatingViewModelProtocol
 
     private let tableView: UITableView = {
         let tableView = UITableView()
@@ -25,13 +14,32 @@ final class RatingViewController: UIViewController {
         return tableView
     }()
 
+    init(viewModel: RatingViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = .systemBackground
 
+        setupViewModel()
         setupNavBar()
         setupTableView()
+    }
+
+    private func setupViewModel() {
+        viewModel.onSortButtonTap = { [weak self] in
+            self?.presentSortAlertController()
+        }
+        viewModel.onUsersListChange = { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 
     private func setupNavBar() {
@@ -46,7 +54,7 @@ final class RatingViewController: UIViewController {
             image: UIImage(named: "sortButton"),
             style: .plain,
             target: self,
-            action: #selector(Self.presentSortAlertController))
+            action: #selector(Self.sortButtonDidTap))
         sortButton.tintColor = UIColor.segmentActive
 
         navigationItem.rightBarButtonItem = sortButton
@@ -68,19 +76,30 @@ final class RatingViewController: UIViewController {
         ])
     }
 
-    @objc private func presentSortAlertController() {
+    @objc private func sortButtonDidTap() {
+        viewModel.sortButtonDidTap()
+    }
+
+    private func presentSortAlertController() {
         let alert = UIAlertController(
             title: NSLocalizedString("SortAlert.title", comment: "sort alert title"),
             message: nil,
             preferredStyle: .actionSheet
         )
+
         alert.addAction(UIAlertAction(
             title: NSLocalizedString("Sort.byName", comment: "sort user by name"),
-            style: .default) { _ in })
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.sortByNameDidTap()
+        })
 
         alert.addAction(UIAlertAction(
             title: NSLocalizedString("Sort.byRating", comment: "sort user by rating"),
-            style: .default) { _ in })
+            style: .default
+        ) { [weak self] _ in
+            self?.viewModel.sortByRatingDidTap()
+        })
 
         alert.addAction(UIAlertAction(
             title: NSLocalizedString("SortAlert.close", comment: "close alert"),
@@ -92,23 +111,14 @@ final class RatingViewController: UIViewController {
 
 extension RatingViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        mockUsernames.count
+        viewModel.allUsers.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ratingCell", for: indexPath) as? RatingCell
 
-        let rating = String(indexPath.row + 1)
-        let username = mockUsernames[indexPath.row]
-        // swiftlint:disable:next force_unwrapping
-        let avatar = mockAvatars[indexPath.row] ?? UIImage(systemName: "person.crop.circle")!
-        let nftAmount = mockNFTAmount[indexPath.row]
-
-        cell?.setupCell(
-            rating: rating,
-            username: username,
-            avatar: avatar,
-            nftAmount: nftAmount)
+        let user = viewModel.allUsers[indexPath.row]
+        cell?.setupCell(userData: user)
 
         guard let cell = cell else {
             return RatingCell()

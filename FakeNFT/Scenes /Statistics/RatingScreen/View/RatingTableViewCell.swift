@@ -118,15 +118,12 @@ final class RatingCell: UITableViewCell {
     }
 
     func setupCell(
-        rating: String,
-        username: String,
-        avatar: UIImage,
-        nftAmount: String
+        userData: User
     ) {
-        ratingPositionLabel.text = rating
-        avatarImageView.image = avatar
-        usernameLabel.text = username
-        nftAmoutLabel.text = nftAmount
+        ratingPositionLabel.text = userData.rating
+        avatarImageView.image = userData.avatar
+        usernameLabel.text = userData.username
+        nftAmoutLabel.text = userData.nftAmount
     }
 }
 
