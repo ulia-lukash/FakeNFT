@@ -12,3 +12,7 @@
 "Edit.link" = "Ссылка";
 "Edit.editImage" = "Сменить фото";
 "Edit.loadImage" = "Загрузить изображение";
+"Sort.byName";
+"Sort.byRating";
+"SortAlert.title";
+"SortAlert.close";
