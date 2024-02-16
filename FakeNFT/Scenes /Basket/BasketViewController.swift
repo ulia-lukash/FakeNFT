@@ -9,9 +9,16 @@ import UIKit
 
 final class BasketViewController: UIViewController {
     
+    // MARK: - Public properties:
+    
     let servicesAssembly: ServicesAssembly
-    var counterNft: Int = 0
-    var quantityNft: Double = 0
+    
+    // MARK: - Private properties:
+    
+    private var nftMockArray: [NftModelBasket] = MocksBasket.nftArray
+    private var counterNft: Int = 0
+    private var quantityNft: Float = 0
+    
     // MARK: - UI
     
     private var bottomView: UIView = {
@@ -36,18 +43,16 @@ final class BasketViewController: UIViewController {
         return button
     }()
     
-    private lazy var quantityNftLabel: UILabel = {
+    private lazy var counterNftLabel: UILabel = {
         var label = UILabel()
-        label.text = "\(counterNft) NFT"
         label.font = .systemFont(ofSize: 15, weight: .regular)
         label.textColor = UIColor.segmentActive
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private lazy var amountNftLabel: UILabel = {
+    private lazy var quantityNftLabel: UILabel = {
         var label = UILabel()
-        label.text = "\(quantityNft) ETH"
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = UIColor.greenUniversal
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -112,6 +117,7 @@ final class BasketViewController: UIViewController {
         setupView()
         setupConstraints()
         deleteCardView.delegate = self
+        updateCounterLabel()
     }
    
     
@@ -120,8 +126,8 @@ final class BasketViewController: UIViewController {
     private func setupView() {
         view.addSubview(scrollView)
         view.addSubview(bottomView)
+        view.addSubview(counterNftLabel)
         view.addSubview(quantityNftLabel)
-        view.addSubview(amountNftLabel)
         view.addSubview(paymentButton)
         scrollView.addSubview(tableView)
        // view.addSubview(stubLabel)
@@ -145,22 +151,31 @@ final class BasketViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: scrollView.frameLayoutGuide.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomView.topAnchor),
             
-            quantityNftLabel.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 16),
-            quantityNftLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
-            quantityNftLabel.bottomAnchor.constraint(equalTo: amountNftLabel.topAnchor, constant: -2),
+            counterNftLabel.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 16),
+            counterNftLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 16),
+            counterNftLabel.bottomAnchor.constraint(equalTo: quantityNftLabel.topAnchor, constant: -2),
             
-            amountNftLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            amountNftLabel.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -16),
+            quantityNftLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            quantityNftLabel.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -16),
             
             paymentButton.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 16),
             paymentButton.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -16),
             paymentButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -16),
-            paymentButton.leadingAnchor.constraint(equalTo: amountNftLabel.trailingAnchor, constant: 24),
+            paymentButton.leadingAnchor.constraint(equalTo: quantityNftLabel.trailingAnchor, constant: 24),
             
 //            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 //            stubLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
         ])
+    }
+    
+    private func updateCounterLabel() {
+        for a in 0..<nftMockArray.count {
+            counterNft += 1
+            quantityNft += nftMockArray[a].price
+        }
+        counterNftLabel.text = "\(counterNft) NFT"
+        quantityNftLabel.text = "\(quantityNft) ETH"
     }
     
     private func navBarItem() {
@@ -214,13 +229,15 @@ extension BasketViewController: UITableViewDelegate {
 
 extension BasketViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        nftMockArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: BasketTableViewCell.identifier) as? BasketTableViewCell else {
             return UITableViewCell()
         }
+        let nft = nftMockArray[indexPath.row]
+        cell.configureCell(for: nft)
         cell.delegate = self
         return cell
     }
@@ -228,8 +245,9 @@ extension BasketViewController: UITableViewDataSource {
 
 
 extension BasketViewController: BasketTableViewCellDelegate {
-    func deleteButtonClicked() {
+    func deleteButtonClicked(image: UIImage) {
         setupBlurView()
+        deleteCardView.configureView(image: image)
     }
 }
 
@@ -239,3 +257,4 @@ extension BasketViewController: BasketDeleteCardViewDelegate {
         deleteCardView.removeFromSuperview()
     }
 }
+

@@ -8,7 +8,7 @@
 import UIKit
 
 protocol BasketTableViewCellDelegate: AnyObject {
-    func deleteButtonClicked()
+    func deleteButtonClicked(image: UIImage)
 }
 
 final class BasketTableViewCell: UITableViewCell {
@@ -16,14 +16,15 @@ final class BasketTableViewCell: UITableViewCell {
     // MARK: - Identifier
     
     static let identifier = "BasketTableViewCell"
+    
+    //MARK: - Delegate
+    
     weak var delegate: BasketTableViewCellDelegate?
     
     //MARK: - UI
     
     private lazy var imageNFT: UIImageView = {
-        let image = UIImage(named: "cardNFTStub")
         let imageView = UIImageView()
-        imageView.image = image
         imageView.layer.cornerRadius = 12
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -33,15 +34,12 @@ final class BasketTableViewCell: UITableViewCell {
         let label = UILabel()
         label.textColor = UIColor.segmentActive
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        label.text = "Test"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var ratingNFTImage: UIImageView = {
-        let image = UIImage(named: "raitingStub")
         let imageView = UIImageView()
-        imageView.image = image
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -58,7 +56,6 @@ final class BasketTableViewCell: UITableViewCell {
     private lazy var quantityNFTLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.segmentActive
-        label.text = "1,23 ETH"
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -85,6 +82,24 @@ final class BasketTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Public Methods:
+    
+    func configureCell(for nft: NftModelBasket) {
+        imageNFT.image = nft.image
+        nameNFTLabel.text = nft.name
+        quantityNFTLabel.text = "\(nft.price) ETH"
+        switch nft.rating {
+        case 0: ratingNFTImage.image = UIImage(named: "raiting0Stub")
+        case 1: ratingNFTImage.image = UIImage(named: "raiting1Stub")
+        case 2: ratingNFTImage.image = UIImage(named: "raiting2Stub")
+        case 3: ratingNFTImage.image = UIImage(named: "raiting3Stub")
+        case 4: ratingNFTImage.image = UIImage(named: "raiting4Stub")
+        case 5: ratingNFTImage.image = UIImage(named: "raiting5Stub")
+        default:
+            print("Error")
+        }
     }
     
     // MARK: - Private Methods:
@@ -115,12 +130,12 @@ final class BasketTableViewCell: UITableViewCell {
             
             nameNFTLabel.leadingAnchor.constraint(equalTo: imageNFT.trailingAnchor, constant: 20),
             nameNFTLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
-
+            
             ratingNFTImage.leadingAnchor.constraint(equalTo: imageNFT.trailingAnchor, constant: 20),
             ratingNFTImage.topAnchor.constraint(equalTo: nameNFTLabel.bottomAnchor, constant: 4),
             ratingNFTImage.heightAnchor.constraint(equalToConstant: 12),
             ratingNFTImage.widthAnchor.constraint(equalToConstant: 68),
-         
+            
             stubNFTLabel.leadingAnchor.constraint(equalTo: imageNFT.trailingAnchor, constant: 20),
             stubNFTLabel.topAnchor.constraint(equalTo: ratingNFTImage.bottomAnchor, constant: 12),
             
@@ -135,7 +150,8 @@ final class BasketTableViewCell: UITableViewCell {
     }
     
     @objc private func didTapDeleteButton() {
-        delegate?.deleteButtonClicked()
+        guard let image = imageNFT.image else { return }
+        delegate?.deleteButtonClicked(image: image)
     }
     
 }

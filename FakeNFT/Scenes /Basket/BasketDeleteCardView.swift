@@ -26,9 +26,7 @@ final class BasketDeleteCardView: UIView {
     }()
     
     private lazy var deleteCardImage: UIImageView = {
-        let image = UIImage(named: "cardNFTStub")
         let imageView = UIImageView()
-        imageView.image = image
         imageView.layer.cornerRadius = 12
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -89,6 +87,12 @@ final class BasketDeleteCardView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - Public Properties
+    
+    func configureView(image: UIImage) {
+        deleteCardImage.image = image
+    }
+    
     //MARK: - Private Properties
     
     private func setupView() {
@@ -114,7 +118,7 @@ final class BasketDeleteCardView: UIView {
             
             deleteCardLabel.topAnchor.constraint(equalTo: deleteCardImage.bottomAnchor, constant: 12),
             deleteCardLabel.centerXAnchor.constraint(equalTo: innerView.centerXAnchor),
-           
+            
             deleteCardButton.leadingAnchor.constraint(equalTo: innerView.leadingAnchor, constant: 56),
             deleteCardButton.topAnchor.constraint(equalTo: deleteCardLabel.bottomAnchor, constant: 20),
             deleteCardButton.heightAnchor.constraint(equalToConstant: 44),
@@ -130,9 +134,11 @@ final class BasketDeleteCardView: UIView {
     }
     
     @objc private func didTapDeleteCardButton() {
+        //TODO: - Basket2-3
     }
     
     @objc private func didTapbackCardButton() {
         delegate?.backButtonClicked()
     }
 }
+
