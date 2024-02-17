@@ -39,6 +39,7 @@ final class ProfileViewModel {
     private(set) var profileUIModel: ProfileUIModel?
     private(set) var profileID: String?
     private let service: ProfileService
+    private let mainQueue = DispatchQueue.main
     
     init(service: ProfileService) {
         self.service = service
@@ -69,11 +70,13 @@ extension ProfileViewModel: ProfileViewModelProtocol {
     func loadProfile(id: String) {
         service.loadProfile(id: id) { [weak self] result in
             guard let self else { return }
-            switch result {
-            case .success(let profile):
-                state = .data(profile)
-            case .failure(let error):
-                state = .failed(error)
+            mainQueue.async {
+                switch result {
+                case .success(let profile):
+                    self.state = .data(profile)
+                case .failure(let error):
+                    self.state = .failed(error)
+                }
             }
         }
     }
@@ -85,11 +88,13 @@ extension ProfileViewModel: ProfileViewModelProtocol {
             guard let profileID else { return }
             service.updateProfile(json: json, id: profileID) { [weak self] result in
                 guard let self else { return }
-                switch result {
-                case .success(let profile):
-                    state = .data(profile)
-                case .failure(let error):
-                    state = .failed(error)
+                mainQueue.async {
+                    switch result {
+                    case .success(let profile):
+                        self.state = .data(profile)
+                    case .failure(let error):
+                        self.state = .failed(error)
+                    }
                 }
             }
         }

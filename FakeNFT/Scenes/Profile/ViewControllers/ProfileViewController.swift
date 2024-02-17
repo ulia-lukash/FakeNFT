@@ -256,6 +256,7 @@ private extension ProfileViewController {
             verticalStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
                                                         constant: -16),
             descriptionTextView.bottomAnchor.constraint(equalTo: linkLabelView.topAnchor),
+            descriptionTextView.heightAnchor.constraint(equalToConstant: 72),
             descriptionTextView.leadingAnchor.constraint(equalTo: verticalStackView.leadingAnchor),
             linkLabelView.heightAnchor.constraint(equalToConstant: 38)
         ])

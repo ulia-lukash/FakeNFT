@@ -20,6 +20,7 @@ final class ProfileServiceImpl: ProfileService {
     
     private let networkClient: NetworkClient
     private let storage: ProfileStorageProtocol
+    private let profileQueue = DispatchQueue(label: "get-profile", qos: .userInitiated)
     
     init(networkClient: NetworkClient, storage: ProfileStorageProtocol) {
         self.storage = storage
@@ -33,7 +34,9 @@ final class ProfileServiceImpl: ProfileService {
         }
         
         let request = ProfileRequest(httpMethod: .get)
-        networkClient.send(request: request, type: Profile.self) { [weak storage] result in
+        networkClient.send(request: request,
+                           type: Profile.self,
+                           completionQueue: profileQueue) { [weak storage] result in
             guard let storage else { return }
             switch result {
             case .success(let profile):
@@ -49,7 +52,7 @@ final class ProfileServiceImpl: ProfileService {
         let request = ProfileRequest(httpMethod: .put)
         networkClient.sendProfilePUT(request: request,
                                      json: json,
-                                     completionQueue: .global(qos: .userInteractive)) { [weak self, storage] result in
+                                     completionQueue: profileQueue) { [weak self, storage] result in
             guard let self else { return }
             storage.removeProfile(with: id)
             switch result {
