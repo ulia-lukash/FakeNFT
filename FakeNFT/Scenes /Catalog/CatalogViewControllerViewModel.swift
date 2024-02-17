@@ -46,4 +46,8 @@ final class CatalogViewControllerViewModel {
         defaults.removeObject(forKey: "ShouldFilterByName")
         collections.sort(by: {$0.nfts.count > $1.nfts.count})
     }
+
+    func fetchUser(withId id: String) {
+        service.fetchUser(withId: id)
+    }
 }

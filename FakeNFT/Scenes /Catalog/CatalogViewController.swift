@@ -118,6 +118,7 @@ extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let collection = viewModel.collections[indexPath.section]
         let vc = CollectionViewController()
+        vc.viewModel.getCollection(withId: collection.id)
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true, completion: nil)

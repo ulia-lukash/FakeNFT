@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct NftCollection: Codable {
+struct NftCollection {
     let createdAt: Date?
     let name: String
     let cover: URL

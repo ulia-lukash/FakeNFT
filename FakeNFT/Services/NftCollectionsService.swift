@@ -13,9 +13,12 @@ final class NftCollectionsService {
 
     static let shared = NftCollectionsService()
     static let didChangeNotification = Notification.Name(rawValue: "NftCollectionsServiceDidChange")
+    static let didChangeUserNotification = Notification.Name(rawValue: "Did fetch user")
 
     // MARK: - Private Properties
     private (set) var collections: [NftCollection] = []
+    private (set) var collection: NftCollection?
+    private (set) var user: User?
     private var task: URLSessionTask?
     private let urlSession = URLSession.shared
     private let defaults = UserDefaults.standard
@@ -33,7 +36,58 @@ final class NftCollectionsService {
             switch result {
             case .success(let collections):
                 self.mapCollections(collections)
-                NotificationCenter.default.post(name: NftCollectionsService.didChangeNotification, object: self, userInfo: ["collections": self.collections] )
+                NotificationCenter.default.post(
+                    name: NftCollectionsService.didChangeNotification,
+                    object: self,
+                    userInfo: ["collections": self.collections] )
+            case .failure(let error):
+                print(error)
+            }
+            self.task = nil
+        }
+        self.task = task
+        task.resume()
+    }
+
+    func fetchCollection(withId id: String) {
+        assert(Thread.isMainThread)
+        if task != nil { return }
+
+        guard let request = makeRequest(path: RequestConstants.fetchCollection(withId: id)) else {
+            return assertionFailure("Failed to make a collection request")}
+        let task = urlSession.objectTask(for: request) {[weak self] (result: Result<NftCollectionResponse, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let collection):
+                self.mapCollection(collection)
+                NotificationCenter.default.post(
+                    name: NftCollectionsService.didChangeNotification,
+                    object: self,
+                    userInfo: ["collection": self.collection as Any] )
+            case .failure(let error):
+                print(error)
+            }
+            self.task = nil
+        }
+        self.task = task
+        task.resume()
+    }
+
+    func fetchUser(withId id: String) {
+        assert(Thread.isMainThread)
+//        if task != nil { return }
+
+        guard let request = makeRequest(path: RequestConstants.fetchUser(withId: id)) else {
+            return assertionFailure("Failed to make a collection request")}
+        let task = urlSession.objectTask(for: request) {[weak self] (result: Result<UserResponse, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let user):
+                self.mapUser(user)
+                NotificationCenter.default.post(
+                    name: NftCollectionsService.didChangeUserNotification,
+                    object: self,
+                    userInfo: ["user": self.user as Any] )
             case .failure(let error):
                 print(error)
             }
@@ -52,6 +106,30 @@ final class NftCollectionsService {
         } else {
             self.collections = cols.sorted(by: {$0.nfts.count > $1.nfts.count})
         }
+
+    }
+
+    private func mapCollection(_ collection: NftCollectionResponse) {
+        self.collection = NftCollection(
+            createdAt: collection.createdAt,
+            name: collection.name,
+            cover: collection.cover,
+            nfts: collection.nfts,
+            description: collection.description,
+            author: collection.author,
+            id: collection.id)
+
+    }
+
+    private func mapUser(_ user: UserResponse) {
+        self.user = User(
+            name: user.name,
+            avatar: user.avatar,
+            description: user.description,
+            website: user.website,
+            nfts: user.nfts,
+            rating: user.rating,
+            id: user.id)
 
     }
 

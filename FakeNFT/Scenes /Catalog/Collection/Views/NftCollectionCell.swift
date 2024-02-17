@@ -107,9 +107,12 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
     private func configure() {
         let images = [image1, image2, image3]
         mockNft = Nft(createdAt: "2023-04-20T02:22:27Z", name: "Archie", id: "49", images: images, rating: 3, description: "An animated gif of a bear fishing.", price: 7.74, author: "18")
+        if let nft = mockNft {
 
+            priceLabel.text = "\(nft.price) ETH"
+        }
         nameLabel.text = mockNft?.name
-        priceLabel.text = "\(mockNft?.price)"
+
         let urlString = image1
         let url = URL(string: urlString)!
 
