@@ -11,6 +11,7 @@ import WebKit
 
 final class AuthorViewController: UIViewController {
 
+    let viewModel = AuthorWebViewViewModel()
     private lazy var progressView = UIProgressView(progressViewStyle: .bar)
     private var webView: WKWebView!
 
@@ -49,7 +50,7 @@ final class AuthorViewController: UIViewController {
             forKeyPath: #keyPath(WKWebView.estimatedProgress),
             options: .new,
             context: nil)
-        let myURL = URL(string: "https://practicum.yandex.ru/ios-developer/")
+        let myURL = viewModel.webViewUrl
         let myRequest = URLRequest(url: myURL!)
         webView.load(myRequest)
         updateProgress()

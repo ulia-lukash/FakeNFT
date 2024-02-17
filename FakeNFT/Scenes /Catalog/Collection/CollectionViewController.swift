@@ -162,6 +162,10 @@ final class CollectionViewController: UIViewController {
 
     @objc private func didTapAuthorName() {
         let vc = AuthorViewController()
+        guard let author = viewModel.author, let url = viewModel.author?.website else { return }
+        vc.viewModel.setUrl(url)
+        print("AAAAAAAAAA")
+        print(url)
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true, completion: nil)
