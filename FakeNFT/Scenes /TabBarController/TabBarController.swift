@@ -3,6 +3,7 @@ import UIKit
 final class TabBarController: UITabBarController {
 
     var servicesAssembly: ServicesAssembly!
+    let basketViewModel = BasketViewModel(for: BasketModel())
 
     private let catalogTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.catalog", comment: ""),
@@ -30,9 +31,7 @@ final class TabBarController: UITabBarController {
     }
     
     func createBasketViewController() -> UINavigationController {
-        let basketController = BasketViewController(
-            servicesAssembly: servicesAssembly
-        )
+        let basketController = BasketViewController(viewModel: basketViewModel)
         basketController.tabBarItem = basketTabBarItem
         return UINavigationController(rootViewController: basketController)
     }

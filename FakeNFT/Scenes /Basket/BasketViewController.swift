@@ -11,17 +11,13 @@ final class BasketViewController: UIViewController {
     
     // MARK: - Public properties:
     
-    let servicesAssembly: ServicesAssembly
-    
     // MARK: - Private properties:
     
-    private var nftMockArray: [NftModelBasket] = MocksBasket.nftArray
-    private var counterNft: Int = 0
-    private var quantityNft: Float = 0
+    private let viewModel: BasketViewModelProtocol
     
     // MARK: - UI
     
-    private var bottomView: UIView = {
+    private lazy var bottomView: UIView = {
         var view = UIView()
         view.layer.cornerRadius = 12
         view.backgroundColor = UIColor.segmentInactive
@@ -95,18 +91,19 @@ final class BasketViewController: UIViewController {
         return view
     }()
     
-    private var deleteCardView = BasketDeleteCardView()
+    private lazy var deleteCardView = BasketDeleteCardView()
     
     // MARK: - Initializers
     
-    init(servicesAssembly: ServicesAssembly) {
-        self.servicesAssembly = servicesAssembly
+    init(viewModel: BasketViewModelProtocol) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     
     // MARK: - Life Cycle
     
@@ -118,8 +115,9 @@ final class BasketViewController: UIViewController {
         setupConstraints()
         deleteCardView.delegate = self
         updateCounterLabel()
+        setupViewModel()
     }
-   
+    
     
     // MARK: - Private Methods
     
@@ -130,7 +128,7 @@ final class BasketViewController: UIViewController {
         view.addSubview(quantityNftLabel)
         view.addSubview(paymentButton)
         scrollView.addSubview(tableView)
-       // view.addSubview(stubLabel)
+        // view.addSubview(stubLabel)
     }
     
     private func setupConstraints() {
@@ -163,19 +161,29 @@ final class BasketViewController: UIViewController {
             paymentButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -16),
             paymentButton.leadingAnchor.constraint(equalTo: quantityNftLabel.trailingAnchor, constant: 24),
             
-//            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//            stubLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            //            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            //            stubLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
         ])
     }
     
-    private func updateCounterLabel() {
-        for a in 0..<nftMockArray.count {
-            counterNft += 1
-            quantityNft += nftMockArray[a].price
+    private func setupViewModel() {
+        viewModel.onSortButtonClicked = {
+            //TODO: - Basket2-3
         }
-        counterNftLabel.text = "\(counterNft) NFT"
-        quantityNftLabel.text = "\(quantityNft) ETH"
+        
+        viewModel.onChange = { [weak self] in
+            self?.tableView.reloadData()
+        }
+    }
+    
+    private func updateCounterLabel() {
+        for a in 0..<viewModel.nft.count {
+            viewModel.counterNft += 1
+            viewModel.quantityNft += viewModel.nft[a].price
+        }
+        counterNftLabel.text = "\(viewModel.counterNft) NFT"
+        quantityNftLabel.text = "\(viewModel.quantityNft) ETH"
     }
     
     private func navBarItem() {
@@ -199,21 +207,22 @@ final class BasketViewController: UIViewController {
         tabBarController?.view.addSubview(blurEffectView)
         tabBarController?.view.addSubview(deleteCardView)
         deleteCardView.translatesAutoresizingMaskIntoConstraints = false
-       
+        
         NSLayoutConstraint.activate([
             deleteCardView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             deleteCardView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             deleteCardView.topAnchor.constraint(equalTo: view.topAnchor),
             deleteCardView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            ])
+        ])
     }
-     
+    
     @objc private func didTapSortButton() {
-        //TODO
+        viewModel.sortButtonClicked()
+        //TODO: - Basket2-3
     }
     
     @objc private func didTapPayButton() {
-        //TODO
+        //TODO: - Basket2-3
     }
 }
 
@@ -229,14 +238,14 @@ extension BasketViewController: UITableViewDelegate {
 
 extension BasketViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        nftMockArray.count
+        viewModel.nft.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: BasketTableViewCell.identifier) as? BasketTableViewCell else {
             return UITableViewCell()
         }
-        let nft = nftMockArray[indexPath.row]
+        let nft = viewModel.nft[indexPath.row]
         cell.configureCell(for: nft)
         cell.delegate = self
         return cell

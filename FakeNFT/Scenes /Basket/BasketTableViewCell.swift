@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol BasketTableViewCellDelegate: AnyObject {
     func deleteButtonClicked(image: UIImage)
@@ -25,7 +26,9 @@ final class BasketTableViewCell: UITableViewCell {
     
     private lazy var imageNFT: UIImageView = {
         let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 12
+        imageView.layer.masksToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -86,8 +89,13 @@ final class BasketTableViewCell: UITableViewCell {
     
     // MARK: - Public Methods:
     
-    func configureCell(for nft: NftModelBasket) {
-        imageNFT.image = nft.image
+    func configureCell(for nft: NftBasketModel) {
+        let url = nft.images.first
+        imageNFT.kf.indicatorType = .activity
+        imageNFT.kf.setImage(
+          with: url,
+          placeholder: UIImage(named: "Placeholder"),
+          options: [.transition(.fade(1))])
         nameNFTLabel.text = nft.name
         quantityNFTLabel.text = "\(nft.price) ETH"
         switch nft.rating {

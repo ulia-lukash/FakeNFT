@@ -27,6 +27,8 @@ final class BasketDeleteCardView: UIView {
     
     private lazy var deleteCardImage: UIImageView = {
         let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 12
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
