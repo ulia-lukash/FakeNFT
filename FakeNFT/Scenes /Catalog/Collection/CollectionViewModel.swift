@@ -28,16 +28,29 @@ final class CollectionViewModel {
             }
         }
 
-    private(set) var author: User? {
+    private(set) var nfts: [Nft]? {
             didSet {
+                guard let collection = collection, let nfts = nfts else { return }
+                self.nfts = nfts.filter { collection.nfts.contains($0.id)}
                 onChange?()
             }
         }
 
-    func getCollections() {
+    private(set) var author: User? {
+            didSet {
+                nftCollectionServiceObserver = NotificationCenter.default
+                    .addObserver(
+                        forName: NftCollectionsService.didChangeNftsNotification,
+                        object: nil,
+                        queue: .main) { [weak self] _ in
+                            guard let self = self else { return }
+                            self.nfts = service.nfts
+                        }
+                guard let collection = self.collection else { return }
+                service.fetchNfts()
+            }
+        }
 
-        service.fetchCollections()
-    }
     func getCollection(withId id: String) {
         nftCollectionServiceObserver = NotificationCenter.default
             .addObserver(

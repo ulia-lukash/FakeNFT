@@ -79,6 +79,7 @@ final class CollectionViewController: UIViewController {
 
         viewModel.onChange = { [weak self] in
             self?.configure()
+            self?.nftCollection.reloadData()
             ProgressHUD.dismiss()
         }
 
@@ -164,8 +165,6 @@ final class CollectionViewController: UIViewController {
         let vc = AuthorViewController()
         guard let author = viewModel.author, let url = viewModel.author?.website else { return }
         vc.viewModel.setUrl(url)
-        print("AAAAAAAAAA")
-        print(url)
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true, completion: nil)
@@ -181,7 +180,12 @@ extension CollectionViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
         let cell = collectionView.dequeueReusableCell(indexPath: indexPath) as NftCollectionCell
+        guard let nfts = viewModel.nfts else { return UICollectionViewCell() }
+
+        cell.configure(for: nfts[indexPath.row])
+
         return cell
     }
 }

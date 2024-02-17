@@ -14,11 +14,15 @@ final class NftCollectionsService {
     static let shared = NftCollectionsService()
     static let didChangeNotification = Notification.Name(rawValue: "NftCollectionsServiceDidChange")
     static let didChangeUserNotification = Notification.Name(rawValue: "Did fetch user")
+    static let didChangeNftNotification = Notification.Name(rawValue: "Did fetch nft")
+    static let didChangeNftsNotification = Notification.Name(rawValue: "Did fetch nfts")
 
     // MARK: - Private Properties
     private (set) var collections: [NftCollection] = []
     private (set) var collection: NftCollection?
     private (set) var user: User?
+    private (set) var nft: Nft?
+    private (set) var nfts: [Nft] = []
     private var task: URLSessionTask?
     private let urlSession = URLSession.shared
     private let defaults = UserDefaults.standard
@@ -49,8 +53,32 @@ final class NftCollectionsService {
         task.resume()
     }
 
-    func fetchCollection(withId id: String) {
+    func fetchNfts() {
+
         assert(Thread.isMainThread)
+        if task != nil { return }
+
+        guard let request = makeRequest(path: RequestConstants.nftsFetchEndpoint) else {
+            return assertionFailure("Failed to make nfts request")}
+        let task = urlSession.objectTask(for: request) {[weak self] (result: Result<[NftResponse], Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let nfts):
+                self.mapNfts(nfts)
+                NotificationCenter.default.post(
+                    name: NftCollectionsService.didChangeNftsNotification,
+                    object: self,
+                    userInfo: ["nfts": self.nfts] )
+            case .failure(let error):
+                print(error)
+            }
+            self.task = nil
+        }
+        self.task = task
+        task.resume()
+    }
+
+    func fetchCollection(withId id: String) {
         if task != nil { return }
 
         guard let request = makeRequest(path: RequestConstants.fetchCollection(withId: id)) else {
@@ -78,7 +106,7 @@ final class NftCollectionsService {
 //        if task != nil { return }
 
         guard let request = makeRequest(path: RequestConstants.fetchUser(withId: id)) else {
-            return assertionFailure("Failed to make a collection request")}
+            return assertionFailure("Failed to make a user request")}
         let task = urlSession.objectTask(for: request) {[weak self] (result: Result<UserResponse, Error>) in
             guard let self = self else { return }
             switch result {
@@ -97,6 +125,54 @@ final class NftCollectionsService {
         task.resume()
     }
 
+    func fetchNft(withId id: String) {
+        assert(Thread.isMainThread)
+//        if task != nil { return }
+
+        guard let request = makeRequest(path: RequestConstants.fetchNft(withId: id)) else {
+            return assertionFailure("Failed to make an nft request")}
+        let task = urlSession.objectTask(for: request) {[weak self] (result: Result<NftResponse, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let nft):
+                self.mapNft(nft)
+                NotificationCenter.default.post(
+                    name: NftCollectionsService.didChangeNftNotification,
+                    object: self,
+                    userInfo: ["nft": self.nft as Any] )
+            case .failure(let error):
+                print(error)
+            }
+            self.task = nil
+        }
+        self.task = task
+        task.resume()
+    }
+
+    private func mapNft(_ nft: NftResponse) {
+        self.nft = Nft(
+            createdAt: nft.createdAt,
+            name: nft.name,
+            id: nft.id,
+            images: nft.images,
+            rating: nft.rating,
+            description: nft.description,
+            price: nft.price,
+            author: nft.author)
+    }
+    private func mapNfts(_ nfts: [NftResponse]) {
+        self.nfts = nfts.map { nft in
+            return Nft(
+                createdAt: nft.createdAt,
+                name: nft.name,
+                id: nft.id,
+                images: nft.images,
+                rating: nft.rating,
+                description: nft.description,
+                price: nft.price,
+                author: nft.author)
+        }
+    }
     private func mapCollections(_ collections: [NftCollectionResponse]) {
         let cols = collections.map { item in
             return NftCollection(createdAt: item.createdAt, name: item.name, cover: item.cover, nfts: item.nfts, description: item.description, author: item.author, id: item.id)

@@ -8,13 +8,10 @@
 import Foundation
 import UIKit
 import Kingfisher
+import ProgressHUD
 
 final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
 
-    let image1 = "https://code.s3.yandex.net/Mobile/iOS/NFT/Peach/Archie/1.png"
-    let image2 = "https://code.s3.yandex.net/Mobile/iOS/NFT/Peach/Archie/2.png"
-    let image3 = "https://code.s3.yandex.net/Mobile/iOS/NFT/Peach/Archie/3.png"
-    private var mockNft: Nft?
     private var isLiked: Bool = false
     private var isInCart: Bool = false
     private lazy var imageView = UIImageView()
@@ -53,7 +50,6 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        configure()
         configCellLayout()
     }
     required init?(coder: NSCoder) {
@@ -62,6 +58,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
 
     private func configCellLayout() {
 
+        imageView.tintColor = .redUniversal
         [imageView, cartButton, ratingView, labelView, likeButton].forEach {
             contentView.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -104,35 +101,31 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
         ])
     }
 
-    private func configure() {
-        let images = [image1, image2, image3]
-        mockNft = Nft(createdAt: "2023-04-20T02:22:27Z", name: "Archie", id: "49", images: images, rating: 3, description: "An animated gif of a bear fishing.", price: 7.74, author: "18")
-        if let nft = mockNft {
+    func configure(for nft: Nft) {
+        priceLabel.text = "\(nft.price) ETH"
+        nameLabel.text = nft.name
+        ratingView.setRating(with: nft.rating)
 
-            priceLabel.text = "\(nft.price) ETH"
-        }
-        nameLabel.text = mockNft?.name
-
-        let urlString = image1
-        let url = URL(string: urlString)!
-
-        let processor = ResizingImageProcessor(referenceSize: CGSize(width: contentView.frame.width, height: contentView.frame.width), mode: .aspectFill)
-        |> CroppingImageProcessor(size: CGSize(width: contentView.frame.width, height: contentView.frame.width))
-        |> RoundCornerImageProcessor(cornerRadius: 12)
-        imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(
-            with: url,
-            options: [
-                .processor(processor)
-            ]) { result in
-                switch result {
-                case .success(let value):
-                    print("Task done for: \(value.source.url?.absoluteString ?? "")")
-                case .failure(let error):
-                    print("Job failed: \(error.localizedDescription)")
+        if let urlString = nft.images.randomElement() {
+            let url = urlString
+            let processor = ResizingImageProcessor(referenceSize: CGSize(width: contentView.frame.width, height: contentView.frame.width), mode: .aspectFill)
+            |> CroppingImageProcessor(size: CGSize(width: contentView.frame.width, height: contentView.frame.width))
+            |> RoundCornerImageProcessor(cornerRadius: 12)
+            imageView.kf.indicatorType = .activity
+            imageView.kf.setImage(
+                with: url,
+                options: [
+                    .processor(processor)
+                ]) { result in
+                    switch result {
+                    case .success(let value):
+                        print("Task done for: \(value.source.url?.absoluteString ?? "")")
+                    case .failure(let error):
+                        print("Job failed: \(error.localizedDescription)")
+                    }
                 }
-            }
-        ratingView.setRating(with: mockNft?.rating ?? 0)
+        }
+
         isLiked = false
         isInCart = false
         likeButton.tintColor = isLiked ? UIColor.redUniversal : UIColor.whiteUniversal
@@ -148,4 +141,5 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
         isInCart = !isInCart
         cartButton.setImage(UIImage(named: isInCart ? "tabler_trash-x" : "tabler_trash"), for: .normal)
     }
+
 }
