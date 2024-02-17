@@ -10,6 +10,7 @@ import Foundation
 protocol ProfileStorageProtocol: AnyObject {
     func saveProfile(profile: Profile)
     func getProfile(with id: String) -> Profile?
+    func removeProfile(with id: String)
 }
 
 final class ProfileStorageImpl {
@@ -28,6 +29,12 @@ extension ProfileStorageImpl: ProfileStorageProtocol {
     func getProfile(with id: String) -> Profile? {
         syncQueue.sync {
             storage[id]
+        }
+    }
+    
+    func removeProfile(with id: String) {
+        let _ = syncQueue.sync {
+            storage.removeValue(forKey: id)
         }
     }
 }

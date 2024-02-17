@@ -28,6 +28,7 @@
 		1A2FB1582B7A9BEE00A4C11C /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2FB1572B7A9BEE00A4C11C /* Profile.swift */; };
 		1A2FB15B2B7AA54900A4C11C /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2FB15A2B7AA54900A4C11C /* ProfileViewModel.swift */; };
 		1A2FB15F2B7AA6F400A4C11C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2FB15E2B7AA6F400A4C11C /* Observable.swift */; };
+		1A2FE7112B7F8B1400B1C6EC /* ConstansHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2FE7102B7F8B1400B1C6EC /* ConstansHeader.swift */; };
 		1A3634772B778CFE00C64F92 /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3634762B778CFE00C64F92 /* ProfileTableViewCell.swift */; };
 		1A64C88A2B7A5E2B00DE3242 /* UITextView+Padding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A64C8892B7A5E2B00DE3242 /* UITextView+Padding.swift */; };
 		1A7C3EB22B7C9F2F005D2A35 /* ProfileUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C3EB12B7C9F2F005D2A35 /* ProfileUIModel.swift */; };
@@ -40,6 +41,8 @@
 		1AE6EE8E2B77EDE3003E0E3C /* UserImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE6EE8D2B77EDE3003E0E3C /* UserImageModel.swift */; };
 		1AFAE8842B7B56B600C155C3 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFAE8832B7B56B600C155C3 /* ProfileService.swift */; };
 		1AFAE8862B7B570600C155C3 /* ServicesAssemlyProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFAE8852B7B570600C155C3 /* ServicesAssemlyProfile.swift */; };
+		1AFD1D392B7F626500C6E1A2 /* UITextField+Padding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFD1D382B7F626500C6E1A2 /* UITextField+Padding.swift */; };
+		1AFD1D3B2B7F672900C6E1A2 /* UIViewController+hideKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFD1D3A2B7F672900C6E1A2 /* UIViewController+hideKeyboard.swift */; };
 		3F478ECF29DB474E00F6D39E /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F478ECE29DB474E00F6D39E /* Colors.swift */; };
 		3F478ED129DB476500F6D39E /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F478ED029DB476500F6D39E /* Fonts.swift */; };
 		3F603CCD29DB4A53000C43D7 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 3F603CCC29DB4A53000C43D7 /* ProgressHUD */; };
@@ -103,6 +106,7 @@
 		1A2FB1572B7A9BEE00A4C11C /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		1A2FB15A2B7AA54900A4C11C /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		1A2FB15E2B7AA6F400A4C11C /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
+		1A2FE7102B7F8B1400B1C6EC /* ConstansHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstansHeader.swift; sourceTree = "<group>"; };
 		1A3634762B778CFE00C64F92 /* ProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableViewCell.swift; sourceTree = "<group>"; };
 		1A64C8892B7A5E2B00DE3242 /* UITextView+Padding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Padding.swift"; sourceTree = "<group>"; };
 		1A7C3EB12B7C9F2F005D2A35 /* ProfileUIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUIModel.swift; sourceTree = "<group>"; };
@@ -115,6 +119,8 @@
 		1AE6EE8D2B77EDE3003E0E3C /* UserImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserImageModel.swift; sourceTree = "<group>"; };
 		1AFAE8832B7B56B600C155C3 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		1AFAE8852B7B570600C155C3 /* ServicesAssemlyProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesAssemlyProfile.swift; sourceTree = "<group>"; };
+		1AFD1D382B7F626500C6E1A2 /* UITextField+Padding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Padding.swift"; sourceTree = "<group>"; };
+		1AFD1D3A2B7F672900C6E1A2 /* UIViewController+hideKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+hideKeyboard.swift"; sourceTree = "<group>"; };
 		3F478ECE29DB474E00F6D39E /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		3F478ED029DB476500F6D39E /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		3F68069329CBBAF100B4F915 /* FakeNFT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FakeNFT.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -383,6 +389,8 @@
 				3F6806CF29CBBDB100B4F915 /* NetworkClient */,
 				3F6806D629CBC50A00B4F915 /* CellsReusingUtils.swift */,
 				1A64C8892B7A5E2B00DE3242 /* UITextView+Padding.swift */,
+				1AFD1D3A2B7F672900C6E1A2 /* UIViewController+hideKeyboard.swift */,
+				1AFD1D382B7F626500C6E1A2 /* UITextField+Padding.swift */,
 				1A0F47342B77AF4A00ED5DCC /* ConstLocalizable.swift */,
 				3FC8C39229D246BA0081F015 /* DateFormatters+Presets.swift */,
 				1A2FB15E2B7AA6F400A4C11C /* Observable.swift */,
@@ -397,6 +405,7 @@
 				3F6806D029CBBE6B00B4F915 /* NetworkClient.swift */,
 				3F6806D229CBBE9600B4F915 /* NetworkRequest.swift */,
 				3F6806D429CBBEC700B4F915 /* NetworkTask.swift */,
+				1A2FE7102B7F8B1400B1C6EC /* ConstansHeader.swift */,
 			);
 			path = NetworkClient;
 			sourceTree = "<group>";
@@ -614,6 +623,7 @@
 			files = (
 				3FC8C38B29D242E90081F015 /* ProductDetailsTableViewCell.swift in Sources */,
 				1AFAE8842B7B56B600C155C3 /* ProfileService.swift in Sources */,
+				1AFD1D3B2B7F672900C6E1A2 /* UIViewController+hideKeyboard.swift in Sources */,
 				1A2FB1582B7A9BEE00A4C11C /* Profile.swift in Sources */,
 				3F478ECF29DB474E00F6D39E /* Colors.swift in Sources */,
 				0C79EE662A76DDFF00EE90EA /* NftDetailViewController.swift in Sources */,
@@ -624,7 +634,9 @@
 				0C79EE6A2A76DE1000EE90EA /* NftDetailAssembly.swift in Sources */,
 				3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */,
 				0CFCB7422A78013E0009A829 /* Nft.swift in Sources */,
+				1A2FE7112B7F8B1400B1C6EC /* ConstansHeader.swift in Sources */,
 				0CF2C2DD2A783CE600FDC837 /* ErrorView.swift in Sources */,
+				1AFD1D392B7F626500C6E1A2 /* UITextField+Padding.swift in Sources */,
 				1A3634772B778CFE00C64F92 /* ProfileTableViewCell.swift in Sources */,
 				0C79EE682A76DE0900EE90EA /* NftDetailPresenter.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,

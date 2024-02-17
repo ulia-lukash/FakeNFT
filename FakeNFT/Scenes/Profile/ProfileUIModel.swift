@@ -8,7 +8,7 @@
 import Foundation
 
 struct ProfileUIModel {
-    let url: URL?
+    let avatar: URL?
     let name: String
     let description: String
     let link: String

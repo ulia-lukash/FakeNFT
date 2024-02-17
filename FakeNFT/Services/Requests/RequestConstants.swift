@@ -1,3 +1,3 @@
 enum RequestConstants {
-    static let baseURL = "https://58877909-79ca-45a2-afe0-c1f0bb21bde4.mockapi.io"
+    static let baseURL = "https://64858e8ba795d24810b71189.mockapi.io/api/v1"
 }

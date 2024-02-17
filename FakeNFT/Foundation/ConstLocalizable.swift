@@ -22,4 +22,6 @@ public enum ConstLocalizable {
     static let editLink = NSLocalizedString("Edit.link", comment: "")
     static let editUserImage = NSLocalizedString("Edit.editImage", comment: "")
     static let editVCLoadImage = NSLocalizedString("Edit.loadImage", comment: "")
+    static let editImageLink = NSLocalizedString("Edit.imageLink", comment: "")
+    static let tabProfile = NSLocalizedString("Tab.profile", comment: "") 
 }

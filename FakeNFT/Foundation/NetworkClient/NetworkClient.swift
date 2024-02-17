@@ -12,22 +12,28 @@ protocol NetworkClient {
     func send(request: NetworkRequest,
               completionQueue: DispatchQueue,
               onResponse: @escaping (Result<Data, Error>) -> Void) -> NetworkTask?
-
+    
     @discardableResult
     func send<T: Decodable>(request: NetworkRequest,
                             type: T.Type,
                             completionQueue: DispatchQueue,
                             onResponse: @escaping (Result<T, Error>) -> Void) -> NetworkTask?
+    
+    @discardableResult
+    func sendProfilePUT(request: NetworkRequest,
+                 json: [String: String],
+                 completionQueue: DispatchQueue,
+                 onResponse: @escaping (Result<Void, Error>) -> Void) -> NetworkTask?
 }
 
 extension NetworkClient {
-
+    
     @discardableResult
     func send(request: NetworkRequest,
               onResponse: @escaping (Result<Data, Error>) -> Void) -> NetworkTask? {
         send(request: request, completionQueue: .main, onResponse: onResponse)
     }
-
+    
     @discardableResult
     func send<T: Decodable>(request: NetworkRequest,
                             type: T.Type,
@@ -40,7 +46,7 @@ struct DefaultNetworkClient: NetworkClient {
     private let session: URLSession
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
-
+    
     init(session: URLSession = URLSession.shared,
          decoder: JSONDecoder = JSONDecoder(),
          encoder: JSONEncoder = JSONEncoder()) {
@@ -48,7 +54,7 @@ struct DefaultNetworkClient: NetworkClient {
         self.decoder = decoder
         self.encoder = encoder
     }
-
+    
     @discardableResult
     func send(
         request: NetworkRequest,
@@ -71,7 +77,7 @@ struct DefaultNetworkClient: NetworkClient {
                 onResponse(.failure(NetworkClientError.httpStatusCode(response.statusCode)))
                 return
             }
-
+            
             if let data = data {
                 onResponse(.success(data))
                 return
@@ -83,12 +89,49 @@ struct DefaultNetworkClient: NetworkClient {
                 return
             }
         }
-
+        
         task.resume()
-
+        
         return DefaultNetworkTask(dataTask: task)
     }
-
+    
+    @discardableResult
+    func sendProfilePUT(
+        request: NetworkRequest,
+        json: [String: String],
+        completionQueue: DispatchQueue,
+        onResponse: @escaping (Result<Void, Error>) -> Void
+    ) -> NetworkTask? {
+        let onResponse: (Result<Void, Error>) -> Void = { result in
+            completionQueue.async {
+                onResponse(result)
+            }
+        }
+        guard let urlRequest = createPUT(request: request, json: json) else { return nil }
+        let task = session.dataTask(with: urlRequest) { _, response, error  in
+            guard let response = response as? HTTPURLResponse else {
+                onResponse(.failure(NetworkClientError.urlSessionError))
+                return
+            }
+            
+            guard 200 == response.statusCode else {
+                onResponse(.failure(NetworkClientError.httpStatusCode(response.statusCode)))
+                return
+            }
+            
+            onResponse(.success(Void()))
+            
+            if let error = error {
+                onResponse(.failure(NetworkClientError.urlRequestError(error)))
+                return
+            }
+        }
+        
+        task.resume()
+        
+        return DefaultNetworkTask(dataTask: task)
+    }
+    
     @discardableResult
     func send<T: Decodable>(
         request: NetworkRequest,
@@ -105,28 +148,53 @@ struct DefaultNetworkClient: NetworkClient {
             }
         }
     }
-
+    
     // MARK: - Private
-
+    
     private func create(request: NetworkRequest) -> URLRequest? {
         guard let endpoint = request.endpoint else {
             assertionFailure("Empty endpoint")
             return nil
         }
-
+        
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
-
-        if let dto = request.dto,
-           let dtoEncoded = try? encoder.encode(dto) {
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            urlRequest.httpBody = dtoEncoded
-        }
-
+        
+        urlRequest.setValue(ConstansHeader.contentTypeValueGET,
+                            forHTTPHeaderField: ConstansHeader.contenTypeHeader)
+        urlRequest.setValue(ConstansHeader.tockenValue,
+                            forHTTPHeaderField: ConstansHeader.tokenHeder)
+        
         return urlRequest
     }
-
-    private func parse<T: Decodable>(data: Data, type _: T.Type, onResponse: @escaping (Result<T, Error>) -> Void) {
+    
+    private func createPUT(request: NetworkRequest, json: [String: String]) -> URLRequest? {
+        guard let endpoint = request.endpoint else {
+            assertionFailure("Empty endpoint")
+            return nil
+        }
+        var urlRequest = URLRequest(url: endpoint)
+        urlRequest.httpMethod = request.httpMethod.rawValue
+        var jsonData = Data()
+        if JSONSerialization.isValidJSONObject(json) {
+            let jsonString = json.reduce("") { "\($0)\($1.0)=\($1.1)&" }.dropLast()
+            guard let jsonString = jsonString.data(using: .utf8, allowLossyConversion: false)
+            else { return nil }
+            jsonData = jsonString
+        }
+        urlRequest.httpBody = jsonData
+        urlRequest.setValue(ConstansHeader.acceptValue,
+                            forHTTPHeaderField: ConstansHeader.acceptHeader)
+        urlRequest.setValue(ConstansHeader.contentTypeValuePUT ,
+                            forHTTPHeaderField: ConstansHeader.contenTypeHeader)
+        urlRequest.setValue(ConstansHeader.tockenValue,
+                            forHTTPHeaderField: ConstansHeader.tokenHeder)
+        
+        return urlRequest
+    }
+    
+    private func parse<T: Decodable>(data: Data, type _: T.Type,
+                                     onResponse: @escaping (Result<T, Error>) -> Void) {
         do {
             let response = try decoder.decode(T.self, from: data)
             onResponse(.success(response))

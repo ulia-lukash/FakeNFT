@@ -9,16 +9,27 @@ final class TabBarController: UITabBarController {
         image: UIImage(systemName: "square.stack.3d.up.fill"),
         tag: 0
     )
+    
+    private let profileTabBarItem = UITabBarItem(
+        title: NSLocalizedString(ConstLocalizable.tabProfile, comment: ""),
+        image: UIImage(systemName: "profileActive"),
+        tag: 0
+    )
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         let catalogController = TestCatalogViewController(
             servicesAssembly: servicesAssembly
         )
+        let profileViewModel = ProfileViewModel(service: ProfileServiceImpl(networkClient: DefaultNetworkClient(),
+                                                                     storage: ProfileStorageImpl()))
+        let profileController = ProfileViewController(viewModel: profileViewModel)
+        
         catalogController.tabBarItem = catalogTabBarItem
+        profileController.tabBarItem = profileTabBarItem
 
-        viewControllers = [catalogController]
+        viewControllers = [catalogController, profileController]
 
         view.backgroundColor = .systemBackground
     }

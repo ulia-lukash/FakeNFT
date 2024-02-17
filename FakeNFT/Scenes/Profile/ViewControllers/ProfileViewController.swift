@@ -16,20 +16,20 @@ final class ProfileViewController: UIViewController {
     private enum ConstantsProfileVC: String {
         static let assertionMEssage = "can't move to initial state"
         static let horisontalStackSpacing = CGFloat(20)
-        static let verticalStackSpacing = CGFloat(10)
-        static let textViewLineSpacing = CGFloat(5)
+        static let verticalStackSpacing = CGFloat(20)
+        static let textViewLineSpacing = CGFloat(3)
         static let userImageSize = CGFloat(70)
+        static let paddingTextView = UIEdgeInsets(top: 0, left: -4, bottom: 0, right: 0)
         static let heigtTableCell = CGFloat(54)
-        static let paddingTextView = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         static let countCellTableView = 3
+        static let maxHeightTextView = CGFloat(100)
         case editProfile
     }
     
     weak var delegate: ProfileVCDelegate?
-    
-    private let viewModel: ProfileViewModelProtocol
-    
+    private var textHeightConstraint: NSLayoutConstraint?
     internal lazy var activityIndicator = UIActivityIndicatorView()
+    private let viewModel: ProfileViewModelProtocol
     
     private lazy var editProfileButton: UIButton = {
         let editProfileButton = UIButton()
@@ -58,8 +58,6 @@ final class ProfileViewController: UIViewController {
     
     private lazy var fullNameLabelView: UILabel = {
         let fullNameLabelView = UILabel()
-        // TODO: - delete
-        fullNameLabelView.text = "Mashuk Grigoriy"
         fullNameLabelView.textAlignment = .left
         fullNameLabelView.font = .headline3
         fullNameLabelView.textColor = .blackUniversal
@@ -77,12 +75,12 @@ final class ProfileViewController: UIViewController {
     
     private lazy var descriptionTextView: UITextView = {
         let descriptionTextView = UITextView()
+        descriptionTextView.delegate = self
+        descriptionTextView.isEditable = false
+        descriptionTextView.setPadding(insets: ConstantsProfileVC.paddingTextView)
         descriptionTextView.textAlignment = .left
         descriptionTextView.layoutManager.delegate = self
         descriptionTextView.font = .caption2
-        descriptionTextView.setPadding(insets: ConstantsProfileVC.paddingTextView)
-        // TODO: - delete
-        descriptionTextView.text = "sbcahvupw';';'aasqw[qpwruituiweThanks a bunch! always used addSubview positioning stuff inside of my cells, but contentView.addSubview is what worked. +1 for linked tutorial as well –"
         descriptionTextView.textColor = .blackUniversal
         
         return descriptionTextView
@@ -90,9 +88,7 @@ final class ProfileViewController: UIViewController {
     
     private lazy var linkLabelView: UILabel = {
         let linkLabelView = UILabel()
-        linkLabelView.font = .systemFont(ofSize: 13)
-        // TODO: - delete
-        linkLabelView.text = "www.yandex.ru"
+        linkLabelView.font = .caption1
         linkLabelView.textColor = .blueUniversal
         return linkLabelView
     }()
@@ -102,6 +98,7 @@ final class ProfileViewController: UIViewController {
         nftTableView.translatesAutoresizingMaskIntoConstraints = false
         nftTableView.backgroundColor = .clear
         nftTableView.separatorStyle = .none
+        nftTableView.isScrollEnabled = false
         nftTableView.register(ProfileTableViewCell.self,
                               forCellReuseIdentifier: "\(ProfileTableViewCell.self)")
         nftTableView.delegate = self
@@ -123,10 +120,13 @@ final class ProfileViewController: UIViewController {
     // MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        //        bind()
+        bind()
         view.backgroundColor = .whiteUniversal
         setupUIItem()
         viewModel.setStateLoading()
+        self.textHeightConstraint =
+        descriptionTextView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.maxHeightTextView)
+        self.textHeightConstraint?.isActive = true
     }
 }
 
@@ -141,18 +141,25 @@ private extension ProfileViewController {
                 assertionFailure(ConstantsProfileVC.assertionMEssage)
             case .loading:
                 self.showLoading()
+                view.isUserInteractionEnabled = false
                 viewModel.loadProfile(id: "1")
+            case .update:
+                self.showLoading()
+                view.isUserInteractionEnabled = false
             case .failed(let error):
                 self.hideLoading()
                 let errorModel = viewModel.makeErrorModel(error: error)
                 self.showError(errorModel)
             case .data(let profile):
-                self.hideLoading()
+                view.isUserInteractionEnabled = true
                 let profileUIModel = viewModel.makeProfileUIModel(networkModel: profile)
                 viewModel.setProfileUIModel(model: profileUIModel)
+                viewModel.setProfileID(id: profile.id)
                 let cellModel = viewModel.makeTableCellModel(networkModel: profile)
                 viewModel.setCellModel(cellModel: cellModel)
                 self.displayProfile(model: profileUIModel)
+                self.hideLoading()
+                adjustTextViewHeight()
             }
         }
         
@@ -175,10 +182,23 @@ private extension ProfileViewController {
     }
     
     func displayProfile(model: ProfileUIModel) {
-        userImageView.config(with: UserImageModel(url: model.url))
-        fullNameLabelView.text = model.name
-        descriptionTextView.text = model.description
-        linkLabelView.text = model.link
+        userImageView.config(with: UserImageModel(url: model.avatar))
+        fullNameLabelView.text = viewModel.stringClear(str: model.name)
+        descriptionTextView.text = viewModel.stringClear(str: model.description)
+        linkLabelView.text = viewModel.stringClear(str: model.link)
+    }
+    
+    func adjustTextViewHeight() {
+        let fixedWidth = descriptionTextView.frame.size.width
+        let newSize = descriptionTextView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
+        if newSize.height > 100 {
+            descriptionTextView.isScrollEnabled = true
+            textHeightConstraint?.constant = 100
+        } else {
+            descriptionTextView.isScrollEnabled = false
+            textHeightConstraint?.constant = newSize.height
+        }
+        self.view.layoutIfNeeded()
     }
     
     //MARK: - setupUI function
@@ -186,7 +206,14 @@ private extension ProfileViewController {
         setupEditProfileImageView()
         setupHorisontalStack()
         setupVerticalStackView()
+        setupActivitiIndicator()
         setupTableView()
+    }
+    
+    func setupActivitiIndicator() {
+        activityIndicator.color = .blackUniversal
+        view.addSubview(activityIndicator)
+        activityIndicator.constraintCenters(to: view)
     }
     
     func setupEditProfileImageView() {
@@ -222,12 +249,17 @@ private extension ProfileViewController {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         NSLayoutConstraint.activate([
-            verticalStackView.topAnchor.constraint(equalTo: editProfileButton.bottomAnchor, constant: 20),
-            verticalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 17),
-            verticalStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -17),
+            verticalStackView.topAnchor.constraint(equalTo: editProfileButton.bottomAnchor,
+                                                   constant: 20),
+            verticalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                       constant: 16),
+            verticalStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                                        constant: -16),
             descriptionTextView.bottomAnchor.constraint(equalTo: linkLabelView.topAnchor),
-            descriptionTextView.heightAnchor.constraint(equalToConstant: 72)
+            descriptionTextView.leadingAnchor.constraint(equalTo: verticalStackView.leadingAnchor),
+            linkLabelView.heightAnchor.constraint(equalToConstant: 38)
         ])
+        verticalStackView.setCustomSpacing(20, after: horisontalStackView)
     }
     
     func setupTableView() {
@@ -244,14 +276,15 @@ private extension ProfileViewController {
 
 //MARK: - NSLayoutManagerDelegate
 extension ProfileViewController: NSLayoutManagerDelegate {
-    func layoutManager(_ layoutManager: NSLayoutManager, lineSpacingAfterGlyphAt glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
+    func layoutManager(_ layoutManager: NSLayoutManager,
+                       lineSpacingAfterGlyphAt glyphIndex: Int,
+                       withProposedLineFragmentRect rect: CGRect) -> CGFloat {
         ConstantsProfileVC.textViewLineSpacing
     }
 }
 
 //MARK: - UITableViewDelegate
-extension ProfileViewController: UITableViewDelegate {
-}
+extension ProfileViewController: UITableViewDelegate {}
 
 //MARK: - UITableViewDataSource
 extension ProfileViewController: UITableViewDataSource {
@@ -292,5 +325,16 @@ extension ProfileViewController: UITableViewDataSource {
 // MARK: - ErrorView, LoadingView
 extension ProfileViewController: ErrorView, LoadingView {}
 
+// MARK: - EditProfileVCDelegate
+extension ProfileViewController: EditProfileVCDelegate {
+    func update(profile: ProfileUIModel) {
+        viewModel.updateProfile(newModel: profile)
+    }
+}
 
-extension ProfileViewController: EditProfileVCDelegate {}
+// MARK: - UITextViewDelegate
+extension ProfileViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        self.adjustTextViewHeight()
+    }
+}

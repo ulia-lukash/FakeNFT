@@ -12,4 +12,6 @@
 "Edit.link" = "Ссылка";
 "Edit.editImage" = "Сменить фото";
 "Edit.loadImage" = "Загрузить изображение";
+"Edit.imageLink" = "Ссылка на изображение";
+"Tab.profile" = "Профиле";
 
