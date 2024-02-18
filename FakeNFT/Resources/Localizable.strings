@@ -4,3 +4,15 @@
 "Error.unknown" = "Произошла неизвестная ошибка";
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
+"ProfileCell.myNFT" = "Мои NFT";
+"ProfileCell.favoritesNFT" = "Избранные NFT";
+"ProfileCell.developer" = "О разработчике";
+"Edit.name" = "Имя";
+"Edit.description" = "Описание";
+"Edit.link" = "Ссылка";
+"Edit.editImage" = "Сменить фото";
+"Edit.loadImage" = "Загрузить изображение";
+"Sort.byName" = "По имени";
+"Sort.byRating" = "По рейтингу";
+"SortAlert.title" = "Сортировка";
+"SortAlert.close" = "Закрыть";
