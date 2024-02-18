@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct NftBasketModel: Decodable {
+struct NftBasketModel: Decodable, Equatable {
     let name: String
     let images: [URL]
     let rating: Int

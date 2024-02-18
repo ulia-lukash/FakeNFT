@@ -7,15 +7,17 @@
 
 import UIKit
 
-final class BasketViewController: UIViewController {
+final class BasketViewController: UIViewController, LoadingView {
     
     // MARK: - Public properties:
     
     // MARK: - Private properties:
     
     private let viewModel: BasketViewModelProtocol
+    private var sortedAlertPresenter: SortAlertPresenterProtocol?
     
     // MARK: - UI
+    internal lazy var activityIndicator = UIActivityIndicatorView()
     
     private lazy var bottomView: UIView = {
         var view = UIView()
@@ -93,6 +95,13 @@ final class BasketViewController: UIViewController {
     
     private lazy var deleteCardView = BasketDeleteCardView()
     
+    private lazy var rightButton = UIBarButtonItem(
+        image: UIImage(named: "Sort"),
+        style: .plain,
+        target: self,
+        action: #selector(didTapSortButton)
+    )
+    
     // MARK: - Initializers
     
     init(viewModel: BasketViewModelProtocol) {
@@ -103,7 +112,6 @@ final class BasketViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     
     // MARK: - Life Cycle
     
@@ -116,8 +124,8 @@ final class BasketViewController: UIViewController {
         deleteCardView.delegate = self
         updateCounterLabel()
         setupViewModel()
+        sortedAlertPresenter = SortAlertPresenter(delegate: self)
     }
-    
     
     // MARK: - Private Methods
     
@@ -128,12 +136,17 @@ final class BasketViewController: UIViewController {
         view.addSubview(quantityNftLabel)
         view.addSubview(paymentButton)
         scrollView.addSubview(tableView)
-        // view.addSubview(stubLabel)
+        setupStubLabel()
+        view.addSubview(stubLabel)
+        view.addSubview(activityIndicator)
     }
     
     private func setupConstraints() {
         
+        activityIndicator.constraintCenters(to: tableView)
+        
         NSLayoutConstraint.activate([
+            
             bottomView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -161,18 +174,20 @@ final class BasketViewController: UIViewController {
             paymentButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -16),
             paymentButton.leadingAnchor.constraint(equalTo: quantityNftLabel.trailingAnchor, constant: 24),
             
-            //            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            //            stubLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stubLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
     }
     
     private func setupViewModel() {
-        viewModel.onSortButtonClicked = {
-            //TODO: - Basket2-3
+        viewModel.onSortButtonClicked = { [weak self] in
+            guard let self else { return }
+            self.setupFilters()
         }
         
         viewModel.onChange = { [weak self] in
-            self?.tableView.reloadData()
+            guard let self else { return }
+            self.tableView.reloadData()
         }
     }
     
@@ -185,19 +200,12 @@ final class BasketViewController: UIViewController {
         quantityNftLabel.text = "\(viewModel.quantityNft) ETH"
     }
     
+    
     private func navBarItem() {
         guard let navigationBar = navigationController?.navigationBar else { return }
         navigationBar.topItem?.largeTitleDisplayMode = .always
-        
-        let rightButton = UIBarButtonItem(
-            image: UIImage(named: "Sort"),
-            style: .plain,
-            target: self,
-            action: #selector(didTapSortButton)
-        )
         rightButton.tintColor = UIColor.segmentActive
         navigationItem.rightBarButtonItem = rightButton
-        
     }
     
     private func setupBlurView() {
@@ -215,13 +223,62 @@ final class BasketViewController: UIViewController {
         ])
     }
     
+    private func setupFilters() {
+        sortedAlertPresenter?.showAlert(
+            model: SortAlertModel(
+                title: "Сортировка",
+                message: nil,
+                actionSheetTextFirst: "По цене",
+                actionSheetTextSecond: "По рейтингу",
+                actionSheetTextThird: "По названию",
+                actionSheetTextCancel: "Закрыть",
+                completionFirst: { [weak self] in
+                    guard let self else { return }
+                    self.viewModel.sorting(with: .price)
+                },
+                completionSecond: { [weak self] in
+                    guard let self else { return }
+                    self.viewModel.sorting(with: .rating)
+                },
+                completionThird: { [weak self] in
+                    guard let self else { return }
+                    self.viewModel.sorting(with: .name)
+                }
+            ))
+    }
+    
+    private func setupStubLabel() {
+        if viewModel.nft == [] {
+            bottomView.isHidden = true
+            scrollView.isHidden = true
+            tableView.isHidden = true
+            counterNftLabel.isHidden = true
+            quantityNftLabel.isHidden = true
+            paymentButton.isHidden = true
+            navigationItem.rightBarButtonItem = nil
+            stubLabel.isHidden = false
+        } else {
+            bottomView.isHidden = false
+            scrollView.isHidden = false
+            tableView.isHidden = false
+            counterNftLabel.isHidden = false
+            quantityNftLabel.isHidden = false
+            paymentButton.isHidden = false
+            navigationItem.rightBarButtonItem = nil
+            stubLabel.isHidden = true
+            rightButton.tintColor = UIColor.segmentActive
+            navigationItem.rightBarButtonItem = rightButton
+        }
+    }
+    
     @objc private func didTapSortButton() {
         viewModel.sortButtonClicked()
-        //TODO: - Basket2-3
     }
     
     @objc private func didTapPayButton() {
         //TODO: - Basket2-3
+//        self.showLoading()
+//        self.hideLoading()
     }
 }
 

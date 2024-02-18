@@ -56,6 +56,8 @@
 		E22ACBA82B7F477200B037BF /* MocksCurrency.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22ACBA72B7F477200B037BF /* MocksCurrency.swift */; };
 		E22ACBAA2B7F6DF300B037BF /* BasketViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22ACBA92B7F6DF300B037BF /* BasketViewModel.swift */; };
 		E249F6972B7A2396006A8DE8 /* BasketDeleteCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E249F6962B7A2396006A8DE8 /* BasketDeleteCardView.swift */; };
+		E2A68B462B8202350054FFE9 /* SortAlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A68B452B8202350054FFE9 /* SortAlertPresenter.swift */; };
+		E2A68B482B8202B20054FFE9 /* SortAlertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A68B472B8202B20054FFE9 /* SortAlertModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +131,8 @@
 		E22ACBA72B7F477200B037BF /* MocksCurrency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MocksCurrency.swift; sourceTree = "<group>"; };
 		E22ACBA92B7F6DF300B037BF /* BasketViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasketViewModel.swift; sourceTree = "<group>"; };
 		E249F6962B7A2396006A8DE8 /* BasketDeleteCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasketDeleteCardView.swift; sourceTree = "<group>"; };
+		E2A68B452B8202350054FFE9 /* SortAlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortAlertPresenter.swift; sourceTree = "<group>"; };
+		E2A68B472B8202B20054FFE9 /* SortAlertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortAlertModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -391,6 +395,8 @@
 			isa = PBXGroup;
 			children = (
 				E206F2AF2B76B0B2009D7716 /* BasketViewController.swift */,
+				E2A68B452B8202350054FFE9 /* SortAlertPresenter.swift */,
+				E2A68B472B8202B20054FFE9 /* SortAlertModel.swift */,
 				E22ACBA92B7F6DF300B037BF /* BasketViewModel.swift */,
 				E206F2B02B76B0B2009D7716 /* BasketTableViewCell.swift */,
 				E249F6962B7A2396006A8DE8 /* BasketDeleteCardView.swift */,
@@ -580,6 +586,7 @@
 				3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */,
 				0CFCB7422A78013E0009A829 /* Nft.swift in Sources */,
 				E249F6972B7A2396006A8DE8 /* BasketDeleteCardView.swift in Sources */,
+				E2A68B482B8202B20054FFE9 /* SortAlertModel.swift in Sources */,
 				0CF2C2DD2A783CE600FDC837 /* ErrorView.swift in Sources */,
 				0C79EE682A76DE0900EE90EA /* NftDetailPresenter.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,
@@ -599,6 +606,7 @@
 				0CFCB74B2A780EA80009A829 /* UIView+Constraints.swift in Sources */,
 				3F6806D729CBC50A00B4F915 /* CellsReusingUtils.swift in Sources */,
 				E206F2B12B76B0F5009D7716 /* BasketViewController.swift in Sources */,
+				E2A68B462B8202350054FFE9 /* SortAlertPresenter.swift in Sources */,
 				E22ACBA02B7F422000B037BF /* CurrenciesModel.swift in Sources */,
 				0C79EE612A76DCD600EE90EA /* NftByIdRequest.swift in Sources */,
 				1A0F47332B779F8F00ED5DCC /* ConstLocalizable.swift in Sources */,
