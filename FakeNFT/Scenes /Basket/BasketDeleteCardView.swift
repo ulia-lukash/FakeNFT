@@ -75,14 +75,15 @@ final class BasketDeleteCardView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        setupView()
-        setupConstraints()
+       
     }
     
     // MARK: - Initializers
     
-    override init(frame: CGRect){
+    override init(frame: CGRect) {
         super.init(frame: frame)
+        setupView()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {

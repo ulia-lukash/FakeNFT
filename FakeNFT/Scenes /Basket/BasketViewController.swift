@@ -163,7 +163,6 @@ final class BasketViewController: UIViewController {
             
             //            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             //            stubLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
         ])
     }
     
@@ -252,6 +251,7 @@ extension BasketViewController: UITableViewDataSource {
     }
 }
 
+//MARK: - BasketTableViewCellDelegate
 
 extension BasketViewController: BasketTableViewCellDelegate {
     func deleteButtonClicked(image: UIImage) {
@@ -259,6 +259,8 @@ extension BasketViewController: BasketTableViewCellDelegate {
         deleteCardView.configureView(image: image)
     }
 }
+
+//MARK: - BasketDeleteCardViewDelegate
 
 extension BasketViewController: BasketDeleteCardViewDelegate {
     func backButtonClicked() {

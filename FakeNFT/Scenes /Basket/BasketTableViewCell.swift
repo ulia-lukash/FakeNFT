@@ -5,8 +5,8 @@
 //  Created by Ivan Cherkashin on 10.02.2024.
 //
 
-import UIKit
 import Kingfisher
+import UIKit
 
 protocol BasketTableViewCellDelegate: AnyObject {
     func deleteButtonClicked(image: UIImage)
@@ -161,5 +161,4 @@ final class BasketTableViewCell: UITableViewCell {
         guard let image = imageNFT.image else { return }
         delegate?.deleteButtonClicked(image: image)
     }
-    
 }
