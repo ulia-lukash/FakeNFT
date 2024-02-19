@@ -43,6 +43,9 @@ extension UIColor {
     static let blackUniversal = UIColor(hexString: "#1A1B22")
     static let whiteUniversal = UIColor(hexString: "#FFFFFF")
     static let yellowUniversal = UIColor(hexString: "#FEEF0D")
+    static let lightGreyUniversal = UIColor(hexString: "#F7F7F8")
+    static let grayUniversalWithAlpha = UIColor(hexString: "#F5F5F5").withAlphaComponent(0.7)
+    static let darkGrayUniversalWithAlpha = UIColor(hexString: "#3C3C43").withAlphaComponent(0.6)
     
     //Light || Dark Mode
     static let segmentActive = UIColor { traits in

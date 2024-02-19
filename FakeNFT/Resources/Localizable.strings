@@ -14,4 +14,12 @@
 "Edit.loadImage" = "Загрузить изображение";
 "Edit.imageLink" = "Ссылка на изображение";
 "Tab.profile" = "Профиле";
+"MyNFT.profile" = "Мои NFT";
+"MyNFTCell.from" = "от";
+"MyNFTCell.price" = "Цена";
+"MyNFTVC.sortName" = "Сортировка";
+"MyNFTVC.byPrice" = "По цене";
+"MyNFTVC.byRating" = "По рейтингу";
+"MyNFTVC.byName" = "По названию";
+"MyNFTVC.close" = "Закрыть";
 

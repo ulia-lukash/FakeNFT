@@ -23,5 +23,12 @@ public enum ConstLocalizable {
     static let editUserImage = NSLocalizedString("Edit.editImage", comment: "")
     static let editVCLoadImage = NSLocalizedString("Edit.loadImage", comment: "")
     static let editImageLink = NSLocalizedString("Edit.imageLink", comment: "")
-    static let tabProfile = NSLocalizedString("Tab.profile", comment: "") 
+    static let tabProfile = NSLocalizedString("Tab.profile", comment: "")
+    static let myNFTCellFrom = NSLocalizedString("MyNFTCell.from", comment: "")
+    static let myNFTCellPrice = NSLocalizedString("MyNFTCell.price", comment: "")
+    static let myNFTVCSortName = NSLocalizedString("MyNFTVC.sortName", comment: "")
+    static let myNFTVCByPrice = NSLocalizedString("MyNFTVC.byPrice", comment: "")
+    static let myNFTVCByRating = NSLocalizedString("MyNFTVC.byRating", comment: "")
+    static let myNFTVCByName = NSLocalizedString("MyNFTVC.byName", comment: "")
+    static let myNFTVCClose = NSLocalizedString( "MyNFTVC.close", comment: "")
 }

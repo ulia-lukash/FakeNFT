@@ -291,7 +291,10 @@ extension ProfileViewController: NSLayoutManagerDelegate {
 
 //MARK: - UITableViewDelegate
 extension ProfileViewController: UITableViewDelegate {
-    //TODO: - Next
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let myNFTController = MyNFTViewController()
+        _ = UINavigationController(rootViewController: myNFTController)
+    }
 }
 
 //MARK: - UITableViewDataSource
