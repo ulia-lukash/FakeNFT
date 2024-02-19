@@ -1,19 +1,21 @@
 Машук Григорий Владимирович :sunglasses:
-<br /> Когорта: 10
+<br /> Когорта: 10   
 <br /> Группа: 3
 <br /> Эпик: Профиль
+<br /> Верстка: кодом
+<br /> Архитектура: MVVM
 <br /> [Ссылка на доску] (https://github.com/users/chrnivan/projects/1: )
 
-# Profile Flow Decomposition
+# Profile Flow Decomposition   
 
 ##** Module 1:
 
-#### Верстка экрана профиля
+#### Верстка экрана профиля 
 - Add icons in asset(est: 10 min; fact: 10 min)
 - Image Edit(est: 30 min; fact: 40 min).
 - Image User(est: 30 min; fact:45 min).
 - Label FullName(est: 20 min; fact: 30 min).
-- Description(est: 30 min; fact: 70 min).
+- Description(est: 30 min; fact: 70 min).   
 - Label Link(est: 20 min; fact: 40 min).
 - Table (est: 40 min; fact: 60 min).
 - Cells (est: 40 min; fact: 45 min).
@@ -22,7 +24,7 @@
 - Image Exit(est: 20 min; fact: 20 min).
 - Image User(est: 30 min; fact: 45 min).
 - Label Name(est: 20 min; fact: 45 min).
-- TextField FullName(est: 30 min; fact: 50 min).
+- TextField FullName(est: 30 min; fact: 50 min).  
 - Label Description(est: 20 min; fact: 60 min).
 - TextView Description(est: 30 min; fact: 70 min).
 - Label Site(est: 20 min; fact: 45 min).
@@ -40,7 +42,7 @@
 #### Верстка экран "Мои NFT"
 
 - NavBar (est: 30 min; fact: x min).
-- Table (est: 30 min; fact: x min).
+- Table (est: 30 min; fact: x min).  
 - Ячейка (est: 1 h; fact: x min).
 - Label StubView (est: 30 min; fact: x min).
 - Alert (est: 40 min; fact: x min).
