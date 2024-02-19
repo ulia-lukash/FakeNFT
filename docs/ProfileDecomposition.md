@@ -2,6 +2,8 @@
 <br /> Когорта: 10   
 <br /> Группа: 3
 <br /> Эпик: Профиль
+<br /> Верстка кодом
+<br /> Архитектура MVVM
 <br /> [Ссылка на доску] (https://github.com/users/chrnivan/projects/1: )
 
 # Profile Flow Decomposition   
