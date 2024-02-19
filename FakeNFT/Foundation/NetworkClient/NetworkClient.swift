@@ -161,7 +161,7 @@ struct DefaultNetworkClient: NetworkClient {
         urlRequest.httpMethod = request.httpMethod.rawValue
         
         urlRequest.setValue(ConstansHeader.contentTypeValueGET,
-                            forHTTPHeaderField: ConstansHeader.contenTypeHeader)
+                            forHTTPHeaderField: ConstansHeader.acceptHeader)
         urlRequest.setValue(ConstansHeader.tockenValue,
                             forHTTPHeaderField: ConstansHeader.tokenHeder)
         
@@ -183,7 +183,7 @@ struct DefaultNetworkClient: NetworkClient {
             jsonData = jsonString
         }
         urlRequest.httpBody = jsonData
-        urlRequest.setValue(ConstansHeader.acceptValue,
+        urlRequest.setValue(ConstansHeader.contentTypeValueGET,
                             forHTTPHeaderField: ConstansHeader.acceptHeader)
         urlRequest.setValue(ConstansHeader.contentTypeValuePUT ,
                             forHTTPHeaderField: ConstansHeader.contenTypeHeader)
