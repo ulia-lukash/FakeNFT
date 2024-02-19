@@ -28,7 +28,7 @@
 		1A2FB1582B7A9BEE00A4C11C /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2FB1572B7A9BEE00A4C11C /* Profile.swift */; };
 		1A2FB15B2B7AA54900A4C11C /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2FB15A2B7AA54900A4C11C /* ProfileViewModel.swift */; };
 		1A2FB15F2B7AA6F400A4C11C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2FB15E2B7AA6F400A4C11C /* Observable.swift */; };
-		1A2FE7112B7F8B1400B1C6EC /* ConstansHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2FE7102B7F8B1400B1C6EC /* ConstansHeader.swift */; };
+		1A2FE7112B7F8B1400B1C6EC /* ApiConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2FE7102B7F8B1400B1C6EC /* ApiConstants.swift */; };
 		1A3634772B778CFE00C64F92 /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3634762B778CFE00C64F92 /* ProfileTableViewCell.swift */; };
 		1A47CCF12B821E7100BE9A3D /* Cosmos in Frameworks */ = {isa = PBXBuildFile; productRef = 1A47CCF02B821E7100BE9A3D /* Cosmos */; };
 		1A64C88A2B7A5E2B00DE3242 /* UITextView+Padding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A64C8892B7A5E2B00DE3242 /* UITextView+Padding.swift */; };
@@ -37,6 +37,8 @@
 		1A7C3EB62B7CB28A005D2A35 /* ProfileCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C3EB52B7CB28A005D2A35 /* ProfileCellModel.swift */; };
 		1A92E2A12B7D2EE700D03C04 /* ProfileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A92E2A02B7D2EE700D03C04 /* ProfileRequest.swift */; };
 		1AABF3922B7659BB003C71C3 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AABF3912B7659BB003C71C3 /* ProfileViewController.swift */; };
+		1AD543A42B83CE82009CD133 /* ProfileState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD543A32B83CE82009CD133 /* ProfileState.swift */; };
+		1AD543A62B83CEF6009CD133 /* JsonKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD543A52B83CEF6009CD133 /* JsonKey.swift */; };
 		1AE6EE872B77DD7F003E0E3C /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE6EE862B77DD7F003E0E3C /* EditProfileViewController.swift */; };
 		1AE6EE8C2B77E657003E0E3C /* UserImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE6EE8B2B77E657003E0E3C /* UserImageView.swift */; };
 		1AE6EE8E2B77EDE3003E0E3C /* UserImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE6EE8D2B77EDE3003E0E3C /* UserImageModel.swift */; };
@@ -107,7 +109,7 @@
 		1A2FB1572B7A9BEE00A4C11C /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		1A2FB15A2B7AA54900A4C11C /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		1A2FB15E2B7AA6F400A4C11C /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
-		1A2FE7102B7F8B1400B1C6EC /* ConstansHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstansHeader.swift; sourceTree = "<group>"; };
+		1A2FE7102B7F8B1400B1C6EC /* ApiConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiConstants.swift; sourceTree = "<group>"; };
 		1A3634762B778CFE00C64F92 /* ProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableViewCell.swift; sourceTree = "<group>"; };
 		1A64C8892B7A5E2B00DE3242 /* UITextView+Padding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Padding.swift"; sourceTree = "<group>"; };
 		1A7C3EB12B7C9F2F005D2A35 /* ProfileUIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUIModel.swift; sourceTree = "<group>"; };
@@ -115,6 +117,8 @@
 		1A7C3EB52B7CB28A005D2A35 /* ProfileCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCellModel.swift; sourceTree = "<group>"; };
 		1A92E2A02B7D2EE700D03C04 /* ProfileRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRequest.swift; sourceTree = "<group>"; };
 		1AABF3912B7659BB003C71C3 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		1AD543A32B83CE82009CD133 /* ProfileState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileState.swift; sourceTree = "<group>"; };
+		1AD543A52B83CEF6009CD133 /* JsonKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonKey.swift; sourceTree = "<group>"; };
 		1AE6EE862B77DD7F003E0E3C /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		1AE6EE8B2B77E657003E0E3C /* UserImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserImageView.swift; sourceTree = "<group>"; };
 		1AE6EE8D2B77EDE3003E0E3C /* UserImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserImageModel.swift; sourceTree = "<group>"; };
@@ -237,6 +241,8 @@
 			isa = PBXGroup;
 			children = (
 				1A2FB15A2B7AA54900A4C11C /* ProfileViewModel.swift */,
+				1AD543A32B83CE82009CD133 /* ProfileState.swift */,
+				1AD543A52B83CEF6009CD133 /* JsonKey.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -407,7 +413,7 @@
 				3F6806D029CBBE6B00B4F915 /* NetworkClient.swift */,
 				3F6806D229CBBE9600B4F915 /* NetworkRequest.swift */,
 				3F6806D429CBBEC700B4F915 /* NetworkTask.swift */,
-				1A2FE7102B7F8B1400B1C6EC /* ConstansHeader.swift */,
+				1A2FE7102B7F8B1400B1C6EC /* ApiConstants.swift */,
 			);
 			path = NetworkClient;
 			sourceTree = "<group>";
@@ -638,11 +644,13 @@
 				0C79EE6A2A76DE1000EE90EA /* NftDetailAssembly.swift in Sources */,
 				3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */,
 				0CFCB7422A78013E0009A829 /* Nft.swift in Sources */,
-				1A2FE7112B7F8B1400B1C6EC /* ConstansHeader.swift in Sources */,
+				1A2FE7112B7F8B1400B1C6EC /* ApiConstants.swift in Sources */,
 				0CF2C2DD2A783CE600FDC837 /* ErrorView.swift in Sources */,
+				1AD543A62B83CEF6009CD133 /* JsonKey.swift in Sources */,
 				1AFD1D392B7F626500C6E1A2 /* UITextField+Padding.swift in Sources */,
 				1A3634772B778CFE00C64F92 /* ProfileTableViewCell.swift in Sources */,
 				0C79EE682A76DE0900EE90EA /* NftDetailPresenter.swift in Sources */,
+				1AD543A42B83CE82009CD133 /* ProfileState.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,
 				0CFCB7402A78002A0009A829 /* NftService.swift in Sources */,
 				1AE6EE872B77DD7F003E0E3C /* EditProfileViewController.swift in Sources */,

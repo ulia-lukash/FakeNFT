@@ -119,7 +119,7 @@ struct DefaultNetworkClient: NetworkClient {
                 return
             }
             
-            onResponse(.success(Void()))
+            onResponse(.success(()))
             
             if let error = error {
                 onResponse(.failure(NetworkClientError.urlRequestError(error)))
@@ -160,10 +160,10 @@ struct DefaultNetworkClient: NetworkClient {
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
         
-        urlRequest.setValue(ConstansHeader.contentTypeValueGET,
-                            forHTTPHeaderField: ConstansHeader.acceptHeader)
-        urlRequest.setValue(ConstansHeader.tockenValue,
-                            forHTTPHeaderField: ConstansHeader.tokenHeder)
+        urlRequest.setValue(ApiConstants.contentTypeValueGET,
+                            forHTTPHeaderField: ApiConstants.acceptHeader)
+        urlRequest.setValue(ApiConstants.tockenValue,
+                            forHTTPHeaderField: ApiConstants.tokenHeder)
         
         return urlRequest
     }
@@ -183,12 +183,12 @@ struct DefaultNetworkClient: NetworkClient {
             jsonData = jsonString
         }
         urlRequest.httpBody = jsonData
-        urlRequest.setValue(ConstansHeader.contentTypeValueGET,
-                            forHTTPHeaderField: ConstansHeader.acceptHeader)
-        urlRequest.setValue(ConstansHeader.contentTypeValuePUT ,
-                            forHTTPHeaderField: ConstansHeader.contenTypeHeader)
-        urlRequest.setValue(ConstansHeader.tockenValue,
-                            forHTTPHeaderField: ConstansHeader.tokenHeder)
+        urlRequest.setValue(ApiConstants.contentTypeValueGET,
+                            forHTTPHeaderField: ApiConstants.acceptHeader)
+        urlRequest.setValue(ApiConstants.contentTypeValuePUT ,
+                            forHTTPHeaderField: ApiConstants.contenTypeHeader)
+        urlRequest.setValue(ApiConstants.tockenValue,
+                            forHTTPHeaderField: ApiConstants.tokenHeder)
         
         return urlRequest
     }
