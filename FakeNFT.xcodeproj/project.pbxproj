@@ -30,6 +30,7 @@
 		1A2FB15F2B7AA6F400A4C11C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2FB15E2B7AA6F400A4C11C /* Observable.swift */; };
 		1A2FE7112B7F8B1400B1C6EC /* ConstansHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2FE7102B7F8B1400B1C6EC /* ConstansHeader.swift */; };
 		1A3634772B778CFE00C64F92 /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3634762B778CFE00C64F92 /* ProfileTableViewCell.swift */; };
+		1A47CCF12B821E7100BE9A3D /* Cosmos in Frameworks */ = {isa = PBXBuildFile; productRef = 1A47CCF02B821E7100BE9A3D /* Cosmos */; };
 		1A64C88A2B7A5E2B00DE3242 /* UITextView+Padding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A64C8892B7A5E2B00DE3242 /* UITextView+Padding.swift */; };
 		1A7C3EB22B7C9F2F005D2A35 /* ProfileUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C3EB12B7C9F2F005D2A35 /* ProfileUIModel.swift */; };
 		1A7C3EB42B7CA1C3005D2A35 /* TableCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C3EB32B7CA1C3005D2A35 /* TableCellModel.swift */; };
@@ -154,6 +155,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A47CCF12B821E7100BE9A3D /* Cosmos in Frameworks */,
 				3F603CD029DB4A74000C43D7 /* Kingfisher in Frameworks */,
 				3F603CCD29DB4A53000C43D7 /* ProgressHUD in Frameworks */,
 			);
@@ -478,6 +480,7 @@
 			packageProductDependencies = (
 				3F603CCC29DB4A53000C43D7 /* ProgressHUD */,
 				3F603CCF29DB4A74000C43D7 /* Kingfisher */,
+				1A47CCF02B821E7100BE9A3D /* Cosmos */,
 			);
 			productName = FakeNFT;
 			productReference = 3F68069329CBBAF100B4F915 /* FakeNFT.app */;
@@ -555,6 +558,7 @@
 			packageReferences = (
 				3F603CCB29DB4A53000C43D7 /* XCRemoteSwiftPackageReference "ProgressHUD" */,
 				3F603CCE29DB4A74000C43D7 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				1A47CCEF2B821E7100BE9A3D /* XCRemoteSwiftPackageReference "Cosmos" */,
 			);
 			productRefGroup = 3F68069429CBBAF100B4F915 /* Products */;
 			projectDirPath = "";
@@ -1013,6 +1017,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1A47CCEF2B821E7100BE9A3D /* XCRemoteSwiftPackageReference "Cosmos" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evgenyneu/Cosmos";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 24.0.0;
+			};
+		};
 		3F603CCB29DB4A53000C43D7 /* XCRemoteSwiftPackageReference "ProgressHUD" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/relatedcode/ProgressHUD";
@@ -1032,6 +1044,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1A47CCF02B821E7100BE9A3D /* Cosmos */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A47CCEF2B821E7100BE9A3D /* XCRemoteSwiftPackageReference "Cosmos" */;
+			productName = Cosmos;
+		};
 		3F603CCC29DB4A53000C43D7 /* ProgressHUD */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3F603CCB29DB4A53000C43D7 /* XCRemoteSwiftPackageReference "ProgressHUD" */;
