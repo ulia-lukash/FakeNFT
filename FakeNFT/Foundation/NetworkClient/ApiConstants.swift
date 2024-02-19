@@ -1,5 +1,5 @@
 //
-//  ConstansHeader.swift
+//  ApiConstants.swift
 //  FakeNFT
 //
 //  Created by Григорий Машук on 16.02.24.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ConstansHeader {
+enum ApiConstants {
     static let contenTypeHeader = "Content-Type"
     static let contentTypeValueGET = "application/json"
     static let tokenHeder = "X-Practicum-Mobile-Tocken"

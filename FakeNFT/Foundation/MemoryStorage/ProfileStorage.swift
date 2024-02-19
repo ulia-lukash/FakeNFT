@@ -27,14 +27,16 @@ extension ProfileStorageImpl: ProfileStorageProtocol {
     }
     
     func getProfile(with id: String) -> Profile? {
-        syncQueue.sync {
-            storage[id]
+        syncQueue.sync { [weak self] in
+            guard let self else { return nil }
+            return self.storage[id]
         }
     }
     
     func removeProfile(with id: String) {
-        let _ = syncQueue.sync {
-            storage.removeValue(forKey: id)
+        syncQueue.sync { [weak self] in
+            guard let self else { return }
+            self.storage = storage.filter { $0.key != id }
         }
     }
 }

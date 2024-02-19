@@ -120,13 +120,11 @@ final class ProfileViewController: UIViewController {
     // MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        bind()
         view.backgroundColor = .whiteUniversal
+        bind()
         setupUIItem()
+        setupHeightTextView()
         viewModel.setStateLoading()
-        self.textHeightConstraint =
-        descriptionTextView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.maxHeightTextView)
-        self.textHeightConstraint?.isActive = true
     }
 }
 
@@ -273,6 +271,13 @@ private extension ProfileViewController {
                                                  * ConstantsProfileVC.heigtTableCell)
         ])
     }
+    
+    func setupHeightTextView() {
+        self.textHeightConstraint = descriptionTextView.heightAnchor.constraint(
+            equalToConstant: ConstantsProfileVC.maxHeightTextView
+        )
+        self.textHeightConstraint?.isActive = true
+    }
 }
 
 //MARK: - NSLayoutManagerDelegate
@@ -285,7 +290,9 @@ extension ProfileViewController: NSLayoutManagerDelegate {
 }
 
 //MARK: - UITableViewDelegate
-extension ProfileViewController: UITableViewDelegate {}
+extension ProfileViewController: UITableViewDelegate {
+    //TODO: - Next
+}
 
 //MARK: - UITableViewDataSource
 extension ProfileViewController: UITableViewDataSource {
@@ -324,7 +331,9 @@ extension ProfileViewController: UITableViewDataSource {
 }
 
 // MARK: - ErrorView, LoadingView
-extension ProfileViewController: ErrorView, LoadingView {}
+extension ProfileViewController: ErrorView, LoadingView {
+    //TODO: - Next
+}
 
 // MARK: - EditProfileVCDelegate
 extension ProfileViewController: EditProfileVCDelegate {

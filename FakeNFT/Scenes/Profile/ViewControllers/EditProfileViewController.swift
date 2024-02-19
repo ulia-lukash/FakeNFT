@@ -40,6 +40,10 @@ final class EditProfileViewController: UIViewController {
         let exitButton = UIButton(frame: CGRect(origin: .zero,
                                                 size: ConstansEditVC.editButtonSize))
         exitButton.addTarget(nil, action: #selector(didTapExitButton), for: .touchUpInside)
+        exitButton.backgroundColor = .clear
+        exitButton.tintColor = .blackUniversal
+        exitButton.setImage(UIImage(named: ConstansEditVC.close.rawValue),
+                            for: .normal)
         
         return exitButton
     }()
@@ -68,7 +72,6 @@ final class EditProfileViewController: UIViewController {
     private lazy var editLoadImageButton: UIButton = {
         let editLoadImageButton = UIButton()
         editLoadImageButton.backgroundColor = .clear
-        editLoadImageButton.translatesAutoresizingMaskIntoConstraints = false
         editLoadImageButton.titleLabel?.font = .bodyRegular
         editLoadImageButton.setTitle( ConstLocalizable.editVCLoadImage, for: .normal)
         editLoadImageButton.addTarget(nil, action: #selector(editLoadImageButtonTap), for: .touchUpInside)
@@ -104,7 +107,6 @@ final class EditProfileViewController: UIViewController {
         let verticalStackView = UIStackView()
         verticalStackView.axis = .vertical
         verticalStackView.spacing = ConstansEditVC.spacingStackView
-        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
         verticalStackView.backgroundColor = .clear
         
         return verticalStackView
@@ -258,7 +260,6 @@ private extension EditProfileViewController {
         setupuserImageEditLabelView()
         setupEditLoadImageLabel()
         setupTextField()
-        
     }
     
     func setupScrollView() {
@@ -270,6 +271,7 @@ private extension EditProfileViewController {
          editImageLinkTextField,
          verticalStackView].forEach {
             scrollView.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
         }
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -280,11 +282,6 @@ private extension EditProfileViewController {
     }
     
     func setupExitButton() {
-        exitButton.translatesAutoresizingMaskIntoConstraints = false
-        exitButton.backgroundColor = .clear
-        exitButton.tintColor = .blackUniversal
-        exitButton.setImage(UIImage(named: ConstansEditVC.close.rawValue),
-                            for: .normal)
         NSLayoutConstraint.activate([
             exitButton.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
             exitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
@@ -292,7 +289,6 @@ private extension EditProfileViewController {
     }
     
     func setupUserImageView() {
-        userImageView.translatesAutoresizingMaskIntoConstraints = false
         userImageView.backgroundColor = .clear
         NSLayoutConstraint.activate([
             userImageView.topAnchor.constraint(equalTo: exitButton.bottomAnchor, constant: 22),

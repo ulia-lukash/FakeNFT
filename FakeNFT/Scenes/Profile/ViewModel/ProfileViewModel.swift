@@ -22,14 +22,6 @@ protocol ProfileViewModelProtocol {
     func stringClear(str: String) -> String
 }
 
-enum ProfileState {
-    case initial, loading, update, failed(Error), data(Profile)
-}
-
-enum JsonKey: String {
-    case description, name, website, avatar
-}
-
 final class ProfileViewModel {
     @Observable<TableCellModel>
     private(set) var cellModel: TableCellModel = TableCellModel(countNFT: "\(0)",
