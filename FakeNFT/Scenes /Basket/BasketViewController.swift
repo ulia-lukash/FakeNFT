@@ -6,18 +6,19 @@
 //
 
 import UIKit
+import ProgressHUD
 
-final class BasketViewController: UIViewController, LoadingView {
+final class BasketViewController: UIViewController {
     
     // MARK: - Public properties:
     
     // MARK: - Private properties:
     
     private let viewModel: BasketViewModelProtocol
+    
     private var sortedAlertPresenter: SortAlertPresenterProtocol?
     
     // MARK: - UI
-    internal lazy var activityIndicator = UIActivityIndicatorView()
     
     private lazy var bottomView: UIView = {
         var view = UIView()
@@ -45,6 +46,7 @@ final class BasketViewController: UIViewController, LoadingView {
         var label = UILabel()
         label.font = .systemFont(ofSize: 15, weight: .regular)
         label.textColor = UIColor.segmentActive
+        //label.text = "0 NFT"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -53,6 +55,7 @@ final class BasketViewController: UIViewController, LoadingView {
         var label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = UIColor.greenUniversal
+        //label.text = "0 ETH"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -74,6 +77,7 @@ final class BasketViewController: UIViewController, LoadingView {
         label.text = "Корзина пуста"
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = UIColor.segmentActive
+        label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -122,9 +126,17 @@ final class BasketViewController: UIViewController, LoadingView {
         setupView()
         setupConstraints()
         deleteCardView.delegate = self
-        updateCounterLabel()
+        
         setupViewModel()
+        setupStubLabel()
         sortedAlertPresenter = SortAlertPresenter(delegate: self)
+        //setupStubLabel()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+      super.viewWillAppear(animated)
+        self.viewModel.loadNFTModels()
+        //setupStubLabel()
     }
     
     // MARK: - Private Methods
@@ -136,14 +148,10 @@ final class BasketViewController: UIViewController, LoadingView {
         view.addSubview(quantityNftLabel)
         view.addSubview(paymentButton)
         scrollView.addSubview(tableView)
-        setupStubLabel()
         view.addSubview(stubLabel)
-        view.addSubview(activityIndicator)
     }
     
     private func setupConstraints() {
-        
-        activityIndicator.constraintCenters(to: tableView)
         
         NSLayoutConstraint.activate([
             
@@ -188,15 +196,17 @@ final class BasketViewController: UIViewController, LoadingView {
         viewModel.onChange = { [weak self] in
             guard let self else { return }
             self.tableView.reloadData()
+            setupStubLabel()
+            updateCounterLabel()
         }
     }
     
     private func updateCounterLabel() {
         for a in 0..<viewModel.nft.count {
-            viewModel.counterNft += 1
+            viewModel.counterNft = viewModel.nft.count
             viewModel.quantityNft += viewModel.nft[a].price
         }
-        counterNftLabel.text = "\(viewModel.counterNft) NFT"
+        counterNftLabel.text = "\(viewModel.nft.count) NFT"
         quantityNftLabel.text = "\(viewModel.quantityNft) ETH"
     }
     
@@ -277,8 +287,10 @@ final class BasketViewController: UIViewController, LoadingView {
     
     @objc private func didTapPayButton() {
         //TODO: - Basket2-3
-//        self.showLoading()
-//        self.hideLoading()
+//        ProgressHUD.mediaSize = 50
+//        ProgressHUD.marginSize = 0
+//        ProgressHUD.show()
+//        ProgressHUD.dismiss()
     }
 }
 

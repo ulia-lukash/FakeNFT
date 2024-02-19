@@ -3,7 +3,7 @@ import UIKit
 final class TabBarController: UITabBarController {
 
     var servicesAssembly: ServicesAssembly!
-    let basketViewModel = BasketViewModel(for: BasketModel())
+    let basketViewModel = BasketViewModel()
 
     private let catalogTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.catalog", comment: ""),

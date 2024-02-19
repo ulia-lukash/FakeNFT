@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ProgressHUD
 
 enum Filters: String {
     case price
@@ -18,9 +19,11 @@ protocol BasketViewModelProtocol: AnyObject {
     var onSortButtonClicked: (() -> Void)? { get set }
     var counterNft: Int { get set }
     var quantityNft: Float { get set }
-    var nft: [NftBasketModel] { get }
+    var nft: [Nft] { get }
     func sortButtonClicked()
     func sorting(with sortList: Filters)
+    func loadNFTModels()
+    //func updateOrder(with newNFTs: [String])
 }
 
 final class BasketViewModel: BasketViewModelProtocol {
@@ -29,22 +32,22 @@ final class BasketViewModel: BasketViewModelProtocol {
     var counterNft: Int = 0
     var quantityNft: Float = 0
     
-    private let basketModel: BasketModel
+    private let storage: StorageManagerProtocol = StorageManager()
     
-    private(set) var nft: [NftBasketModel] {
+    private let service: BasketServiceProtocol
+    
+    private(set) var nft: [Nft] = [] {
         didSet {
             onChange?()
         }
     }
     
-    init(for model: BasketModel) {
-        basketModel = model
-        nft = BasketModel.mocksBasket
-        loadingLastSort()
+    init(service: BasketServiceProtocol = BasketService()) {
+        self.service = service
     }
     
     private func loadingLastSort() {
-        if let sortData = UserDefaults.standard.string(forKey: "sortingKey") {
+        if let sortData = storage.string(forKey: .sort) {
             if let sortValue = Filters(rawValue: sortData) {
                 sorting(with: sortValue)
             }
@@ -60,11 +63,49 @@ final class BasketViewModel: BasketViewModelProtocol {
         case .name:
             nft = nft.sorted { $0.name < $1.name }
         }
-        UserDefaults.standard.set(sortList.rawValue, forKey: "sortingKey")
+        storage.set(sortList.rawValue, forKey: .sort)
     }
     
     func sortButtonClicked() {
         onSortButtonClicked?()
     }
     
+//    func updateOrder(with newNFTs: [String]) {
+//        service.updateOrder(with: newNFTs) { result in
+//            switch result {
+//            case .success:
+//            case .failure:
+//            }
+//            ProgressHUD.mediaSize = 50
+//            ProgressHUD.marginSize = 0
+//            ProgressHUD.dismiss()
+//        }
+//        loadNFTModels()
+//    }
+    
+    func loadNFTModels() {
+        ProgressHUD.mediaSize = 50
+        ProgressHUD.marginSize = 0
+        ProgressHUD.show()
+        service.loadOrder { result in
+            switch result {
+            case .success(let order):
+                order.forEach { id in
+                    self.service.loadNft(by: id) { models in
+                        switch models {
+                        case .success(let model):
+                            self.nft.append(model)
+                            self.loadingLastSort()
+                        case .failure(let error):
+                            print(error.localizedDescription)
+                        }
+                    }
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+            ProgressHUD.dismiss()
+        }
+        loadingLastSort()
+    }
 }

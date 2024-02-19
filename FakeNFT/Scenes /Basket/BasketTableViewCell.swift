@@ -89,7 +89,7 @@ final class BasketTableViewCell: UITableViewCell {
     
     // MARK: - Public Methods:
     
-    func configureCell(for nft: NftBasketModel) {
+    func configureCell(for nft: Nft) {
         let url = nft.images.first
         imageNFT.kf.indicatorType = .activity
         imageNFT.kf.setImage(
