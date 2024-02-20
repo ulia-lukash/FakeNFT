@@ -28,6 +28,7 @@
 		17341A832B7E40CC00369F18 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17341A822B7E40CC00369F18 /* UserData.swift */; };
 		1752D0162B7BFD24003147C2 /* RatingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1752D0152B7BFD24003147C2 /* RatingViewController.swift */; };
 		1752D01A2B7C055F003147C2 /* RatingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1752D0192B7C055F003147C2 /* RatingTableViewCell.swift */; };
+		176BA23C2B8535D0007E6BAC /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176BA23B2B8535D0007E6BAC /* UserInfoViewController.swift */; };
 		1A0F47332B779F8F00ED5DCC /* ConstLocalizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F47322B779F8F00ED5DCC /* ConstLocalizable.swift */; };
 		3F478ECF29DB474E00F6D39E /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F478ECE29DB474E00F6D39E /* Colors.swift */; };
 		3F478ED129DB476500F6D39E /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F478ED029DB476500F6D39E /* Fonts.swift */; };
@@ -92,6 +93,7 @@
 		17341A822B7E40CC00369F18 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		1752D0152B7BFD24003147C2 /* RatingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingViewController.swift; sourceTree = "<group>"; };
 		1752D0192B7C055F003147C2 /* RatingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingTableViewCell.swift; sourceTree = "<group>"; };
+		176BA23B2B8535D0007E6BAC /* UserInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
 		1A0F47322B779F8F00ED5DCC /* ConstLocalizable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstLocalizable.swift; sourceTree = "<group>"; };
 		3F478ECE29DB474E00F6D39E /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		3F478ED029DB476500F6D39E /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
@@ -241,9 +243,26 @@
 		1752D0182B7BFE51003147C2 /* Statistics */ = {
 			isa = PBXGroup;
 			children = (
+				176BA2382B853583007E6BAC /* UserScreen */,
 				1752D0112B7BFCAB003147C2 /* RatingScreen */,
 			);
 			path = Statistics;
+			sourceTree = "<group>";
+		};
+		176BA2382B853583007E6BAC /* UserScreen */ = {
+			isa = PBXGroup;
+			children = (
+				176BA2392B8535A5007E6BAC /* View */,
+			);
+			path = UserScreen;
+			sourceTree = "<group>";
+		};
+		176BA2392B8535A5007E6BAC /* View */ = {
+			isa = PBXGroup;
+			children = (
+				176BA23B2B8535D0007E6BAC /* UserInfoViewController.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		3F478ECD29DB473000F6D39E /* DesignSystem */ = {
@@ -588,6 +607,7 @@
 				3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */,
 				0CFCB7422A78013E0009A829 /* Nft.swift in Sources */,
 				17341A812B7E409300369F18 /* UserModel.swift in Sources */,
+				176BA23C2B8535D0007E6BAC /* UserInfoViewController.swift in Sources */,
 				0CF2C2DD2A783CE600FDC837 /* ErrorView.swift in Sources */,
 				0C79EE682A76DE0900EE90EA /* NftDetailPresenter.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,

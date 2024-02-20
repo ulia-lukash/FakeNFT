@@ -40,6 +40,9 @@ final class RatingViewController: UIViewController {
         viewModel.onUsersListChange = { [weak self] in
             self?.tableView.reloadData()
         }
+        viewModel.onUserProfileDidTap = { [weak self] user in
+            self?.pushUserInfoViewController(withUser: user)
+        }
     }
 
     private func setupNavBar() {
@@ -63,6 +66,7 @@ final class RatingViewController: UIViewController {
     private func setupTableView() {
         tableView.register(RatingCell.self, forCellReuseIdentifier: "ratingCell")
         tableView.dataSource = self
+        tableView.delegate = self
 
         view.addSubview(tableView)
         NSLayoutConstraint.activate([
@@ -107,6 +111,10 @@ final class RatingViewController: UIViewController {
 
         present(alert, animated: true, completion: nil)
     }
+
+    private func pushUserInfoViewController(withUser user: User) {
+        navigationController?.pushViewController(UserInfoViewController(user: user), animated: true)
+    }
 }
 
 extension RatingViewController: UITableViewDataSource {
@@ -125,6 +133,12 @@ extension RatingViewController: UITableViewDataSource {
         }
 
         return cell
+    }
+}
+
+extension RatingViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        viewModel.userProfileDidTap(withIndex: indexPath)
     }
 }
 
