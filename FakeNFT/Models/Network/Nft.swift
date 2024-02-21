@@ -1,19 +1,16 @@
 import Foundation
 
 struct Nft {
-    let createdAt: Date
     let name: String
     let images: [URL]
     let rating: Int
     let description: String
     let price: Double
     let author: String
-    let id: String
+    let id: UUID
 
-    init(createdAt: String, name: String, id: String, images: [String], rating: Int, description: String, price: Double, author: String) {
-        let dateFormatter = ISO8601DateFormatter()
-        let date = dateFormatter.date(from: createdAt)!
-        self.createdAt = date
+    init(name: String, id: UUID, images: [String], rating: Int, description: String, price: Double, author: String) {
+
         self.name = name
         self.id = id
         var imagesUrls: [URL] = []

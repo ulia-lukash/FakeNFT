@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import ProgressHUD
 
 extension URLSession {
     func objectTask<T: Decodable>(

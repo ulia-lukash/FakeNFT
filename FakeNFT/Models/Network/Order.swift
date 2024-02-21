@@ -1,5 +1,5 @@
 //
-//  UserResponse.swift
+//  Order.swift
 //  FakeNFT
 //
 //  Created by Uliana Lukash on 17.02.2024.
@@ -7,8 +7,7 @@
 
 import Foundation
 
-struct UserResponse: Codable {
-    let name: String
-    let website: String
+struct Order: Codable {
+    let nfts: [UUID]
     let id: String
 }

@@ -10,10 +10,18 @@ import UIKit
 import Kingfisher
 import ProgressHUD
 
+protocol NftCollectionCellDelegate: AnyObject {
+    func didTapLikeFor(nft id: UUID)
+    func didTapCartFor(nft id: UUID)
+    func reloadTable()
+}
 final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
 
+    let viewModel = CollectionViewModel()
+    weak var delegate: NftCollectionCellDelegate?
     private var isLiked: Bool = false
     private var isInCart: Bool = false
+    private var nftId: UUID?
     private lazy var imageView = UIImageView()
 
     private lazy var likeButton: UIButton = {
@@ -101,7 +109,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
         ])
     }
 
-    func configure(for nft: Nft) {
+    func configure(nft: Nft, isLiked: Bool, isInBasket: Bool) {
         priceLabel.text = "\(nft.price) ETH"
         nameLabel.text = nft.name
         ratingView.setRating(with: nft.rating)
@@ -119,15 +127,15 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
                 ]) { result in
                     switch result {
                     case .success(let value):
-                        print("Task done for: \(value.source.url?.absoluteString ?? "")")
+                        break
                     case .failure(let error):
                         print("Job failed: \(error.localizedDescription)")
                     }
                 }
         }
-
-        isLiked = false
-        isInCart = false
+        self.isLiked = isLiked
+        self.isInCart = isInBasket
+        self.nftId = nft.id
         likeButton.tintColor = isLiked ? UIColor.redUniversal : UIColor.whiteUniversal
         cartButton.setImage(UIImage(named: isInCart ? "tabler_trash-x" : "tabler_trash"), for: .normal)
     }
@@ -135,11 +143,15 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
     @objc private func didTapLikeButton() {
         isLiked = !isLiked
         likeButton.tintColor = isLiked ? UIColor.redUniversal : UIColor.whiteUniversal
+        guard let id = self.nftId else { return }
+        delegate?.didTapLikeFor(nft: id)
     }
 
     @objc private func addToCart() {
         isInCart = !isInCart
         cartButton.setImage(UIImage(named: isInCart ? "tabler_trash-x" : "tabler_trash"), for: .normal)
+        guard let id = self.nftId else { return }
+        delegate?.didTapCartFor(nft: id)
     }
 
 }

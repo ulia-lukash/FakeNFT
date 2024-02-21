@@ -107,7 +107,9 @@ extension CatalogViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell() as CatalogTableViewCell
         let collection = viewModel.collections[indexPath.section]
-        cell.configure(for: collection.name)
+        if let urlEndpoint = collection.cover.components(separatedBy: "/").last {
+            cell.configure(for: urlEndpoint)
+        }
         cell.selectionStyle = .none
         return cell
     }
@@ -118,6 +120,7 @@ extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let collection = viewModel.collections[indexPath.section]
         let vc = CollectionViewController()
+
         vc.viewModel.getCollection(withId: collection.id)
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.modalPresentationStyle = .fullScreen

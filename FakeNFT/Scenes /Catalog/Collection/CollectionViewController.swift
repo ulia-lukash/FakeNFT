@@ -66,6 +66,9 @@ final class CollectionViewController: UIViewController {
         return collection
     }()
 
+    private lazy var scrollView = UIScrollView()
+    private lazy var scrollViewContent = UIView()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         ProgressHUD.show()
@@ -75,6 +78,10 @@ final class CollectionViewController: UIViewController {
         setUp()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        viewModel.clearData()
+    }
     private func bind() {
 
         viewModel.onChange = { [weak self] in
@@ -86,50 +93,74 @@ final class CollectionViewController: UIViewController {
     }
 
     private func configure() {
-        setCoverOfCollection(withName: viewModel.collection?.name ?? "Collection name")
+        setCoverOfCollection(viewModel.collection?.cover)
         setLabels()
     }
     private func setUp() {
-        backButtonItem.tintColor = UIColor.segmentActive
-        navigationItem.leftBarButtonItem = backButtonItem
-        view.backgroundColor = UIColor.whiteModeThemes
+        view.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+
+        scrollView.addSubview(scrollViewContent)
+        scrollViewContent.translatesAutoresizingMaskIntoConstraints = false
+
         [coverImageView, nameLabel, authorLabel, authorNameLabel, descriptionLabel, nftCollection].forEach {
-            view.addSubview($0)
+            scrollViewContent.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
 
         setConstraints()
+
+        backButtonItem.tintColor = UIColor.segmentActive
+        navigationItem.leftBarButtonItem = backButtonItem
+        view.backgroundColor = UIColor.whiteModeThemes
     }
 
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            coverImageView.topAnchor.constraint(equalTo: view.topAnchor),
-            coverImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            coverImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            coverImageView.heightAnchor.constraint(equalToConstant: 325),
+
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
+            scrollViewContent.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollViewContent.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            scrollViewContent.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            scrollViewContent.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            scrollViewContent.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            scrollViewContent.heightAnchor.constraint(equalToConstant: 800),
+
+            coverImageView.topAnchor.constraint(equalTo: scrollViewContent.topAnchor),
+            coverImageView.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor),
+            coverImageView.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor),
+
             nameLabel.topAnchor.constraint(equalTo: coverImageView.bottomAnchor, constant: 16),
-            nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            nameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            nameLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            nameLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
             nameLabel.heightAnchor.constraint(equalToConstant: 28),
+
             authorLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
-            authorLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            authorLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
             authorLabel.widthAnchor.constraint(equalToConstant: 112),
+            authorLabel.heightAnchor.constraint(equalToConstant: 28),
+
             authorNameLabel.leadingAnchor.constraint(equalTo: authorLabel.trailingAnchor, constant: 4),
             authorNameLabel.heightAnchor.constraint(equalToConstant: 28),
             authorNameLabel.centerYAnchor.constraint(equalTo: authorLabel.centerYAnchor),
-            authorLabel.heightAnchor.constraint(equalToConstant: 28),
+
             descriptionLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor),
-            descriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            descriptionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            descriptionLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            descriptionLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+
             nftCollection.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20),
-            nftCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            nftCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            nftCollection.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            nftCollection.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            nftCollection.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+            nftCollection.bottomAnchor.constraint(equalTo: scrollViewContent.bottomAnchor)
         ])
     }
 
-    private func setCoverOfCollection(withName name: String) {
-        let urlString = "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/" + name + ".png"
+    private func setCoverOfCollection(_ coverURL: String?) {
+        guard let urlString = coverURL else { return }
         let url = URL(string: urlString)
         let processor = ResizingImageProcessor(referenceSize: CGSize(width: coverImageView.bounds.width, height: 325), mode: .aspectFill)
         coverImageView.kf.indicatorType = .activity
@@ -141,7 +172,7 @@ final class CollectionViewController: UIViewController {
             ]) { result in
                 switch result {
                 case .success(let value):
-                    print("Task done for: \(value.source.url?.absoluteString ?? "")")
+                    break
                 case .failure(let error):
                     print("Job failed: \(error.localizedDescription)")
                 }
@@ -152,9 +183,8 @@ final class CollectionViewController: UIViewController {
         guard let collection = viewModel.collection else { return }
         nameLabel.text = collection.name
         descriptionLabel.text = collection.description
-        guard let author = viewModel.author else { return }
         authorLabel.text = NSLocalizedString("Collection author:", comment: "")
-        authorNameLabel.setTitle(author.name, for: .normal)
+        authorNameLabel.setTitle(collection.author, for: .normal)
     }
 
     @objc private func backButtonTapped() {
@@ -162,12 +192,12 @@ final class CollectionViewController: UIViewController {
     }
 
     @objc private func didTapAuthorName() {
-        let vc = AuthorViewController()
-        guard let author = viewModel.author, let url = viewModel.author?.website else { return }
-        vc.viewModel.setUrl(url)
-        let navigationController = UINavigationController(rootViewController: vc)
-        navigationController.modalPresentationStyle = .fullScreen
-        self.present(navigationController, animated: true, completion: nil)
+//        let vc = AuthorViewController()
+//        guard let author = viewModel.author, let url = viewModel.author?.website else { return }
+//        vc.viewModel.setUrl(url)
+//        let navigationController = UINavigationController(rootViewController: vc)
+//        navigationController.modalPresentationStyle = .fullScreen
+//        self.present(navigationController, animated: true, completion: nil)
     }
 }
 
@@ -176,16 +206,19 @@ extension CollectionViewController: UICollectionViewDataSource {
         1
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.collection?.nfts.count ?? 0
+        viewModel.nfts.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
         let cell = collectionView.dequeueReusableCell(indexPath: indexPath) as NftCollectionCell
-        guard let nfts = viewModel.nfts else { return UICollectionViewCell() }
 
-        cell.configure(for: nfts[indexPath.row])
+        let nft = viewModel.nfts[indexPath.row]
+        let nftId = nft.id
 
+        guard let isLiked = viewModel.isLiked(nft: nftId), let isInBasket = viewModel.isInBasket(nft: nftId) else { return UICollectionViewCell() }
+        cell.delegate = self
+        cell.configure(nft: nft, isLiked: isLiked, isInBasket: isInBasket)
         return cell
     }
 }
@@ -199,6 +232,21 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 4, left: widthParameters.leftInset, bottom: 4, right: widthParameters.rightInset)
+    }
+
+}
+
+extension CollectionViewController: NftCollectionCellDelegate {
+
+    func reloadTable() {
+        self.nftCollection.reloadData()
+    }
+    func didTapLikeFor(nft id: UUID) {
+        viewModel.didTapLikeFor(nft: id)
+    }
+
+    func didTapCartFor(nft id: UUID) {
+        viewModel.didTapCartFor(nft: id)
     }
 
 }

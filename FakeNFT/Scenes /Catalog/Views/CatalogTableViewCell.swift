@@ -35,7 +35,7 @@ final class CatalogTableViewCell: UITableViewCell, ReuseIdentifying {
 
     func configure(for name: String) {
 
-        let urlString = "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/" + name + ".png"
+        let urlString = "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/" + name
         let url = URL(string: urlString)!
 
         let processor = ResizingImageProcessor(referenceSize: CGSize(width: contentView.frame.width, height: 140), mode: .aspectFill)
@@ -48,7 +48,7 @@ final class CatalogTableViewCell: UITableViewCell, ReuseIdentifying {
             ]) { result in
                 switch result {
                 case .success(let value):
-                    print("Task done for: \(value.source.url?.absoluteString ?? "")")
+                    break
                 case .failure(let error):
                     print("Job failed: \(error.localizedDescription)")
                 }

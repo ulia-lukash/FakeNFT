@@ -17,41 +17,44 @@ final class CollectionViewModel {
             didSet {
                 nftCollectionServiceObserver = NotificationCenter.default
                     .addObserver(
-                        forName: NftCollectionsService.didChangeUserNotification,
+                        forName: NftCollectionsService.didChangeProfileNotification,
                         object: nil,
                         queue: .main) { [weak self] _ in
                             guard let self = self else { return }
-                            self.author = service.user
+                            self.profile = service.profile
                         }
-                guard let collection = self.collection else { return }
-                service.fetchUser(withId: collection.author)
+                service.fetchProfile()
+
+                guard let collection = collection else { return }
+                for nft in collection.nfts {
+                    self.fetchNft(withId: nft)
+                }
             }
         }
 
-    private(set) var nfts: [Nft]? {
-            didSet {
-                guard let collection = collection, let nfts = nfts else { return }
-                self.nfts = nfts.filter { collection.nfts.contains($0.id)}
-                onChange?()
-            }
+    private (set) var profile: Profile? {
+        didSet {
+            nftCollectionServiceObserver = NotificationCenter.default
+                .addObserver(
+                    forName: NftCollectionsService.didChangeOrderNotification,
+                    object: nil,
+                    queue: .main) { [weak self] _ in
+                        guard let self = self else { return }
+                        self.order = service.order
+                    }
+            service.fetchOrder()
         }
+    }
 
-    private(set) var author: User? {
-            didSet {
-                nftCollectionServiceObserver = NotificationCenter.default
-                    .addObserver(
-                        forName: NftCollectionsService.didChangeNftsNotification,
-                        object: nil,
-                        queue: .main) { [weak self] _ in
-                            guard let self = self else { return }
-                            self.nfts = service.nfts
-                        }
-                guard let collection = self.collection else { return }
-                service.fetchNfts()
-            }
+    private(set) var order: Order? {
+        didSet {
+            onChange?()
         }
+    }
 
-    func getCollection(withId id: String) {
+    private (set) var nfts: [Nft] = []
+
+    func getCollection(withId id: UUID) {
         nftCollectionServiceObserver = NotificationCenter.default
             .addObserver(
                 forName: NftCollectionsService.didChangeNotification,
@@ -60,6 +63,43 @@ final class CollectionViewModel {
                     guard let self = self else { return }
                     self.collection = service.collection
                 }
+        let id = id.uuidString.lowercased()
         service.fetchCollection(withId: id)
+    }
+
+    func fetchNft(withId id: UUID) {
+        nftCollectionServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: NftCollectionsService.didChangeNftsNotification,
+                object: nil,
+                queue: .main) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.nfts = service.nfts
+                }
+        let id = id.uuidString.lowercased()
+        self.service.fetchNft(withId: id)
+    }
+
+    func isLiked(nft nftId: UUID) -> Bool? {
+
+        guard let profile = profile else { return false }
+        return profile.likes.contains(nftId)
+    }
+
+    func isInBasket(nft nftId: UUID) -> Bool? {
+        guard let order = order else { return false }
+        return order.nfts.contains(nftId)
+    }
+
+    func didTapLikeFor(nft id: UUID) {
+
+    }
+
+    func didTapCartFor(nft id: UUID) {
+
+    }
+
+    func clearData() {
+        service.clearData()
     }
 }

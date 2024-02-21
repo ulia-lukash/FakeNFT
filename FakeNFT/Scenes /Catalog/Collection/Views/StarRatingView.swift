@@ -51,7 +51,9 @@ final class StarRatingView: UIView {
     }
 
     func setRating(with number: Int) {
-        for index in 0..<number {
+        let maxRating = number > 5 ? 5 : number
+
+        for index in 0..<maxRating {
             stars[index].tintColor = UIColor.yellowUniversal
         }
     }
