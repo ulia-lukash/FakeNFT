@@ -8,56 +8,55 @@
 import Foundation
 
 typealias NftsCompletion = (Result<Nft, Error>) -> Void
-typealias OrderCompletion = (Result<[String], Error>) -> Void
+typealias OrdersCompletion = (Result<[String], Error>) -> Void
 
 protocol BasketServiceProtocol {
-    func loadNft(by id: String, completion: @escaping NftsCompletion)
-    func updateOrder(with nfts: [String], completion: @escaping OrderCompletion)
-    func loadOrder(completion: @escaping OrderCompletion)
+    func loadByNft(by id: String, completion: @escaping NftsCompletion)
+    func updateByOrders(with nfts: [String], completion: @escaping OrdersCompletion)
+    func loadByOrders(completion: @escaping OrdersCompletion)
 }
 
 final class BasketService: BasketServiceProtocol {
     
     private let networkClient: NetworkClient
     
-    init(
-      networkClient: NetworkClient = DefaultNetworkClient()) {
+    init(networkClient: NetworkClient) {
         self.networkClient = networkClient
-      }
+    }
     
-    func loadNft(by id: String, completion: @escaping NftsCompletion) {
+    func loadByNft(by id: String, completion: @escaping NftsCompletion) {
         let request = NFTRequest(id: id)
         networkClient.send(request: request, type: Nft.self) { result in
-          switch result {
-          case .success(let nft):
-            completion(.success(nft))
-          case .failure(let error):
-            completion(.failure(error))
-          }
+            switch result {
+            case .success(let nft):
+                completion(.success(nft))
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
     
-    func updateOrder(with nfts: [String], completion: @escaping OrderCompletion) {
-        let request = PutOrderRequest(httpMethod: .put, dto: nfts)
+    func updateByOrders(with nfts: [String], completion: @escaping OrdersCompletion) {
+        let request = PutOrderRequest(nfts: nfts, httpMethod: .put)
         networkClient.send(request: request, type: OrdersModel.self) { result in
-          switch result {
-          case .success(let model):
-            completion(.success(model.nfts))
-          case .failure(let error):
-            completion(.failure(error))
-          }
+            switch result {
+            case .success(let data):
+                completion(.success(data.nfts))
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
     
-    func loadOrder(completion: @escaping OrderCompletion) {
-        let request = GetOrderRequest()
+    func loadByOrders(completion: @escaping OrdersCompletion) {
+        let request = GetOrderRequest(httpMethod: .get)
         networkClient.send(request: request, type: OrdersModel.self) { result in
-          switch result {
-          case .success(let data):
-            completion(.success(data.nfts))
-          case .failure(let error):
-            completion(.failure(error))
-          }
+            switch result {
+            case .success(let data):
+                completion(.success(data.nfts))
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
 }

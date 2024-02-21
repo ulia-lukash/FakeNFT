@@ -1,10 +1,15 @@
 import UIKit
 
 final class TabBarController: UITabBarController {
-
+    
     var servicesAssembly: ServicesAssembly!
-    let basketViewModel = BasketViewModel()
-
+    let basketViewModel = BasketViewModel(
+        service: BasketService(
+            networkClient: DefaultNetworkClient()
+        ),
+        storage: StorageManager()
+    )
+    
     private let catalogTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.catalog", comment: ""),
         image: UIImage(systemName: "square.stack.3d.up.fill"),
@@ -16,17 +21,17 @@ final class TabBarController: UITabBarController {
         image: UIImage(named: "BasketNoActive"),
         tag: 1
     )
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         let catalogController = TestCatalogViewController(
             servicesAssembly: servicesAssembly
         )
         catalogController.tabBarItem = catalogTabBarItem
         
         viewControllers = [catalogController, createBasketViewController()]
-
+        
         view.backgroundColor = .systemBackground
     }
     
