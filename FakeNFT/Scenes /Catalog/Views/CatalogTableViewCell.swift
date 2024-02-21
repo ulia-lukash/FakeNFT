@@ -23,7 +23,6 @@ final class CatalogTableViewCell: UITableViewCell, ReuseIdentifying {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
         configureCellLayout()
     }
 
@@ -38,7 +37,10 @@ final class CatalogTableViewCell: UITableViewCell, ReuseIdentifying {
         let urlString = "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/" + name
         let url = URL(string: urlString)!
 
-        let processor = ResizingImageProcessor(referenceSize: CGSize(width: contentView.frame.width, height: 140), mode: .aspectFill)
+        let processor = ResizingImageProcessor(
+            referenceSize: CGSize(width: contentView.frame.width, height: 140),
+            mode: .aspectFill
+        )
         |> CroppingImageProcessor(size: CGSize(width: contentView.frame.width, height: 140))
         cover.kf.indicatorType = .activity
         cover.kf.setImage(
@@ -47,10 +49,10 @@ final class CatalogTableViewCell: UITableViewCell, ReuseIdentifying {
                 .processor(processor)
             ]) { result in
                 switch result {
-                case .success(let value):
-                    break
                 case .failure(let error):
                     print("Job failed: \(error.localizedDescription)")
+                default:
+                    break
                 }
             }
     }

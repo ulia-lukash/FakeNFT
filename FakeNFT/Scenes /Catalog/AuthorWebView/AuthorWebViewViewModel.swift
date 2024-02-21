@@ -7,7 +7,11 @@
 
 import Foundation
 
-final class AuthorWebViewViewModel {
+protocol AuthorViewModelProtocol: AnyObject {
+    var webViewUrl: URL? { get }
+}
+
+final class AuthorWebViewViewModel: AuthorViewModelProtocol {
     private(set) var webViewUrl: URL?
 
     func setUrl(_ url: URL) {

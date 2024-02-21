@@ -9,17 +9,30 @@ import Foundation
 import UIKit
 import WebKit
 
-final class AuthorViewController: UIViewController {
+final class AuthorViewController: UIViewController, WKUIDelegate {
 
-    let viewModel = AuthorWebViewViewModel()
-    private lazy var progressView = UIProgressView(progressViewStyle: .bar)
+    // MARK: - Public Properties
+
+    var viewModel: AuthorViewModelProtocol?
+
+    // MARK: - Private Properties
+
     private var webView: WKWebView!
 
-    private lazy var backButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(backButtonTapped))
+    private lazy var progressView = UIProgressView(progressViewStyle: .bar)
+
+    private lazy var backButtonItem = UIBarButtonItem(
+        image: UIImage(systemName: "chevron.left"),
+        style: .plain,
+        target: self,
+        action: #selector(backButtonTapped)
+    )
+
+    // MARK: - UIViewController
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        viewModel = AuthorWebViewViewModel()
         configureWebView()
         setUp()
     }
@@ -37,6 +50,8 @@ final class AuthorViewController: UIViewController {
         }
     }
 
+    // MARK: - Private Methods
+
     private func updateProgress() {
         progressView.setProgress(Float(webView.estimatedProgress), animated: true)
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
@@ -50,7 +65,7 @@ final class AuthorViewController: UIViewController {
             forKeyPath: #keyPath(WKWebView.estimatedProgress),
             options: .new,
             context: nil)
-        let myURL = viewModel.webViewUrl
+        let myURL = viewModel?.webViewUrl
         let myRequest = URLRequest(url: myURL!)
         webView.load(myRequest)
         updateProgress()
@@ -76,14 +91,9 @@ final class AuthorViewController: UIViewController {
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
-
     }
 
     @objc private func backButtonTapped() {
         self.dismiss(animated: true)
     }
-}
-
-extension AuthorViewController: WKUIDelegate {
-
 }

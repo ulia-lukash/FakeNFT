@@ -12,10 +12,26 @@ import ProgressHUD
 
 final class CollectionViewController: UIViewController {
 
-    let viewModel = CollectionViewModel()
+    // MARK: - Public Properties
 
-    private let widthParameters = CollectionParameters(cellsNumber: 3, leftInset: 0, rightInset: 0, interCellSpacing: 10)
-    private lazy var backButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(backButtonTapped))
+    var viewModel: CollectionViewModelProtocol?
+
+    // MARK: - Private Properties
+
+    private let widthParameters = CollectionParameters(
+        cellsNumber: 3,
+        leftInset: 0,
+        rightInset: 0,
+        interCellSpacing: 10
+    )
+
+    private lazy var backButtonItem = UIBarButtonItem(
+        image: UIImage(systemName: "chevron.left"),
+        style: .plain,
+        target: self,
+        action: #selector(backButtonTapped)
+    )
+
     private lazy var coverImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.masksToBounds = true
@@ -23,6 +39,7 @@ final class CollectionViewController: UIViewController {
         imageView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         return imageView
     }()
+
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 22, weight: .bold)
@@ -69,6 +86,8 @@ final class CollectionViewController: UIViewController {
     private lazy var scrollView = UIScrollView()
     private lazy var scrollViewContent = UIView()
 
+    // MARK: - UIViewController
+
     override func viewDidLoad() {
         super.viewDidLoad()
         ProgressHUD.show()
@@ -80,22 +99,32 @@ final class CollectionViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        viewModel.clearData()
+        viewModel?.clearData()
     }
+
+    // MARK: - ViewModel
+
     private func bind() {
 
-        viewModel.onChange = { [weak self] in
+        viewModel?.onChange = { [weak self] in
             self?.configure()
             self?.nftCollection.reloadData()
             ProgressHUD.dismiss()
         }
 
+        viewModel?.onLoadNft = {
+            [weak self] in
+            self?.nftCollection.reloadData()
+        }
     }
 
+    // MARK: - Private Methods
+
     private func configure() {
-        setCoverOfCollection(viewModel.collection?.cover)
+        setCoverOfCollection(viewModel?.collection?.cover)
         setLabels()
     }
+
     private func setUp() {
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -180,24 +209,26 @@ final class CollectionViewController: UIViewController {
     }
 
     private func setLabels() {
-        guard let collection = viewModel.collection else { return }
+        guard let collection = viewModel?.collection else { return }
         nameLabel.text = collection.name
         descriptionLabel.text = collection.description
         authorLabel.text = NSLocalizedString("Collection author:", comment: "")
         authorNameLabel.setTitle(collection.author, for: .normal)
     }
 
+    // MARK: - @objc Methods
+
     @objc private func backButtonTapped() {
         self.dismiss(animated: true)
     }
 
     @objc private func didTapAuthorName() {
-//        let vc = AuthorViewController()
-//        guard let author = viewModel.author, let url = viewModel.author?.website else { return }
-//        vc.viewModel.setUrl(url)
-//        let navigationController = UINavigationController(rootViewController: vc)
-//        navigationController.modalPresentationStyle = .fullScreen
-//        self.present(navigationController, animated: true, completion: nil)
+        //        let vc = AuthorViewController()
+        //        guard let author = viewModel.author, let url = viewModel.author?.website else { return }
+        //        vc.viewModel.setUrl(url)
+        //        let navigationController = UINavigationController(rootViewController: vc)
+        //        navigationController.modalPresentationStyle = .fullScreen
+        //        self.present(navigationController, animated: true, completion: nil)
     }
 }
 
@@ -206,17 +237,18 @@ extension CollectionViewController: UICollectionViewDataSource {
         1
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.nfts.count
+        viewModel?.nfts.count ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
         let cell = collectionView.dequeueReusableCell(indexPath: indexPath) as NftCollectionCell
 
-        let nft = viewModel.nfts[indexPath.row]
+        guard let nft = viewModel?.nfts[indexPath.row] else { return UICollectionViewCell() }
         let nftId = nft.id
 
-        guard let isLiked = viewModel.isLiked(nft: nftId), let isInBasket = viewModel.isInBasket(nft: nftId) else { return UICollectionViewCell() }
+        guard let isLiked = viewModel?.isLiked(nft: nftId),
+              let isInBasket = viewModel?.isInBasket(nft: nftId) else { return UICollectionViewCell() }
         cell.delegate = self
         cell.configure(nft: nft, isLiked: isLiked, isInBasket: isInBasket)
         return cell
@@ -224,13 +256,21 @@ extension CollectionViewController: UICollectionViewDataSource {
 }
 
 extension CollectionViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
         let availableWidth = collectionView.bounds.width - widthParameters.widthInsets
         let cellWidth = availableWidth / CGFloat(widthParameters.cellsNumber)
         return CGSize(width: cellWidth, height: 192)
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        insetForSectionAt section: Int
+    ) -> UIEdgeInsets {
         return UIEdgeInsets(top: 4, left: widthParameters.leftInset, bottom: 4, right: widthParameters.rightInset)
     }
 
@@ -242,11 +282,11 @@ extension CollectionViewController: NftCollectionCellDelegate {
         self.nftCollection.reloadData()
     }
     func didTapLikeFor(nft id: UUID) {
-        viewModel.didTapLikeFor(nft: id)
+        viewModel?.didTapLikeFor(nft: id)
     }
 
     func didTapCartFor(nft id: UUID) {
-        viewModel.didTapCartFor(nft: id)
+        viewModel?.didTapCartFor(nft: id)
     }
 
 }

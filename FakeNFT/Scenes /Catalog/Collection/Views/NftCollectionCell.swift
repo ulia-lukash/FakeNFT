@@ -17,16 +17,26 @@ protocol NftCollectionCellDelegate: AnyObject {
 }
 final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
 
-    let viewModel = CollectionViewModel()
+    // MARK: Public Properties
+
+    var viewModel: CollectionViewModelProtocol?
     weak var delegate: NftCollectionCellDelegate?
+
+    // MARK: Private Properties
+
     private var isLiked: Bool = false
     private var isInCart: Bool = false
     private var nftId: UUID?
-    private lazy var imageView = UIImageView()
+
+    private lazy var imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = 12
+        return imageView
+    }()
 
     private lazy var likeButton: UIButton = {
         let button = UIButton()
-
         button.setImage(UIImage(systemName: "heart.fill"), for: .normal)
         button.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
         return button
@@ -34,6 +44,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
 
     private lazy var ratingView = StarRatingView()
     private lazy var labelView = UIView()
+
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .bold)
@@ -41,6 +52,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
         label.textAlignment = .left
         return label
     }()
+
     private lazy var priceLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 10, weight: .medium)
@@ -48,6 +60,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
         label.textAlignment = .left
         return label
     }()
+
     private lazy var cartButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "tabler_trash"), for: .normal)
@@ -56,13 +69,56 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
         return button
     }()
 
+    // MARK: Initializers
+
     override init(frame: CGRect) {
         super.init(frame: frame)
+        viewModel = CollectionViewModel()
         configCellLayout()
     }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    // MARK: Public Methods
+
+    func configure(nft: Nft, isLiked: Bool, isInBasket: Bool) {
+        priceLabel.text = "\(nft.price) ETH"
+        nameLabel.text = nft.name
+        ratingView.setRating(with: nft.rating)
+
+        if let urlString = nft.images.randomElement() {
+            let url = urlString
+            let processor = ResizingImageProcessor(
+                referenceSize: CGSize(width: contentView.frame.width, height: contentView.frame.width),
+                mode: .aspectFill
+            )
+            |> CroppingImageProcessor(
+                size: CGSize(width: contentView.frame.width, height: contentView.frame.width)
+            )
+            imageView.kf.indicatorType = .activity
+            imageView.kf.setImage(
+                with: url,
+                options: [
+                    .processor(processor)
+                ]) { result in
+                    switch result {
+                    case .failure(let error):
+                        print("Job failed: \(error.localizedDescription)")
+                    default:
+                        break
+                    }
+                }
+        }
+        self.isLiked = isLiked
+        self.isInCart = isInBasket
+        self.nftId = nft.id
+        likeButton.tintColor = isLiked ? UIColor.redUniversal : UIColor.whiteUniversal
+        cartButton.setImage(UIImage(named: isInCart ? "tabler_trash-x" : "tabler_trash"), for: .normal)
+    }
+
+    // MARK: Private Methods
 
     private func configCellLayout() {
 
@@ -109,36 +165,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
         ])
     }
 
-    func configure(nft: Nft, isLiked: Bool, isInBasket: Bool) {
-        priceLabel.text = "\(nft.price) ETH"
-        nameLabel.text = nft.name
-        ratingView.setRating(with: nft.rating)
-
-        if let urlString = nft.images.randomElement() {
-            let url = urlString
-            let processor = ResizingImageProcessor(referenceSize: CGSize(width: contentView.frame.width, height: contentView.frame.width), mode: .aspectFill)
-            |> CroppingImageProcessor(size: CGSize(width: contentView.frame.width, height: contentView.frame.width))
-            |> RoundCornerImageProcessor(cornerRadius: 12)
-            imageView.kf.indicatorType = .activity
-            imageView.kf.setImage(
-                with: url,
-                options: [
-                    .processor(processor)
-                ]) { result in
-                    switch result {
-                    case .success(let value):
-                        break
-                    case .failure(let error):
-                        print("Job failed: \(error.localizedDescription)")
-                    }
-                }
-        }
-        self.isLiked = isLiked
-        self.isInCart = isInBasket
-        self.nftId = nft.id
-        likeButton.tintColor = isLiked ? UIColor.redUniversal : UIColor.whiteUniversal
-        cartButton.setImage(UIImage(named: isInCart ? "tabler_trash-x" : "tabler_trash"), for: .normal)
-    }
+    // MARK: @objc Methods
 
     @objc private func didTapLikeButton() {
         isLiked = !isLiked
