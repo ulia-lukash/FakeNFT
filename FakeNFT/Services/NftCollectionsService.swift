@@ -82,7 +82,7 @@ final class NftCollectionsService {
 
     func fetchUser(withId id: String) {
         assert(Thread.isMainThread)
-//        if task != nil { return }
+        //        if task != nil { return }
 
         guard let request = makeGetRequest(path: RequestConstants.fetchUser(withId: id)) else {
             return assertionFailure("Failed to make a user request")}
@@ -155,7 +155,7 @@ final class NftCollectionsService {
     func fetchProfile() {
 
         assert(Thread.isMainThread)
-//        if task != nil { return }
+        //        if task != nil { return }
 
         guard let request = makeGetRequest(path: RequestConstants.profileFetchEndpoint) else {
             return assertionFailure("Failed to make profile request")}
@@ -229,46 +229,112 @@ final class NftCollectionsService {
         )
     }
 
-    func putLikesData() {
-        guard let request = makePutRequest(path: RequestConstants.profileFetchEndpoint) else { return }
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                guard error == nil else {
-                    print("Error: error calling PUT")
-                    print(error!)
-                    return
-                }
-                guard let data = data else {
-                    print("Error: Did not receive data")
-                    return
-                }
-                guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                    print("Error: HTTP request failed")
-                    return
-                }
-                do {
-                    guard let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-                        print("Error: Cannot convert data to JSON object")
-                        return
-                    }
-                    guard let prettyJsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
-                        print("Error: Cannot convert JSON object to Pretty JSON data")
-                        return
-                    }
-                    guard let prettyPrintedJson = String(data: prettyJsonData, encoding: .utf8) else {
-                        print("Error: Could print JSON in String")
-                        return
-                    }
-
-                    print(prettyPrintedJson)
-                } catch {
-                    print("Error: Trying to convert JSON data to string")
-                    return
-                }
-            }.resume()
-    }
+    //    func putLikesData() {
+    //        guard let request = makePutRequest(path: RequestConstants.profileFetchEndpoint) else { return }
+    //            URLSession.shared.dataTask(with: request) { data, response, error in
+    //                guard error == nil else {
+    //                    print("Error: error calling PUT")
+    //                    print(error!)
+    //                    return
+    //                }
+    //                guard let data = data else {
+    //                    print("Error: Did not receive data")
+    //                    return
+    //                }
+    //                guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+    //                    print("Error: HTTP request failed")
+    //                    return
+    //                }
+    //                do {
+    //                    guard let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+    //                        print("Error: Cannot convert data to JSON object")
+    //                        return
+    //                    }
+    //                    guard let prettyJsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted) else {
+    //                        print("Error: Cannot convert JSON object to Pretty JSON data")
+    //                        return
+    //                    }
+    //                    guard let prettyPrintedJson = String(data: prettyJsonData, encoding: .utf8) else {
+    //                        print("Error: Could print JSON in String")
+    //                        return
+    //                    }
+    //
+    //                    print(prettyPrintedJson)
+    //                } catch {
+    //                    print("Error: Trying to convert JSON data to string")
+    //                    return
+    //                }
+    //            }.resume()
+    //    }
 
     func clearData() {
         self.nfts = []
+    }
+
+    func changeLikesWith(_ likes: [UUID]) {
+        let likes = likes.map {$0.uuidString.lowercased()}
+        let likesString = likes.map { "likes=\($0)" }.joined(separator: "&")
+        let reqData = Data(likesString.utf8)
+
+        guard let request = makePutRequest(path: RequestConstants.profileFetchEndpoint, data: reqData) else { assertionFailure("Failed to make likes put request")
+            return
+        }
+        let task = urlSession.dataTask(with: request) { data, response, error in
+            guard let response = response as? HTTPURLResponse else {
+                print(response)
+                return
+            }
+
+            guard 200 ..< 300 ~= response.statusCode else {
+                return
+            }
+
+            if let data = data {
+                return
+            } else if let error = error {
+                print(error.localizedDescription)
+                return
+            } else {
+                print("yuh znaet")
+                return
+            }
+        }
+
+        task.resume()
+
+    }
+
+    func changeOrderWith(_ nfts: [UUID]) {
+        let nfts = nfts.map {$0.uuidString.lowercased()}
+        let nftsString = nfts.map { "nfts=\($0)" }.joined(separator: "&")
+        let reqData = Data(nftsString.utf8)
+
+        guard let request = makePutRequest(path: RequestConstants.orderFetchEndpoint, data: reqData) else { assertionFailure("Failed to make order put request")
+            return
+        }
+        let task = urlSession.dataTask(with: request) { data, response, error in
+            guard let response = response as? HTTPURLResponse else {
+                print(response)
+                return
+            }
+
+            guard 200 ..< 300 ~= response.statusCode else {
+                return
+            }
+
+            if let data = data {
+                return
+            } else if let error = error {
+                print(error.localizedDescription)
+                return
+            } else {
+                print("yuh znaet")
+                return
+            }
+        }
+
+        task.resume()
+
     }
 }
 
@@ -291,7 +357,7 @@ extension NftCollectionsService {
         return request
     }
 
-    private func makePutRequest(path: String) -> URLRequest? {
+    private func makePutRequest(path: String, data: Data) -> URLRequest? {
         guard let baseURL = URL(string: RequestConstants.baseURL) else {
             assertionFailure("base url is nil")
             return nil
@@ -302,10 +368,10 @@ extension NftCollectionsService {
         }
 
         var request = URLRequest(url: url)
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PUT"
         request.setValue(RequestConstants.token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
-        request.setValue("66", forHTTPHeaderField: "likes")
+        request.httpBody = data
         return request
     }
 }

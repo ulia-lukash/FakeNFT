@@ -92,11 +92,27 @@ final class CollectionViewModel {
     }
 
     func didTapLikeFor(nft id: UUID) {
-
+        guard let profile = self.profile else { return }
+        var likes: [UUID] = []
+        if profile.likes.contains(id) {
+            likes = profile.likes.filter { $0 != id}
+        } else {
+            likes = profile.likes
+            likes.append(id)
+        }
+        service.changeLikesWith(likes)
     }
 
     func didTapCartFor(nft id: UUID) {
-
+        guard let order = self.order else { return }
+        var nfts: [UUID] = []
+        if order.nfts.contains(id) {
+            nfts = order.nfts.filter { $0 != id}
+        } else {
+            nfts = order.nfts
+            nfts.append(id)
+        }
+        service.changeOrderWith(nfts)
     }
 
     func clearData() {
