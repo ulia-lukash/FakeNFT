@@ -21,25 +21,6 @@ final class PaymentViewController: UIViewController {
     
     // MARK: - UI
     
-    private lazy var leftBarButton: UIButton = {
-        var button = UIButton(type: .system)
-        button.tintColor = UIColor.segmentActive
-        button.setImage(UIImage(named: "chevronBasket"), for: .normal)
-        button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(chevronDidTap), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    private lazy var titleLabel: UILabel = {
-        var label = UILabel()
-        label.text = "Выберите способ оплаты"
-        label.textColor = UIColor.segmentActive
-        label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
     private lazy var bottomView: UIView = {
         var view = UIView()
         view.layer.cornerRadius = 12
@@ -77,7 +58,7 @@ final class PaymentViewController: UIViewController {
         button.setTitle("Пользовательского соглашения", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 13, weight: .regular)
         button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(didTapPayButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(openWebView), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -106,13 +87,12 @@ final class PaymentViewController: UIViewController {
         view.backgroundColor = .systemBackground
         setupView()
         setupConstraints()
+        setupNavBar()
     }
     
     // MARK: - Private Methods
     
     private func setupView() {
-        view.addSubview(leftBarButton)
-        view.addSubview(titleLabel)
         view.addSubview(bottomView)
         view.addSubview(paymentCollectionView)
         view.addSubview(paymentButton)
@@ -120,21 +100,25 @@ final class PaymentViewController: UIViewController {
         view.addSubview(agreementButton)
     }
     
+    private func setupNavBar() {
+        self.tabBarController?.tabBar.isHidden = true
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "chevronBasket"), style: .plain, target: self, action:#selector(chevronDidTap))
+        self.navigationItem.leftBarButtonItem?.tintColor = UIColor.segmentActive
+        self.navigationItem.title = "Выберите способ оплаты"
+        let textChangeColor = [NSAttributedString.Key.foregroundColor: UIColor.segmentActive]
+        self.navigationController?.navigationBar.titleTextAttributes = textChangeColor
+        self.navigationController?.navigationBar.largeTitleTextAttributes = textChangeColor
+    }
+    
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            
-            leftBarButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            leftBarButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
-            
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
             bottomView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bottomView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             bottomView.heightAnchor.constraint(equalToConstant: 186),
             
-            paymentCollectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30),
+            paymentCollectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 108),
             paymentCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             paymentCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             paymentCollectionView.bottomAnchor.constraint(equalTo: bottomView.topAnchor),
@@ -153,11 +137,16 @@ final class PaymentViewController: UIViewController {
     }
     
     @objc private func chevronDidTap() {
-        dismiss(animated: true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc private func didTapPayButton() {
         //
+    }
+    
+    @objc private func openWebView() {
+        let viewController = AgreementWebViewController()
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 

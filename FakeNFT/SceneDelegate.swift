@@ -9,11 +9,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     )
 
     func scene(_ scene: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
-//        let tabBarController = window?.rootViewController as? TabBarController
-//        tabBarController?.servicesAssembly = servicesAssembly
-        guard let windowScene = (scene as? UIWindowScene) else { return }
-        window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = PaymentViewController()
-        window?.makeKeyAndVisible()
+        let tabBarController = window?.rootViewController as? TabBarController
+        tabBarController?.servicesAssembly = servicesAssembly
+//        guard let windowScene = (scene as? UIWindowScene) else { return }
+//        window = UIWindow(windowScene: windowScene)
+//        window?.rootViewController = PaymentViewController()
+//        window?.makeKeyAndVisible()
     }
 }

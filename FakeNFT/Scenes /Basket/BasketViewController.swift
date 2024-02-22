@@ -136,6 +136,7 @@ final class BasketViewController: UIViewController, LoadingView {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.viewModel.loadNftData()
+        self.tabBarController?.tabBar.isHidden = false
     }
     
     // MARK: - Private Methods
@@ -290,8 +291,7 @@ final class BasketViewController: UIViewController, LoadingView {
     
     @objc private func didTapPayButton() {
         let viewController = PaymentViewController()
-        viewController.modalPresentationStyle = .fullScreen
-        present(viewController, animated: true)
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
