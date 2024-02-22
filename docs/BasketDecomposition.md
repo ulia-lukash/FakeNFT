@@ -56,13 +56,13 @@
 
 ## Module 3:
 #### Верстка "Экран: Способ оплаты"
-- Заголовок (est: 10 min; fact: x min). 
-- Кнопка возврата назад (est: 5 min; fact: x min). 
-- Нижнее View (est: 10 min; fact: x min). 
-- Кнопка оплатить (est: 15 min; fact: x min). 
-- Текст с соглашением (est: 10 min; fact: x min). 
-- Создание кастомной ячейки (est: 60 min; fact: x min). 
-- Коллекция (est: 20 min; fact: x min). 
+- Заголовок (est: 10 min; fact: 5 min). 
+- Кнопка возврата назад (est: 5 min; fact: 5 min). 
+- Нижнее View (est: 10 min; fact: 5 min). 
+- Кнопка оплатить (est: 15 min; fact: 5 min). 
+- Текст с соглашением (est: 10 min; fact: 5 min). 
+- Создание кастомной ячейки (est: 60 min; fact: 60 min). 
+- Коллекция (est: 20 min; fact: 60 min). 
 
 #### Верстка "Экран: Успех"
 - Картинка (est: 10 min; fact: x min). 

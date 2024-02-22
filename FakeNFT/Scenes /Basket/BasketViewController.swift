@@ -289,7 +289,9 @@ final class BasketViewController: UIViewController, LoadingView {
     }
     
     @objc private func didTapPayButton() {
-        //TODO: - Basket3-3
+        let viewController = PaymentViewController()
+        viewController.modalPresentationStyle = .fullScreen
+        present(viewController, animated: true)
     }
 }
 

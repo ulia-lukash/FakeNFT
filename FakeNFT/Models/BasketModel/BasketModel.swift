@@ -14,3 +14,16 @@ final class BasketModel {
         Nft(name: "Jody Rivers", images: [URL(string: "https://code.s3.yandex.net/Mobile/iOS/NFT/Beige/Lark/1.png")!], rating: 5, price: 34.14, id: ""),
     ]
 }
+
+final class PaymentModel {
+    static var mocksPayment = [
+        CurrenciesModel(title: "Shiba Inu", name: "SHIB", image: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png", id: "2"),
+        CurrenciesModel(title: "Shiba Inu", name: "SHIB", image: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png", id: "3"),
+        CurrenciesModel(title: "Shiba Inu", name: "SHIB", image: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png", id: "4"),
+        CurrenciesModel(title: "Shiba Inu", name: "SHIB", image: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png", id: "5"),
+        CurrenciesModel(title: "Shiba Inu", name: "SHIB", image: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png", id: "6"),
+        CurrenciesModel(title: "Shiba Inu", name: "SHIB", image: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png", id: "7"),
+        CurrenciesModel(title: "Shiba Inu", name: "SHIB", image: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png", id: "8"),
+        CurrenciesModel(title: "Shiba Inu", name: "SHIB", image: "https://code.s3.yandex.net/Mobile/iOS/Currencies/Shiba_Inu_(SHIB).png", id: "9")
+    ]
+}

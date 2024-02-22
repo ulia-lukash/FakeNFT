@@ -101,7 +101,11 @@ final class BasketTableViewCell: UITableViewCell {
             placeholder: UIImage(named: "Placeholder"),
             options: [.transition(.fade(1))])
         nameNFTLabel.text = nft.name
-        quantityNFTLabel.text = "\(nft.price) ETH"
+        let formatterLabel = String(
+            format:"%.2f", nft.price).replacingOccurrences(
+                of: ".", with: ","
+            )
+        quantityNFTLabel.text = "\(formatterLabel) ETH"
         idNftToDelete = nft.id
         switch nft.rating {
         case 0: ratingNFTImage.image = UIImage(named: "raiting0Stub")
