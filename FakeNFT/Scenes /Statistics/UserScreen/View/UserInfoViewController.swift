@@ -38,6 +38,22 @@ final class UserInfoViewController: UIViewController {
         return button
     }()
 
+    private let nftCollectionButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(named: "forward"), for: .normal)
+        return button
+    }()
+
+    private let nftDescriptionLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Коллекция NFT (112)" // TODO: add localization
+        label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        label.textColor = UIColor.segmentActive
+        return label
+    }()
+
     init(user: User) {
         usernameLabel.text = user.username
         userDescription.text = user.description
@@ -58,6 +74,8 @@ final class UserInfoViewController: UIViewController {
         setupUsernameLabel()
         setupUserDescription()
         setupUserWebsiteButton()
+        setupNFTDescriptionLabel()
+        setupNFTCollectionButton()
     }
 
     private func setupUsernameLabel() {
@@ -119,6 +137,25 @@ final class UserInfoViewController: UIViewController {
             ),
             userWebsiteButton.topAnchor.constraint(equalTo: userDescription.bottomAnchor, constant: 28),
             userWebsiteButton.heightAnchor.constraint(equalToConstant: Constants.userWebsiteButtonHeight)
+        ])
+    }
+
+    private func setupNFTDescriptionLabel() {
+        view.addSubview(nftDescriptionLabel)
+        NSLayoutConstraint.activate([
+            nftDescriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultInset),
+            nftDescriptionLabel.topAnchor.constraint(equalTo: userWebsiteButton.bottomAnchor, constant: 56)
+        ])
+    }
+
+    private func setupNFTCollectionButton() {
+        view.addSubview(nftCollectionButton)
+        NSLayoutConstraint.activate([
+            nftCollectionButton.trailingAnchor.constraint(
+                equalTo: view.trailingAnchor,
+                constant: -Constants.defaultInset
+            ),
+            nftCollectionButton.centerYAnchor.constraint(equalTo: nftDescriptionLabel.centerYAnchor)
         ])
     }
 }
