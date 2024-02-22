@@ -78,6 +78,8 @@ final class PaymentViewController: UIViewController {
         return collectionView
     }()
     
+    private lazy var successView = BasketSuccessView()
+    
     // MARK: - Initializers
     
     // MARK: - Life Cycle
@@ -136,12 +138,30 @@ final class PaymentViewController: UIViewController {
         ])
     }
     
+    private func setupSuccessView() {
+        view.addSubview(successView)
+        successView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            successView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            successView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            successView.topAnchor.constraint(equalTo: view.topAnchor),
+            successView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+    
     @objc private func chevronDidTap() {
         self.navigationController?.popViewController(animated: true)
     }
     
     @objc private func didTapPayButton() {
-        //
+        self.navigationController?.navigationBar.isHidden = true
+        bottomView.isHidden = true
+        paymentButton.isHidden = true
+        stubLabel.isHidden = true
+        agreementButton.isHidden = true
+        paymentCollectionView.isHidden = true
+        setupSuccessView()
     }
     
     @objc private func openWebView() {
