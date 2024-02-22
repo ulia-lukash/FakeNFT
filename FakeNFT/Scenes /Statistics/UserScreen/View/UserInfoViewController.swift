@@ -25,6 +25,19 @@ final class UserInfoViewController: UIViewController {
         return imageView
     }()
 
+    private let userWebsiteButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.borderColor = UIColor.segmentActive.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 16
+        button.setTitle("Перейти на сайт пользователя", for: .normal) // TODO: add localization
+        button.setTitleColor(UIColor.segmentActive, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        button.backgroundColor = UIColor.whiteModeThemes
+        return button
+    }()
+
     init(user: User) {
         usernameLabel.text = user.username
         userDescription.text = user.description
@@ -44,23 +57,36 @@ final class UserInfoViewController: UIViewController {
         setupAvatarImageView()
         setupUsernameLabel()
         setupUserDescription()
+        setupUserWebsiteButton()
     }
 
     private func setupUsernameLabel() {
         view.addSubview(usernameLabel)
         NSLayoutConstraint.activate([
-            usernameLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 16),
-            usernameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            usernameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 41)
+            usernameLabel.leadingAnchor.constraint(
+                equalTo: avatarImageView.trailingAnchor,
+                constant: Constants.defaultInset
+            ),
+            usernameLabel.trailingAnchor.constraint(
+                equalTo: view.trailingAnchor,
+                constant: -Constants.defaultInset
+            ),
+            usernameLabel.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor,
+                constant: Constants.defaultElementSpacing
+            )
         ])
     }
 
     private func setupUserDescription() {
         view.addSubview(userDescription)
         NSLayoutConstraint.activate([
-            userDescription.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            userDescription.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -18),
-            userDescription.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 41)
+            userDescription.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultInset),
+            userDescription.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.defaultInset),
+            userDescription.topAnchor.constraint(
+                equalTo: usernameLabel.bottomAnchor,
+                constant: Constants.defaultElementSpacing
+            )
         ])
     }
 
@@ -75,8 +101,24 @@ final class UserInfoViewController: UIViewController {
         NSLayoutConstraint.activate([
             avatarImageView.heightAnchor.constraint(equalToConstant: Constants.userAvatarHeight),
             avatarImageView.widthAnchor.constraint(equalToConstant: Constants.userAvatarWidth),
-            avatarImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            avatarImageView.leadingAnchor.constraint(
+                equalTo: view.leadingAnchor,
+                constant: Constants.defaultInset
+            ),
             avatarImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20)
+        ])
+    }
+
+    private func setupUserWebsiteButton() {
+        view.addSubview(userWebsiteButton)
+        NSLayoutConstraint.activate([
+            userWebsiteButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultInset),
+            userWebsiteButton.trailingAnchor.constraint(
+                equalTo: view.trailingAnchor,
+                constant: -Constants.defaultInset
+            ),
+            userWebsiteButton.topAnchor.constraint(equalTo: userDescription.bottomAnchor, constant: 28),
+            userWebsiteButton.heightAnchor.constraint(equalToConstant: Constants.userWebsiteButtonHeight)
         ])
     }
 }
@@ -84,4 +126,7 @@ final class UserInfoViewController: UIViewController {
 private enum Constants {
     static let userAvatarHeight: CGFloat = 70
     static let userAvatarWidth: CGFloat = 70
+    static let defaultInset: CGFloat = 16
+    static let defaultElementSpacing: CGFloat = 41
+    static let userWebsiteButtonHeight: CGFloat = 40
 }
