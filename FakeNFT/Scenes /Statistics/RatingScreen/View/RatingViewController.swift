@@ -113,7 +113,10 @@ final class RatingViewController: UIViewController {
     }
 
     private func pushUserInfoViewController(withUser user: User) {
-        navigationController?.pushViewController(UserInfoViewController(user: user), animated: true)
+        let viewModel = UserInfoViewModel()
+        navigationController?.pushViewController(
+            UserInfoViewController(user: user, viewModel: viewModel),
+            animated: true)
     }
 }
 

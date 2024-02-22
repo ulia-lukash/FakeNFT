@@ -1,6 +1,8 @@
 import UIKit
 
 final class UserInfoViewController: UIViewController {
+    private let viewModel: UserInfoViewModelProtocol
+
     private let usernameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -38,10 +40,11 @@ final class UserInfoViewController: UIViewController {
         return button
     }()
 
-    private let nftCollectionButton: UIButton = {
+    private lazy var nftCollectionButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "forward"), for: .normal)
+        button.addTarget(self, action: #selector(didTapNFTCollection), for: .touchUpInside)
         return button
     }()
 
@@ -54,10 +57,11 @@ final class UserInfoViewController: UIViewController {
         return label
     }()
 
-    init(user: User) {
+    init(user: User, viewModel: UserInfoViewModelProtocol) {
         usernameLabel.text = user.username
         userDescription.text = user.description
         avatarImageView.image = user.avatar
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -67,8 +71,23 @@ final class UserInfoViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteModeThemes
 
+        setupViewModel()
+        setupUI()
+    }
+
+    @objc private func didTapNFTCollection() {
+        viewModel.nftCollectionButtonDidTap()
+    }
+
+    private func setupViewModel() {
+        viewModel.onNFTCollectionButtonTap = { [weak self] in
+            self?.pushNFTColletionViewController()
+        }
+    }
+
+    private func setupUI() {
         setupNavBar()
         setupAvatarImageView()
         setupUsernameLabel()
@@ -157,6 +176,12 @@ final class UserInfoViewController: UIViewController {
             ),
             nftCollectionButton.centerYAnchor.constraint(equalTo: nftDescriptionLabel.centerYAnchor)
         ])
+    }
+
+    private func pushNFTColletionViewController() {
+        navigationController?.pushViewController(
+            NFTCollectionViewController(),
+            animated: true)
     }
 }
 
