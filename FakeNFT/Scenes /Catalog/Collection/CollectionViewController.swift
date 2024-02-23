@@ -132,33 +132,24 @@ final class CollectionViewController: UIViewController {
     
     private func setUp() {
         view.addSubview(scrollView)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        
         scrollView.addSubview(scrollViewContent)
+        scrollView.constraintEdges(to: view)
         scrollViewContent.translatesAutoresizingMaskIntoConstraints = false
-        
         [coverImageView, nameLabel, authorLabel, authorNameLabel, descriptionLabel, nftCollection].forEach {
             scrollViewContent.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
         setConstraints()
-        
         backButtonItem.tintColor = UIColor.segmentActive
         navigationItem.leftBarButtonItem = backButtonItem
         view.backgroundColor = UIColor.whiteModeThemes
-        
     }
     
     private func setConstraints() {
+        
         NSLayoutConstraint.activate([
-            
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            
-            scrollViewContent.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            scrollViewContent.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: -100),
             scrollViewContent.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             scrollViewContent.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             scrollViewContent.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
@@ -261,9 +252,7 @@ extension CollectionViewController: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
             
             let cell = collectionView.dequeueReusableCell(indexPath: indexPath) as NftCollectionCell
-            /*
-             TODO: - Отвратительный способ, обязательно переделать, но падла как... OperationQueue...
-             */
+
             guard let nft = viewModel?.nfts[indexPath.row] else { return UICollectionViewCell() }
             let nftId = nft.id
             
