@@ -9,6 +9,7 @@ import UIKit
 
 protocol BasketDeleteCardViewDelegate: AnyObject {
     func backButtonClicked()
+    func didTapDeleteCardButton(index: String)
 }
 
 final class BasketDeleteCardView: UIView {
@@ -16,6 +17,10 @@ final class BasketDeleteCardView: UIView {
     //MARK: - Delegate
     
     weak var delegate: BasketDeleteCardViewDelegate?
+    
+    // MARK: - Private properties:
+    
+    private var idNftToDelete = ""
     
     //MARK: - UI
     
@@ -75,7 +80,6 @@ final class BasketDeleteCardView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-       
     }
     
     // MARK: - Initializers
@@ -92,8 +96,9 @@ final class BasketDeleteCardView: UIView {
     
     //MARK: - Public Properties
     
-    func configureView(image: UIImage) {
+    func configureView(image: UIImage, idNftToDelete: String) {
         deleteCardImage.image = image
+        self.idNftToDelete = idNftToDelete
     }
     
     //MARK: - Private Properties
@@ -136,8 +141,11 @@ final class BasketDeleteCardView: UIView {
         ])
     }
     
+    
+    // MARK: - Objc Methods:
+    
     @objc private func didTapDeleteCardButton() {
-        //TODO: - Basket2-3
+        delegate?.didTapDeleteCardButton(index: idNftToDelete)
     }
     
     @objc private func didTapbackCardButton() {

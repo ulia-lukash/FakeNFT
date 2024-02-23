@@ -9,7 +9,7 @@ import Kingfisher
 import UIKit
 
 protocol BasketTableViewCellDelegate: AnyObject {
-    func deleteButtonClicked(image: UIImage)
+    func deleteButtonClicked(image: UIImage, idNftToDelete: String)
 }
 
 final class BasketTableViewCell: UITableViewCell {
@@ -21,6 +21,10 @@ final class BasketTableViewCell: UITableViewCell {
     //MARK: - Delegate
     
     weak var delegate: BasketTableViewCellDelegate?
+    
+    // MARK: - Private properties:
+    
+    private var idNftToDelete: String = ""
     
     //MARK: - UI
     
@@ -89,22 +93,23 @@ final class BasketTableViewCell: UITableViewCell {
     
     // MARK: - Public Methods:
     
-    func configureCell(for nft: NftBasketModel) {
+    func configureCell(for nft: Nft) {
         let url = nft.images.first
         imageNFT.kf.indicatorType = .activity
         imageNFT.kf.setImage(
-          with: url,
-          placeholder: UIImage(named: "Placeholder"),
-          options: [.transition(.fade(1))])
+            with: url,
+            placeholder: UIImage(named: "Placeholder"),
+            options: [.transition(.fade(1))])
         nameNFTLabel.text = nft.name
         quantityNFTLabel.text = "\(nft.price) ETH"
+        idNftToDelete = nft.id
         switch nft.rating {
         case 0: ratingNFTImage.image = UIImage(named: "raiting0Stub")
-        case 1: ratingNFTImage.image = UIImage(named: "raiting1Stub")
-        case 2: ratingNFTImage.image = UIImage(named: "raiting2Stub")
-        case 3: ratingNFTImage.image = UIImage(named: "raiting3Stub")
-        case 4: ratingNFTImage.image = UIImage(named: "raiting4Stub")
-        case 5: ratingNFTImage.image = UIImage(named: "raiting5Stub")
+        case 1..<50: ratingNFTImage.image = UIImage(named: "raiting1Stub")
+        case 50..<100: ratingNFTImage.image = UIImage(named: "raiting2Stub")
+        case 100..<200: ratingNFTImage.image = UIImage(named: "raiting3Stub")
+        case 200..<300: ratingNFTImage.image = UIImage(named: "raiting4Stub")
+        case 300..<400: ratingNFTImage.image = UIImage(named: "raiting5Stub")
         default:
             print("Error")
         }
@@ -159,6 +164,6 @@ final class BasketTableViewCell: UITableViewCell {
     
     @objc private func didTapDeleteButton() {
         guard let image = imageNFT.image else { return }
-        delegate?.deleteButtonClicked(image: image)
+        delegate?.deleteButtonClicked(image: image, idNftToDelete: idNftToDelete)
     }
 }
