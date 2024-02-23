@@ -7,12 +7,15 @@
 
 import UIKit
 
-final class MyNFTViewController: UIViewController {
+final class MyNFTViewController: UIViewController, ErrorView, LoadingView  {
     private enum ConstMyNFTVC: String {
         static let heightCell = CGFloat(140)
         case backwardProfile
         case sortProfile
     }
+    
+    internal lazy var activityIndicator = UIActivityIndicatorView()
+    private let viewModel: MyNftViewModelProtocol
     
     private lazy var myNFTTable: UITableView = {
         let myNFTTable = UITableView()
@@ -20,17 +23,75 @@ final class MyNFTViewController: UIViewController {
         return myNFTTable
     }()
     
+    private lazy var empryNftLabel: UILabel = {
+        let empryNftLabel = UILabel()
+        
+        return empryNftLabel
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        bind()
         setupUIItem()
+    }
+    
+    init(viewModel: MyNftViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
 private extension MyNFTViewController {
+    func bind() {
+        guard let viewModel = viewModel as? MyNftViewModel else { return }
+        viewModel.$state.bind { [weak self] state in
+            guard let self else { return }
+            switch state {
+            case .initial:
+                assertionFailure("can't move to initial state")
+            case .loading:
+                if viewModel.flagDownload {
+                    view.isUserInteractionEnabled = false
+                    self.showLoading()
+                }
+            case .update:
+                break
+            case .failed(let error):
+                let errorModel = viewModel.makeErrorModel(error: error)
+                self.showError(errorModel)
+            case .data(_):
+                updateMyTableView()
+                self.hideLoading()
+                view.isUserInteractionEnabled = true
+            }
+        }
+        
+        viewModel.$sortState.bind { _ in
+            viewModel.sort()
+        }
+    }
+    
+    func updateMyTableView() {
+        if viewModel.getListMyNft().count == ApiConstants.pageSize {
+            myNFTTable.reloadData()
+        } else {
+            myNFTTable.performBatchUpdates { [weak self] in
+                guard let self else { return }
+                self.myNFTTable.insertRows(at: self.viewModel.getIndexPaths(),
+                                           with: .automatic)
+            }
+        }
+    }
+    
     func setupUIItem() {
         setupNavigationBar()
         setupMyNFTTable()
+        setupActivitiIndicator()
     }
     
     func setupNavigationBar() {
@@ -39,22 +100,20 @@ private extension MyNFTViewController {
         else { return }
         
         topItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: ConstMyNFTVC.sortProfile.rawValue),
-                                                    style: .plain, target: self,
-                                                    action: #selector(rightBarButtonItemTap))
+                                                     style: .plain, target: self,
+                                                     action: #selector(rightBarButtonItemTap))
         topItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: ConstMyNFTVC.backwardProfile.rawValue),
                                                     style: .plain, target: self,
-                                                    action: #selector(rightBarButtonItemTap))
+                                                    action: #selector(leftBarButtonItemTap))
         topItem.leftBarButtonItem?.tintColor = .blackUniversal
         topItem.rightBarButtonItem?.tintColor = .blackUniversal
         navBar.backgroundColor = .clear
-        navigationItem.titleView = UILabel()
-        topItem.title = ConstLocalizable.profileCellMyNFT
         navigationItem.titleView?.tintColor = .blackUniversal
-//        navigationController?.parent?.title = ConstLocalizable.myNFTProfile
+        navigationItem.title = ConstLocalizable.myNFTProfile
+        self.navigationController?.navigationBar.barTintColor = .white
         
-        let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.red]
+        let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.blackUniversal]
         navigationController?.navigationBar.titleTextAttributes = textAttributes
-//        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     @objc
@@ -69,20 +128,25 @@ private extension MyNFTViewController {
     
     func createAlert() -> UIAlertController {
         let alertController = UIAlertController(title: ConstLocalizable.myNFTVCSortName,
-                                      message: nil,
-                                      preferredStyle: .actionSheet)
-        if let firstSubview = alertController.view.subviews.first,
-           let alertContentView = firstSubview.subviews.first {
-            for view in alertContentView.subviews {
-                view.backgroundColor = .grayUniversalWithAlpha
-            }
-        }
+                                                message: nil,
+                                                preferredStyle: .actionSheet)
         let actionSortByPrice = UIAlertAction(title: ConstLocalizable.myNFTVCByPrice,
-                                              style: .default)
+                                              style: .default) { [weak self] _ in
+            guard let self else { return }
+            actionAlert(state: .price)
+        }
         let actionSortByRating = UIAlertAction(title: ConstLocalizable.myNFTVCByRating,
-                                              style: .default)
+                                               style: .default) { [weak self] _ in
+            guard let self else { return }
+            actionAlert(state: .rating)
+            
+        }
         let actionSortByName = UIAlertAction(title: ConstLocalizable.myNFTVCByName,
-                                              style: .default)
+                                             style: .default) { [weak self] _ in
+            guard let self else { return }
+            actionAlert(state: .name)
+            
+        }
         let actionClose = UIAlertAction(title: ConstLocalizable.myNFTVCClose,
                                         style: .cancel)
         [actionSortByPrice,
@@ -93,6 +157,11 @@ private extension MyNFTViewController {
         }
         
         return alertController
+    }
+    
+    func actionAlert(state: SortState) {
+        self.viewModel.reset()
+        self.viewModel.setSortState(state: state)
     }
     
     func setupMyNFTTable() {
@@ -111,13 +180,40 @@ private extension MyNFTViewController {
             myNFTTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+    
+    func setupEmptyLabel() {
+        view.addSubview(empryNftLabel)
+        empryNftLabel.translatesAutoresizingMaskIntoConstraints = false
+        empryNftLabel.backgroundColor = .blackUniversal
+        empryNftLabel.font = .bodyBold
+        empryNftLabel.text = ConstLocalizable.myNftVCEmpty
+        empryNftLabel.center = view.center
+    }
+    
+    func setupActivitiIndicator() {
+        activityIndicator.color = .blackUniversal
+        view.addSubview(activityIndicator)
+        activityIndicator.constraintCenters(to: view)
+    }
 }
 
-extension MyNFTViewController: UITableViewDelegate {}
+extension MyNFTViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let viewModel = viewModel as? MyNftViewModel else { return }
+        if indexPath.row + 1 == viewModel.getListMyNft().count {
+            viewModel.sort()
+        }
+        if !viewModel.flagDownload {
+            //TODO: -
+            hideLoading()
+            view.isUserInteractionEnabled = true
+        }
+    }
+}
 
 extension MyNFTViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        viewModel.getListMyNft().count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -126,7 +222,12 @@ extension MyNFTViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "\(MyNFTTableCell.self)") as? MyNFTTableCell
-        else { return UITableViewCell() }
+        else {
+            return UITableViewCell() }
+        guard let viewModel = viewModel as? MyNftViewModel else { return UITableViewCell() }
+        if viewModel.flagDownload && !viewModel.getListMyNft().isEmpty {
+            cell.config(model: viewModel.getListMyNft()[indexPath.row])
+        }
         return cell
     }
 }

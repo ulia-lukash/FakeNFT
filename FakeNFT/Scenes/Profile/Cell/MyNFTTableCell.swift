@@ -23,7 +23,6 @@ final class MyNFTTableCell: UITableViewCell {
     
     private lazy var nftImageView: UIImageView = {
         let nftImageView = UIImageView()
-        nftImageView.image = UIImage(named: "tesla")
         
         return nftImageView
     }()
@@ -42,7 +41,6 @@ final class MyNFTTableCell: UITableViewCell {
     
     private lazy var nameNFTLabel: UILabel = {
         let nameNFTLabel = UILabel()
-        nameNFTLabel.text = "NFT"
         
         return nameNFTLabel
     }()
@@ -67,7 +65,6 @@ final class MyNFTTableCell: UITableViewCell {
     
     private lazy var nameAuthorLabel: UILabel = {
         let nameAuthorLabel = UILabel()
-        nameAuthorLabel.text = "Григория"
         
         return nameAuthorLabel
     }()
@@ -80,13 +77,13 @@ final class MyNFTTableCell: UITableViewCell {
     
     private lazy var priceLabel: UILabel = {
         let priceLabel = UILabel()
+        priceLabel.text = ConstLocalizable.profileCellMyNFT
         
         return priceLabel
     }()
     
     private lazy var priceValueLabel: UILabel = {
         let priceValueLabel = UILabel()
-        priceValueLabel.text = "\(13.80)" + "ETN"
         
         return priceValueLabel
     }()
@@ -100,6 +97,13 @@ final class MyNFTTableCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // Отменяем загрузку, чтобы избежать багов при переиспользовании ячеек
+        nftImageView.kf.cancelDownloadTask()
+        
     }
 }
 
@@ -190,6 +194,7 @@ extension MyNFTTableCell {
         starRatingView.backgroundColor = .clear
         starRatingView.rating = 4
         starRatingView.settings.filledColor = .yellowUniversal
+        starRatingView.settings.starMargin = 1
         starRatingView.settings.emptyColor = .lightGreyUniversal
         starRatingView.settings.emptyBorderColor = .clear
         starRatingView.settings.filledBorderColor = .clear
@@ -197,8 +202,8 @@ extension MyNFTTableCell {
         NSLayoutConstraint.activate([
             starRatingView.topAnchor.constraint(equalTo: nameNFTLabel.bottomAnchor, constant: 4),
             starRatingView.leadingAnchor.constraint(equalTo: nameNFTView.leadingAnchor),
-            starRatingView.trailingAnchor.constraint(equalTo: nameNFTView.trailingAnchor),
-            starRatingView.heightAnchor.constraint(equalToConstant: 12)
+            starRatingView.trailingAnchor.constraint(equalTo: nameNFTView.trailingAnchor, constant: -10),
+            starRatingView.heightAnchor.constraint(equalToConstant: 8)
         ])
     }
     
@@ -277,9 +282,9 @@ extension MyNFTTableCell {
     
     func config(model: MyNFTCellModel) {
         nftImageView.kf.setImage(with: model.urlNFT)
-        nameNFTLabel.text = model.nameNFT
+        nameNFTLabel.text = model.nameNFT.components(separatedBy: " ").first
         starRatingView.rating = model.rating >= 5.0 ? 5.0 : model.rating
         nameAuthorLabel.text = model.nameAuthor
-        priceLabel.text = "\(model.priceETN) ETN"
+        priceValueLabel.text = "\(model.priceETN) ETN"
     }
 }

@@ -8,10 +8,6 @@
 import Foundation
 
 struct ProfileRequest: NetworkRequest {
-    var dto: Encodable?
-    
-    var httpMethod: HttpMethod
-
     var endpoint: URL? {
         URL(string: "\(RequestConstants.baseURL)/profile/1")
     }

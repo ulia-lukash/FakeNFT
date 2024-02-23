@@ -8,9 +8,9 @@
 import Foundation
 
 public struct MyNFTCellModel {
-    public let urlNFT: URL?
-    public let nameNFT: String
-    public let nameAuthor: String = ""
-    public let rating: Double
-    public let priceETN: Float
+    let urlNFT: URL?
+    let nameNFT: String
+    let nameAuthor: String
+    let rating: Double
+    let priceETN: Float
 }

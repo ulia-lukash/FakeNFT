@@ -199,6 +199,16 @@ private extension ProfileViewController {
         self.view.layoutIfNeeded()
     }
     
+    func displayMyNft() {
+        let service = MyNFTServiceIml(networkClient: DefaultNetworkClient(),
+                                      storage: MyNftStorageImpl())
+        let viewModel = MyNftViewModel(service: service)
+        let myNFTController = MyNFTViewController(viewModel: viewModel)
+        let navController = UINavigationController(rootViewController: myNFTController)
+        present(navController, animated: true)
+        viewModel.sort()
+    }
+    
     //MARK: - setupUI function
     func setupUIItem() {
         setupEditProfileImageView()
@@ -292,8 +302,15 @@ extension ProfileViewController: NSLayoutManagerDelegate {
 //MARK: - UITableViewDelegate
 extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let myNFTController = MyNFTViewController()
-        _ = UINavigationController(rootViewController: myNFTController)
+        if indexPath.row == CountProfileCell.one.rawValue {
+            displayMyNft()
+        }
+        if indexPath.row == CountProfileCell.one.rawValue {
+            
+        }
+        if indexPath.row == CountProfileCell.one.rawValue {
+            //TODO: - epic 3-3 show webView
+        }
     }
 }
 

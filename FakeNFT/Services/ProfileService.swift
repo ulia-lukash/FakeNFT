@@ -33,7 +33,7 @@ final class ProfileServiceImpl: ProfileService {
             return
         }
         
-        let request = ProfileRequest(httpMethod: .get)
+        let request = ProfileRequest()
         networkClient.send(request: request,
                            type: Profile.self,
                            completionQueue: queue) { [weak storage] result in
@@ -49,9 +49,8 @@ final class ProfileServiceImpl: ProfileService {
     }
     
     func updateProfile(json: [String: String], id: String, completion: @escaping ProfileCompletion) {
-        let request = ProfileRequest(httpMethod: .put)
+        let request = ProfilePutRequest(dto: json)
         networkClient.sendProfilePUT(request: request,
-                                     json: json,
                                      completionQueue: queue) { [weak self, storage] result in
             guard let self else { return }
             storage.removeProfile(with: id)

@@ -31,4 +31,6 @@ public enum ConstLocalizable {
     static let myNFTVCByRating = NSLocalizedString("MyNFTVC.byRating", comment: "")
     static let myNFTVCByName = NSLocalizedString("MyNFTVC.byName", comment: "")
     static let myNFTVCClose = NSLocalizedString( "MyNFTVC.close", comment: "")
+    static let myNftVCEmpty = NSLocalizedString( "MyNFTVC.empty", comment: "")
+    static let myNFTProfile = NSLocalizedString( "MyNFT.profile", comment: "")
 }

@@ -8,15 +8,11 @@
 import Foundation
 
 struct MyListNFT: Decodable {
-    let listNFT: [MyNFT]
-}
-
-struct MyNFT: Decodable {
     let name: String
     let images: [String]
     let rating: Int
     let description: String
-    let price: Float
+    let price: Double
     let author: String
     let id: String
 }
