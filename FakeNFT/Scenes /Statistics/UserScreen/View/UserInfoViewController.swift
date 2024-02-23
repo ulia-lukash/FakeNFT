@@ -51,7 +51,7 @@ final class UserInfoViewController: UIViewController {
     private let nftDescriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Коллекция NFT (112)" // TODO: add localization
+        label.text = "Коллекция NFT (112)" // this will be changed in further versions
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         label.textColor = UIColor.segmentActive
         return label
@@ -179,8 +179,9 @@ final class UserInfoViewController: UIViewController {
     }
 
     private func pushNFTColletionViewController() {
+        let viewModel = NFTCollectionViewModel(for: NFTModel())
         navigationController?.pushViewController(
-            NFTCollectionViewController(),
+            NFTCollectionViewController(viewModel: viewModel),
             animated: true)
     }
 }

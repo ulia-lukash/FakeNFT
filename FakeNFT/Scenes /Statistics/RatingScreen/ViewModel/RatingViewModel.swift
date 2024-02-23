@@ -22,9 +22,9 @@ final class RatingViewModel: RatingViewModelProtocol {
         }
     }
 
-    private let userModel: UserModel
+    private let userModel: RatingModel
 
-    init(for model: UserModel) {
+    init(for model: RatingModel) {
         userModel = model
         allUsers = userModel.getUsers()
     }

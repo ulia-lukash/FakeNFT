@@ -1,6 +1,6 @@
 import UIKit
 
-final class UserModel {
+final class RatingModel {
     // swiftlint:disable force_unwrapping
     private var mockUsersDB = [
         User(rating: "1", username: "Alex", nftAmount: "112", avatar: UIImage(named: "UserpickAlex")!, 

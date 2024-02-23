@@ -1,17 +1,18 @@
 import UIKit
 
 final class NFTCollectionViewController: UIViewController {
-    // swiftlint:disable force_unwrapping
-    private var mockNFTs: [NFT] = [
-        NFT(icon: UIImage(named: "Grace")!, name: "Grace", isLiked: false, rating: 2, price: "1,78"),
-        NFT(icon: UIImage(named: "Zoe")!, name: "Zoe", isLiked: false, rating: 2, price: "1,78"),
-        NFT(icon: UIImage(named: "Stella")!, name: "Stella", isLiked: false, rating: 2, price: "1,78"),
-        NFT(icon: UIImage(named: "Toast")!, name: "Toast", isLiked: false, rating: 2, price: "1,78"),
-        NFT(icon: UIImage(named: "Zeus")!, name: "Zeus", isLiked: false, rating: 2, price: "1,78")
-    ]
-    // swiftlint:enable force_unwrapping
+    private let viewModel: NFTCollectionViewModelProtocol
 
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+
+    init(viewModel: NFTCollectionViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,13 +56,13 @@ final class NFTCollectionViewController: UIViewController {
 
 extension NFTCollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return mockNFTs.count
+        return viewModel.userNFTCollection.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NFTCell", for: indexPath) as? NFTCell
 
-        let nft = mockNFTs[indexPath.row]
+        let nft = viewModel.userNFTCollection[indexPath.row]
         cell?.setupCell(using: nft)
 
         guard let cell = cell else {
