@@ -40,7 +40,8 @@ extension UITableView {
     }
 
     func dequeueReusableHeaderFooterView<T: UITableViewHeaderFooterView>() -> T where T: ReuseIdentifying {
-        guard let headerFooterView = dequeueReusableHeaderFooterView(withIdentifier: T.defaultReuseIdentifier) as? T else {
+        guard let headerFooterView = dequeueReusableHeaderFooterView(
+            withIdentifier: T.defaultReuseIdentifier) as? T else {
             assertionFailure("Could not dequeue header/footer with identifier: \(T.defaultReuseIdentifier)")
             return T()
         }

@@ -26,7 +26,6 @@ final class ProfileService: RequestService {
 
     func fetchProfile() {
 
-        assert(Thread.isMainThread)
         if task != nil { return }
 
         guard let request = makeGetRequest(path: RequestConstants.profileFetchEndpoint) else {
@@ -41,7 +40,7 @@ final class ProfileService: RequestService {
                     object: self,
                     userInfo: ["profile": self.profile as Any] )
             case .failure(let error):
-                assertionFailure("fFailed to fetch PROFILE: " + error.localizedDescription)
+                assertionFailure("Failed to fetch PROFILE: " + error.localizedDescription)
             }
             self.task = nil
         }
@@ -54,11 +53,13 @@ final class ProfileService: RequestService {
         let likesString = likes.map { "likes=\($0)" }.joined(separator: "&")
         let reqData = Data(likesString.utf8)
 
-        guard let request = makePutRequest(path: RequestConstants.profileFetchEndpoint, data: reqData) else { assertionFailure("Failed to make likes put request")
+        guard let request = makePutRequest(
+            path: RequestConstants.profileFetchEndpoint,
+            data: reqData) else { assertionFailure("Failed to make likes put request")
             return
         }
         let task = urlSession.dataTask(with: request) { data, response, error in
-            if let data = data,
+            if let _ = data,
                let response = response,
                let statusCode = (response as? HTTPURLResponse)?.statusCode {
                 if 200 ..< 300 ~= statusCode {

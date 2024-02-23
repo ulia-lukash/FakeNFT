@@ -11,27 +11,29 @@ import Kingfisher
 import ProgressHUD
 
 final class CollectionViewController: UIViewController {
-
+    
     // MARK: - Public Properties
-
+    
     var viewModel: CollectionViewModelProtocol?
-
+    
     // MARK: - Private Properties
-
+    
+    private var viewModelNftsObserver: NSObjectProtocol?
+    
     private let widthParameters = CollectionParameters(
         cellsNumber: 3,
         leftInset: 0,
         rightInset: 0,
         interCellSpacing: 10
     )
-
+    
     private lazy var backButtonItem = UIBarButtonItem(
         image: UIImage(systemName: "chevron.left"),
         style: .plain,
         target: self,
         action: #selector(backButtonTapped)
     )
-
+    
     private lazy var coverImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.masksToBounds = true
@@ -39,7 +41,7 @@ final class CollectionViewController: UIViewController {
         imageView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         return imageView
     }()
-
+    
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 22, weight: .bold)
@@ -47,14 +49,14 @@ final class CollectionViewController: UIViewController {
         label.textColor = UIColor.segmentActive
         return label
     }()
-
+    
     private lazy var authorLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.textColor = UIColor.segmentActive
         return label
     }()
-
+    
     private lazy var authorNameLabel: UIButton = {
         let button = UIButton()
         button.setTitleColor(.blueUniversal, for: .normal)
@@ -62,7 +64,7 @@ final class CollectionViewController: UIViewController {
         button.addTarget(self, action: #selector(didTapAuthorName), for: .touchUpInside)
         return button
     }()
-
+    
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
@@ -71,7 +73,7 @@ final class CollectionViewController: UIViewController {
         label.lineBreakMode = .byWordWrapping
         return label
     }()
-
+    
     private lazy var nftCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
         let flowLayout = UICollectionViewFlowLayout()
@@ -82,112 +84,116 @@ final class CollectionViewController: UIViewController {
         collection.backgroundColor = .clear
         return collection
     }()
-
+    
     private lazy var scrollView = UIScrollView()
     private lazy var scrollViewContent = UIView()
-
+    
     // MARK: - UIViewController
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         ProgressHUD.show()
+        self.viewModelNftsObserver = NotificationCenter.default
+            .addObserver(
+                forName: CollectionViewModel.didChangeNftsNotification,
+                object: nil,
+                queue: .main) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.nftCollection.reloadData()
+                }
         bind()
         nftCollection.dataSource = self
         nftCollection.delegate = self
         setUp()
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         viewModel?.clearData()
     }
-
+    
     // MARK: - ViewModel
-
+    
     private func bind() {
-
+        
         viewModel?.onChange = { [weak self] in
             self?.configure()
             self?.nftCollection.reloadData()
             ProgressHUD.dismiss()
         }
-
-        viewModel?.onLoadNft = {
-            [weak self] in
-            self?.nftCollection.reloadData()
-        }
     }
-
+    
     // MARK: - Private Methods
-
+    
     private func configure() {
         setCoverOfCollection(viewModel?.collection?.cover)
         setLabels()
     }
-
+    
     private func setUp() {
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-
+        
         scrollView.addSubview(scrollViewContent)
         scrollViewContent.translatesAutoresizingMaskIntoConstraints = false
-
+        
         [coverImageView, nameLabel, authorLabel, authorNameLabel, descriptionLabel, nftCollection].forEach {
             scrollViewContent.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-
+        
         setConstraints()
-
+        
         backButtonItem.tintColor = UIColor.segmentActive
         navigationItem.leftBarButtonItem = backButtonItem
         view.backgroundColor = UIColor.whiteModeThemes
+        
     }
-
+    
     private func setConstraints() {
         NSLayoutConstraint.activate([
-
+            
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-
-            scrollViewContent.topAnchor.constraint(equalTo: view.topAnchor),
+            
+            scrollViewContent.topAnchor.constraint(equalTo: scrollView.topAnchor),
             scrollViewContent.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             scrollViewContent.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             scrollViewContent.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             scrollViewContent.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            scrollViewContent.heightAnchor.constraint(equalToConstant: 800),
-
+            scrollViewContent.heightAnchor.constraint(equalToConstant: 1000),
+            
             coverImageView.topAnchor.constraint(equalTo: scrollViewContent.topAnchor),
             coverImageView.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor),
             coverImageView.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor),
-
+            
             nameLabel.topAnchor.constraint(equalTo: coverImageView.bottomAnchor, constant: 16),
             nameLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
             nameLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
             nameLabel.heightAnchor.constraint(equalToConstant: 28),
-
+            
             authorLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
             authorLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
             authorLabel.widthAnchor.constraint(equalToConstant: 112),
             authorLabel.heightAnchor.constraint(equalToConstant: 28),
-
+            
             authorNameLabel.leadingAnchor.constraint(equalTo: authorLabel.trailingAnchor, constant: 4),
             authorNameLabel.heightAnchor.constraint(equalToConstant: 28),
             authorNameLabel.centerYAnchor.constraint(equalTo: authorLabel.centerYAnchor),
-
+            
             descriptionLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor),
             descriptionLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
             descriptionLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
-
+            
             nftCollection.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20),
             nftCollection.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
             nftCollection.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
             nftCollection.bottomAnchor.constraint(equalTo: scrollViewContent.bottomAnchor)
         ])
     }
-
+    
     private func setCoverOfCollection(_ coverURL: String?) {
         guard let urlString = coverURL else { return }
         let url = URL(string: urlString)
@@ -196,7 +202,7 @@ final class CollectionViewController: UIViewController {
         coverImageView.kf.setImage(
             with: url,
             options: [
-
+                
                 .processor(processor)
             ]) { result in
                 switch result {
@@ -207,7 +213,7 @@ final class CollectionViewController: UIViewController {
                 }
             }
     }
-
+    
     private func setLabels() {
         guard let collection = viewModel?.collection else { return }
         nameLabel.text = collection.name
@@ -215,20 +221,30 @@ final class CollectionViewController: UIViewController {
         authorLabel.text = NSLocalizedString("Collection author:", comment: "")
         authorNameLabel.setTitle(collection.author, for: .normal)
     }
-
+    
     // MARK: - @objc Methods
-
+    
     @objc private func backButtonTapped() {
         self.dismiss(animated: true)
     }
-
+    
     @objc private func didTapAuthorName() {
-        //        let vc = AuthorViewController()
-        //        guard let author = viewModel.author, let url = viewModel.author?.website else { return }
-        //        vc.viewModel.setUrl(url)
-        //        let navigationController = UINavigationController(rootViewController: vc)
-        //        navigationController.modalPresentationStyle = .fullScreen
-        //        self.present(navigationController, animated: true, completion: nil)
+        let viewController = AuthorViewController()
+        
+        /*        Запрос колекции из АПИшки возвращает коллекцию, 
+         где в поле автор указано только его имя. Из двух вариантов:
+         подтягивать всех пользователей и фильтровать по этому имени,
+         чтоб найти таки его ссылку на сайт, или натолкать рандомных
+         ссылок, наставник сказал лучше уж рандомных ссылок, поэтому
+         вот так... Надеюсь, в скором времени бэк доведут до ума))))
+         */
+        
+        let url = URL(string: "https://practicum.yandex.ru/ios-developer")!
+        viewController.viewModel = AuthorWebViewViewModel()
+        viewController.viewModel?.setUrl(url)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.modalPresentationStyle = .fullScreen
+        self.present(navigationController, animated: true, completion: nil)
     }
 }
 
@@ -239,20 +255,24 @@ extension CollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel?.nfts.count ?? 0
     }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
-        let cell = collectionView.dequeueReusableCell(indexPath: indexPath) as NftCollectionCell
-
-        guard let nft = viewModel?.nfts[indexPath.row] else { return UICollectionViewCell() }
-        let nftId = nft.id
-
-        guard let isLiked = viewModel?.isLiked(nft: nftId),
-              let isInBasket = viewModel?.isInBasket(nft: nftId) else { return UICollectionViewCell() }
-        cell.delegate = self
-        cell.configure(nft: nft, isLiked: isLiked, isInBasket: isInBasket)
-        return cell
-    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+            
+            let cell = collectionView.dequeueReusableCell(indexPath: indexPath) as NftCollectionCell
+            /*
+             TODO: - Отвратительный способ, обязательно переделать, но падла как... OperationQueue...
+             */
+            guard let nft = viewModel?.nfts[indexPath.row] else { return UICollectionViewCell() }
+            let nftId = nft.id
+            
+            guard let isLiked = viewModel?.isLiked(nft: nftId),
+                  let isInBasket = viewModel?.isInBasket(nft: nftId) else { return UICollectionViewCell() }
+            cell.delegate = self
+            cell.configure(nft: nft, isLiked: isLiked, isInBasket: isInBasket)
+            return cell
+        }
 }
 
 extension CollectionViewController: UICollectionViewDelegateFlowLayout {
@@ -265,7 +285,7 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
         let cellWidth = availableWidth / CGFloat(widthParameters.cellsNumber)
         return CGSize(width: cellWidth, height: 192)
     }
-
+    
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
@@ -273,20 +293,20 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
     ) -> UIEdgeInsets {
         return UIEdgeInsets(top: 4, left: widthParameters.leftInset, bottom: 4, right: widthParameters.rightInset)
     }
-
+    
 }
 
 extension CollectionViewController: NftCollectionCellDelegate {
-
+    
     func reloadTable() {
         self.nftCollection.reloadData()
     }
     func didTapLikeFor(nft id: UUID) {
         viewModel?.didTapLikeFor(nft: id)
     }
-
+    
     func didTapCartFor(nft id: UUID) {
         viewModel?.didTapCartFor(nft: id)
     }
-
+    
 }

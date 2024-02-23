@@ -25,7 +25,6 @@ final class NftService: RequestService {
     // MARK: - Public Methods
 
     func fetchNft(withId id: String) {
-        assert(Thread.isMainThread)
 
         guard let request = makeGetRequest(path: RequestConstants.fetchNft(withId: id)) else {
             return assertionFailure("Failed to make an NFT request")}
@@ -35,10 +34,6 @@ final class NftService: RequestService {
             switch result {
             case .success(let nft):
                 self.mapNft(nft)
-                NotificationCenter.default.post(
-                    name: NftService.didChangeNftsNotification,
-                    object: self,
-                    userInfo: ["nft": self.nft as Any] )
             case .failure(let error):
                 print(error)
             }
@@ -56,13 +51,19 @@ final class NftService: RequestService {
 
     private func mapNft(_ nft: NftResponse) {
         guard let id = UUID(uuidString: nft.id) else { return }
-        self.nfts.append(Nft(
+        self.nft = Nft(
             name: nft.name,
             id: id,
             images: nft.images,
             rating: nft.rating,
             description: nft.description,
             price: nft.price,
-            author: nft.author))
+            author: nft.author)
+        
+        NotificationCenter.default.post(
+            name: NftService.didChangeNftNotification,
+            object: self,
+            userInfo: ["nft": self.nft as Any] )
     }
+    
 }

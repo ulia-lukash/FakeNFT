@@ -9,6 +9,7 @@ import Foundation
 
 protocol AuthorViewModelProtocol: AnyObject {
     var webViewUrl: URL? { get }
+    func setUrl(_ url: URL)
 }
 
 final class AuthorWebViewViewModel: AuthorViewModelProtocol {

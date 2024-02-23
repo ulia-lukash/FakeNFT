@@ -25,7 +25,6 @@ final class OrderService: RequestService {
 
     func fetchOrder() {
 
-        assert(Thread.isMainThread)
         if task != nil { return }
 
         guard let request = makeGetRequest(path: RequestConstants.orderFetchEndpoint) else {
@@ -53,11 +52,13 @@ final class OrderService: RequestService {
         let nftsString = nfts.map { "nfts=\($0)" }.joined(separator: "&")
         let reqData = Data(nftsString.utf8)
 
-        guard let request = makePutRequest(path: RequestConstants.orderFetchEndpoint, data: reqData) else { assertionFailure("Failed to make order put request")
+        guard let request = makePutRequest(
+            path: RequestConstants.orderFetchEndpoint,
+            data: reqData) else { assertionFailure("Failed to make order put request")
             return
         }
         let task = urlSession.dataTask(with: request) { data, response, error in
-            if let data = data,
+            if let _ = data,
                let response = response,
                let statusCode = (response as? HTTPURLResponse)?.statusCode {
                 if 200 ..< 300 ~= statusCode {
