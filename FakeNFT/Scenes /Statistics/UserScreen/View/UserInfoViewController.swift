@@ -33,7 +33,12 @@ final class UserInfoViewController: UIViewController {
         button.layer.borderColor = UIColor.segmentActive.cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 16
-        button.setTitle("Перейти на сайт пользователя", for: .normal) // TODO: add localization
+        button.setTitle(
+            NSLocalizedString(
+                "UserWebsite.button",
+                comment: "goto user website"
+            ),
+            for: .normal)
         button.setTitleColor(UIColor.segmentActive, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         button.backgroundColor = UIColor.whiteModeThemes

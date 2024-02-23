@@ -26,7 +26,7 @@ final class NFTCollectionViewController: UIViewController {
         let backButton = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
         backButton.tintColor = UIColor.segmentActive
         navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-        title = "Коллекция NFT"                     // TODO: add localization
+        title = NSLocalizedString("NFTCollection.screenTitle", comment: "screen title")
     }
 
     private func setupCollectionView() {
