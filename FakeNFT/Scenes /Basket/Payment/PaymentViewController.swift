@@ -6,6 +6,7 @@
 //
 
 import UIKit
+
 final class PaymentViewController: UIViewController {
     
     // MARK: - Private properties:
@@ -18,6 +19,8 @@ final class PaymentViewController: UIViewController {
         right: 16,
         cellSpacing: 7
     )
+    
+    private var viewModel: PaymentViewModelProtocol
     
     // MARK: - UI
     
@@ -80,7 +83,18 @@ final class PaymentViewController: UIViewController {
     
     private lazy var successView = BasketSuccessView()
     
+    internal var activityIndicator = UIActivityIndicatorView()
+    
     // MARK: - Initializers
+    
+    init(viewModel: PaymentViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Life Cycle
     
@@ -90,9 +104,32 @@ final class PaymentViewController: UIViewController {
         setupView()
         setupConstraints()
         setupNavBar()
+        bind()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.viewModel.loadCurrency()
+        
     }
     
     // MARK: - Private Methods
+    
+    private func bind() {
+        viewModel.onChange = { [weak self] in
+            guard let self else { return }
+            self.paymentCollectionView.reloadData()
+        }
+        
+        viewModel.onLoad = { [weak self] onLoad in
+            guard let self else { return }
+            onLoad ? self.activityIndicator.startAnimating() : self.activityIndicator.stopAnimating()
+            if onLoad == false {
+                var result = self.viewModel.checkBool
+                print(result)
+            }
+        }
+    }
     
     private func setupView() {
         view.addSubview(bottomView)
@@ -100,6 +137,7 @@ final class PaymentViewController: UIViewController {
         view.addSubview(paymentButton)
         view.addSubview(stubLabel)
         view.addSubview(agreementButton)
+        view.addSubview(activityIndicator)
     }
     
     private func setupNavBar() {
@@ -114,6 +152,7 @@ final class PaymentViewController: UIViewController {
     }
     
     private func setupConstraints() {
+        activityIndicator.constraintCenters(to: view)
         NSLayoutConstraint.activate([
             bottomView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -155,13 +194,18 @@ final class PaymentViewController: UIViewController {
     }
     
     @objc private func didTapPayButton() {
-        self.navigationController?.navigationBar.isHidden = true
-        bottomView.isHidden = true
-        paymentButton.isHidden = true
-        stubLabel.isHidden = true
-        agreementButton.isHidden = true
-        paymentCollectionView.isHidden = true
-        setupSuccessView()
+//        self.navigationController?.navigationBar.isHidden = true
+//        bottomView.isHidden = true
+//        paymentButton.isHidden = true
+//        stubLabel.isHidden = true
+//        agreementButton.isHidden = true
+//        paymentCollectionView.isHidden = true
+//        setupSuccessView()
+        
+        self.viewModel.paymentAttempt()
+        
+        
+       
     }
     
     @objc private func openWebView() {
@@ -196,12 +240,12 @@ extension PaymentViewController: UICollectionViewDelegateFlowLayout {
 
 extension PaymentViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        PaymentModel.mocksPayment.count
+        viewModel.currency.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PaymentCollectionCell.identifier, for: indexPath) as? PaymentCollectionCell else { return UICollectionViewCell()}
-        cell.cellSettings(for: PaymentModel.mocksPayment[indexPath.row])
+        cell.cellSettings(for: viewModel.currency[indexPath.row])
         return cell
     }
 }
@@ -212,6 +256,8 @@ extension PaymentViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? PaymentCollectionCell else { return }
         cell.isSelected = true
+        viewModel.idCurrency = cell.idCurrency
+        viewModel.currencyName = cell.currencyName
     }
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {

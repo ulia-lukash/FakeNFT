@@ -15,6 +15,8 @@ final class BasketViewController: UIViewController, LoadingView {
     
     private var sortedAlertPresenter: SortAlertPresenterProtocol?
     
+    let paymentViewModel = PaymentViewModel(service: PaymentService(networkClient: DefaultNetworkClient()))
+    
     // MARK: - UI
     
     private lazy var bottomView: UIView = {
@@ -290,7 +292,7 @@ final class BasketViewController: UIViewController, LoadingView {
     }
     
     @objc private func didTapPayButton() {
-        let viewController = PaymentViewController()
+        let viewController = PaymentViewController(viewModel: paymentViewModel)
         navigationController?.pushViewController(viewController, animated: true)
     }
 }

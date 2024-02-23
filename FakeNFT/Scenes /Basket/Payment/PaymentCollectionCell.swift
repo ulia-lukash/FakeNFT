@@ -23,6 +23,9 @@ final class PaymentCollectionCell: UICollectionViewCell {
         }
     }
     
+    var idCurrency: String = ""
+    var currencyName: String = ""
+    
     //MARK: - UI:
     
     private lazy var currencyImageView: UIImageView = {
@@ -75,6 +78,8 @@ final class PaymentCollectionCell: UICollectionViewCell {
             options: [.transition(.fade(1))])
         paymentSystemLabel.text = model.title
         currencyNameLabel.text = model.name
+        idCurrency = model.id
+        currencyName = model.name
     }
     
     // MARK: - Private Methods

@@ -109,13 +109,13 @@ final class BasketTableViewCell: UITableViewCell {
         idNftToDelete = nft.id
         switch nft.rating {
         case 0: ratingNFTImage.image = UIImage(named: "raiting0Stub")
-        case 1..<50: ratingNFTImage.image = UIImage(named: "raiting1Stub")
-        case 50..<100: ratingNFTImage.image = UIImage(named: "raiting2Stub")
-        case 100..<200: ratingNFTImage.image = UIImage(named: "raiting3Stub")
-        case 200..<300: ratingNFTImage.image = UIImage(named: "raiting4Stub")
-        case 300..<400: ratingNFTImage.image = UIImage(named: "raiting5Stub")
+        case 1..<100: ratingNFTImage.image = UIImage(named: "raiting1Stub")
+        case 100..<300: ratingNFTImage.image = UIImage(named: "raiting2Stub")
+        case 300..<500: ratingNFTImage.image = UIImage(named: "raiting3Stub")
+        case 500..<700: ratingNFTImage.image = UIImage(named: "raiting4Stub")
+        case 700..<900: ratingNFTImage.image = UIImage(named: "raiting5Stub")
         default:
-            print("Error")
+            ratingNFTImage.image = UIImage(named: "raiting5Stub")
         }
     }
     
