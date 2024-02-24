@@ -37,8 +37,8 @@
 
 - Основная CollectionView
 
-    - [ ] Cells (est: 40 min; fact: x min)
-    - [ ] Delegate, DataSource (est: 40 min; fact: x min)
+    - [ ] Cells (est: 40 min; fact: 30 min)
+    - [ ] Delegate, DataSource (est: 40 min; fact: 20 min)
    
 2. Логика 
 
@@ -47,7 +47,7 @@
 
 3. Верстка экрана
 
-    - [ ] Подробнее об авторе
+    - [ ] Подробнее об авторе (est: 30 min; fact: 30 min)
     - [ ] Остальной UI
 
 

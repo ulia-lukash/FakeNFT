@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 final class CatalogTableFooterView: UITableViewHeaderFooterView, ReuseIdentifying {
+
     private lazy var footerLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .bold)

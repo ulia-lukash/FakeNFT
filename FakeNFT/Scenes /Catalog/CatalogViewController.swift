@@ -11,7 +11,7 @@ import ProgressHUD
 
 final class CatalogViewController: UIViewController {
 
-    private let viewModel = CatalogViewControllerViewModel()
+    private var viewModel: CatalogViewModelProtocol?
     private lazy var burgerButton: UIButton = {
         let button = UIButton()
         let image = UIImage(systemName: "text.justify.leading")
@@ -32,19 +32,20 @@ final class CatalogViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        viewModel = CatalogViewControllerViewModel()
         nftCollection.dataSource = self
         nftCollection.delegate = self
         setUp()
         ProgressHUD.show()
         bind()
-        viewModel.getCollections()
+        viewModel?.getCollections()
     }
 
     // MARK: - Private Methods
 
     private func bind() {
 
-        viewModel.onChange = { [weak self] in
+        viewModel?.onChange = { [weak self] in
             self?.nftCollection.reloadData()
             ProgressHUD.dismiss()
         }
@@ -73,24 +74,36 @@ final class CatalogViewController: UIViewController {
     }
 
     private func filterByName() {
-        viewModel.collectionsFilterdByName()
+        viewModel?.collectionsFilterByName()
         self.nftCollection.reloadData()
     }
 
     private func filterByNumber() {
-        viewModel.collectionsFileterByNumber()
+        viewModel?.collectionsFilterByNumber()
         self.nftCollection.reloadData()
     }
 
     @objc private func didPressBurgerButton() {
 
-        let alert = UIAlertController(title: nil, message: NSLocalizedString("Catalog.sort", comment: ""), preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Catalog.sort.byName", comment: ""), style: .default, handler: {_ in
-            self.filterByName()
-        }))
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Catalog.sort.byNftNumber", comment: ""), style: .default, handler: {_ in
-            self.filterByNumber()
-        }))
+        let alert = UIAlertController(
+            title: nil,
+            message: NSLocalizedString("Catalog.sort", comment: ""),
+            preferredStyle: .actionSheet
+        )
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("Catalog.sort.byName", comment: ""),
+            style: .default,
+            handler: {_ in
+                self.filterByName()
+            }
+        ))
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("Catalog.sort.byNftNumber", comment: ""),
+            style: .default,
+            handler: {_ in
+                self.filterByNumber()
+            }
+        ))
         alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""), style: .cancel))
         self.present(alert, animated: true, completion: nil)
     }
@@ -98,7 +111,7 @@ final class CatalogViewController: UIViewController {
 
 extension CatalogViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        viewModel.collectionsNumber()
+        viewModel?.collectionsNumber() ?? 0
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         1
@@ -106,8 +119,10 @@ extension CatalogViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell() as CatalogTableViewCell
-        let collection = viewModel.collections[indexPath.section]
-        cell.configure(for: collection.name)
+        let collection = viewModel?.collections[indexPath.section]
+        if let urlEndpoint = collection?.cover.components(separatedBy: "/").last {
+            cell.configure(for: urlEndpoint)
+        }
         cell.selectionStyle = .none
         return cell
     }
@@ -116,13 +131,18 @@ extension CatalogViewController: UITableViewDataSource {
 extension CatalogViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
+        let collection = viewModel?.collections[indexPath.section]
+        guard let id = collection?.id else { return }
+        let viewController = CollectionViewController(viewModel: CollectionViewModel(), collectionId: id)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.modalPresentationStyle = .fullScreen
+        self.present(navigationController, animated: true, completion: nil)
     }
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
 
-        let collection = viewModel.collections[section]
-        let name = collection.name
-        let count = collection.nfts.count
+        let collection = viewModel?.collections[section]
+        guard let name = collection?.name,
+              let count = collection?.nfts.count else { return UIView() }
         let footerString = "\(name) (\(count))"
 
         let footerView = tableView.dequeueReusableHeaderFooterView() as CatalogTableFooterView
