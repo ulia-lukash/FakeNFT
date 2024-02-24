@@ -14,21 +14,15 @@ protocol BasketTableViewCellDelegate: AnyObject {
 
 final class BasketTableViewCell: UITableViewCell {
     
-    // MARK: - Identifier
+    // MARK: - Properties
     
     static let identifier = "BasketTableViewCell"
     
-    //MARK: - Delegate
-    
     weak var delegate: BasketTableViewCellDelegate?
-    
-    // MARK: - Private properties:
     
     private var idNftToDelete: String = ""
     
-    //MARK: - UI
-    
-    private lazy var imageNFT: UIImageView = {
+    private let imageNFT: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 12
@@ -37,41 +31,41 @@ final class BasketTableViewCell: UITableViewCell {
         return imageView
     }()
     
-    private lazy var nameNFTLabel: UILabel = {
+    private let nameNFTLabel: UILabel = {
         let label = UILabel()
-        label.textColor = UIColor.segmentActive
-        label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        label.textColor = .segmentActive
+        label.font = .systemFont(ofSize: 17, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private lazy var ratingNFTImage: UIImageView = {
+    private let ratingNFTImage: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private lazy var stubNFTLabel: UILabel = {
+    private let stubNFTLabel: UILabel = {
         let label = UILabel()
-        label.textColor = UIColor.segmentActive
+        label.textColor = .segmentActive
         label.text = "Цена"
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private lazy var quantityNFTLabel: UILabel = {
+    private let quantityNFTLabel: UILabel = {
         let label = UILabel()
-        label.textColor = UIColor.segmentActive
-        label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        label.textColor = .segmentActive
+        label.font = .systemFont(ofSize: 17, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private lazy var deleteNFTButton: UIButton = {
+    private let deleteNFTButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "deleteCard"), for: .normal)
-        button.tintColor = UIColor.segmentActive
+        button.tintColor = .segmentActive
         button.addTarget(self, action: #selector(didTapDeleteButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -81,77 +75,46 @@ final class BasketTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupView()
-        setupConstraints()
-        backgroundColor = .systemBackground
-        selectionStyle = .none
+        setupUI()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Public Methods:
+    // MARK: - Public Methods
     
-    func configureCell(for nft: Nft) {
-        let url = nft.images.first
-        imageNFT.kf.indicatorType = .activity
-        imageNFT.kf.setImage(
-            with: url,
-            placeholder: UIImage(named: "Placeholder"),
-            options: [.transition(.fade(1))])
-        nameNFTLabel.text = nft.name
-        let formatterLabel = String(
-            format:"%.2f", nft.price).replacingOccurrences(
-                of: ".", with: ","
-            )
-        quantityNFTLabel.text = "\(formatterLabel) ETH"
-        idNftToDelete = nft.id
-        switch nft.rating {
-        case 0: ratingNFTImage.image = UIImage(named: "raiting0Stub")
-        case 1..<100: ratingNFTImage.image = UIImage(named: "raiting1Stub")
-        case 100..<300: ratingNFTImage.image = UIImage(named: "raiting2Stub")
-        case 300..<500: ratingNFTImage.image = UIImage(named: "raiting3Stub")
-        case 500..<700: ratingNFTImage.image = UIImage(named: "raiting4Stub")
-        case 700..<900: ratingNFTImage.image = UIImage(named: "raiting5Stub")
-        default:
-            ratingNFTImage.image = UIImage(named: "raiting5Stub")
-        }
+    func configure(with nft: Nft) {
+        setupNftData(nft)
     }
     
-    // MARK: - Private Methods:
+    // MARK: - Private Methods
     
-    private func setupView() {
+    private func setupUI() {
         contentView.backgroundColor = .systemBackground
-        contentView.addSubview(imageNFT)
-        contentView.addSubview(nameNFTLabel)
-        contentView.addSubview(ratingNFTImage)
-        contentView.addSubview(stubNFTLabel)
-        contentView.addSubview(quantityNFTLabel)
-        contentView.addSubview(deleteNFTButton)
+        addSubviews()
+        setupConstraints()
+    }
+    
+    private func addSubviews() {
+        [imageNFT, nameNFTLabel, ratingNFTImage, stubNFTLabel, quantityNFTLabel, deleteNFTButton].forEach { contentView.addSubview($0) }
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            
-            contentView.topAnchor.constraint(equalTo: topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentView.heightAnchor.constraint(equalToConstant: 140),
-            
             imageNFT.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             imageNFT.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             imageNFT.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
-            imageNFT.heightAnchor.constraint(equalToConstant: 108),
             imageNFT.widthAnchor.constraint(equalToConstant: 108),
+            imageNFT.heightAnchor.constraint(equalTo: imageNFT.widthAnchor),
             
             nameNFTLabel.leadingAnchor.constraint(equalTo: imageNFT.trailingAnchor, constant: 20),
             nameNFTLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
             
             ratingNFTImage.leadingAnchor.constraint(equalTo: imageNFT.trailingAnchor, constant: 20),
             ratingNFTImage.topAnchor.constraint(equalTo: nameNFTLabel.bottomAnchor, constant: 4),
-            ratingNFTImage.heightAnchor.constraint(equalToConstant: 12),
             ratingNFTImage.widthAnchor.constraint(equalToConstant: 68),
+            ratingNFTImage.heightAnchor.constraint(equalToConstant: 12),
             
             stubNFTLabel.leadingAnchor.constraint(equalTo: imageNFT.trailingAnchor, constant: 20),
             stubNFTLabel.topAnchor.constraint(equalTo: ratingNFTImage.bottomAnchor, constant: 12),
@@ -159,11 +122,38 @@ final class BasketTableViewCell: UITableViewCell {
             quantityNFTLabel.leadingAnchor.constraint(equalTo: imageNFT.trailingAnchor, constant: 20),
             quantityNFTLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
             
-            deleteNFTButton.heightAnchor.constraint(equalToConstant: 40),
-            deleteNFTButton.widthAnchor.constraint(equalToConstant: 40),
+            deleteNFTButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             deleteNFTButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            deleteNFTButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 50)
+            deleteNFTButton.widthAnchor.constraint(equalToConstant: 40),
+            deleteNFTButton.heightAnchor.constraint(equalToConstant: 40)
         ])
+    }
+    
+    private func setupNftData(_ nft: Nft) {
+        imageNFT.kf.setImage(
+            with: nft.images.first,
+            placeholder: UIImage(named: "Placeholder"),
+            options: [.transition(.fade(1))]
+        )
+        nameNFTLabel.text = nft.name
+        let formattedPrice = String(format: "%.2f", nft.price).replacingOccurrences(of: ".", with: ",")
+        quantityNFTLabel.text = "\(formattedPrice) ETH"
+        idNftToDelete = nft.id
+        setupRatingImage(for: nft.rating)
+    }
+    
+    private func setupRatingImage(for rating: Int) {
+        let ratingImageName: String
+        switch rating {
+            case 0: ratingImageName = "raiting0Stub"
+            case 1..<100: ratingImageName = "raiting1Stub"
+            case 100..<300: ratingImageName = "raiting2Stub"
+            case 300..<500: ratingImageName = "raiting3Stub"
+            case 500..<700: ratingImageName = "raiting4Stub"
+            case 700..<900: ratingImageName = "raiting5Stub"
+            default: ratingImageName = "raiting5Stub"
+        }
+        ratingNFTImage.image = UIImage(named: ratingImageName)
     }
     
     @objc private func didTapDeleteButton() {

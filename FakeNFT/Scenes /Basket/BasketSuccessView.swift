@@ -13,17 +13,11 @@ protocol BasketSuccessViewDelegate: AnyObject {
 
 final class BasketSuccessView: UIView {
     
-    //MARK: - Delegate
+    // MARK: - Delegate
     
     weak var delegate: BasketSuccessViewDelegate?
     
-    //MARK: - UI
-    
-    private lazy var innerView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    // MARK: - UI Elements
     
     private lazy var stubCardImage: UIImageView = {
         let image = UIImage(named: "successfulPurchase")
@@ -35,20 +29,20 @@ final class BasketSuccessView: UIView {
     }()
     
     private lazy var stubCardLabel: UILabel = {
-        var label = UILabel()
+        let label = UILabel()
         label.text = "Успех! Оплата прошла, \nпоздравляем с покупкой!"
         label.font = .systemFont(ofSize: 22, weight: .bold)
         label.numberOfLines = 2
         label.textAlignment = .center
-        label.textColor = UIColor.segmentActive
+        label.textColor = .segmentActive
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var stubCardButton: UIButton = {
-        var button = UIButton(type: .system)
-        button.backgroundColor = UIColor.segmentActive
-        button.tintColor = UIColor.whiteModeThemes
+        let button = UIButton(type: .system)
+        button.backgroundColor = .segmentActive
+        button.tintColor = .whiteModeThemes
         button.setTitle("Вернуться в каталог", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         button.layer.masksToBounds = true
@@ -58,7 +52,7 @@ final class BasketSuccessView: UIView {
         return button
     }()
     
-    //MARK: - Life Cycle
+    // MARK: - Life Cycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -76,42 +70,34 @@ final class BasketSuccessView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - Public Properties
-    
-    //MARK: - Private Properties
+    // MARK: - Private Methods
     
     private func setupView() {
-        addSubview(innerView)
-        innerView.addSubview(stubCardImage)
-        innerView.addSubview(stubCardLabel)
-        innerView.addSubview(stubCardButton)
+        addSubview(stubCardImage)
+        addSubview(stubCardLabel)
+        addSubview(stubCardButton)
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            innerView.topAnchor.constraint(equalTo: self.topAnchor),
-            innerView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            innerView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            innerView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            
             stubCardImage.heightAnchor.constraint(equalToConstant: 278),
             stubCardImage.widthAnchor.constraint(equalToConstant: 278),
-            stubCardImage.centerXAnchor.constraint(equalTo: innerView.centerXAnchor),
-            stubCardImage.topAnchor.constraint(equalTo: innerView.topAnchor, constant: 196),
+            stubCardImage.centerXAnchor.constraint(equalTo: centerXAnchor),
+            stubCardImage.topAnchor.constraint(equalTo: topAnchor, constant: 196),
             
             stubCardLabel.topAnchor.constraint(equalTo: stubCardImage.bottomAnchor, constant: 20),
-            stubCardLabel.centerXAnchor.constraint(equalTo: innerView.centerXAnchor),
+            stubCardLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             
             stubCardButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            stubCardButton.leadingAnchor.constraint(equalTo: innerView.leadingAnchor, constant: 16),
-            stubCardButton.trailingAnchor.constraint(equalTo: innerView.trailingAnchor, constant: -16),
+            stubCardButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            stubCardButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             stubCardButton.heightAnchor.constraint(equalToConstant: 60),
         ])
     }
+    
+    // MARK: - Objc Methods
     
     @objc private func didTapBackCatalog() {
         delegate?.backToBasket()
     }
 }
-
-
