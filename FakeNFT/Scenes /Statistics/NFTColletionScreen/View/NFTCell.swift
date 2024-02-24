@@ -51,7 +51,11 @@ final class NFTCell: UICollectionViewCell {
         return button
     }()
 
-    private var nftRating = 0
+    private var nftRating = 0 {
+        didSet {
+            updateRatingStarViews()
+        }
+    }
 
     private var isLiked = false {
         didSet {
@@ -61,6 +65,8 @@ final class NFTCell: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+
+        setupUI()
     }
 
     required init?(coder: NSCoder) {
@@ -72,8 +78,6 @@ final class NFTCell: UICollectionViewCell {
         nftImageView.image = nft.icon
         nftPriceLabel.text = nft.price + " ETH"
         nftNameLabel.text = nft.name
-
-        setupUI()
     }
 
     private func setupUI() {
@@ -111,18 +115,7 @@ final class NFTCell: UICollectionViewCell {
 
     private func setupNFTRatingStackView() {
         contentView.addSubview(nftRatingStackView)
-        for i in 1...5 {
-            let starImageView = UIImageView()
-
-            if i <= nftRating {
-                starImageView.image = UIImage(named: "filledStar")
-            } else {
-                starImageView.image = UIImage(named: "unfilledStar")
-            }
-            starImageView.contentMode = .scaleAspectFit
-            nftRatingStackView.addArrangedSubview(starImageView)
-        }
-
+        updateRatingStarViews()
         NSLayoutConstraint.activate([
             nftRatingStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             nftRatingStackView.topAnchor.constraint(
@@ -165,6 +158,22 @@ final class NFTCell: UICollectionViewCell {
             basketButton.heightAnchor.constraint(equalToConstant: Constants.basketHeight),
             basketButton.widthAnchor.constraint(equalToConstant: Constants.basketWidth)
         ])
+    }
+
+    private func updateRatingStarViews() {
+        if !nftRatingStackView.arrangedSubviews.isEmpty {
+            nftRatingStackView.arrangedSubviews.forEach { subView in
+                nftRatingStackView.removeArrangedSubview(subView)
+                subView.removeFromSuperview()
+            }
+        }
+
+        for i in 1...5 {
+            let starImageView = UIImageView()
+            starImageView.image = i <= nftRating ? UIImage(named: "filledStar") : UIImage(named: "unfilledStar")
+            starImageView.contentMode = .scaleAspectFit
+            nftRatingStackView.addArrangedSubview(starImageView)
+        }
     }
 
     private func changeLikeButtonState() {
