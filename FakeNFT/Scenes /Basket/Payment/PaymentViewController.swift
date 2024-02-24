@@ -1,9 +1,7 @@
+// PaymentViewController.swift
+// FakeNFT
 //
-//  PaymentViewController.swift
-//  FakeNFT
-//
-//  Created by Ivan Cherkashin on 22.02.2024.
-//
+// Created by Ivan Cherkashin on 22.02.2024.
 
 import UIKit
 
@@ -33,7 +31,7 @@ final class PaymentViewController: UIViewController {
     // MARK: - UI
     
     private lazy var bottomView: UIView = {
-        var view = UIView()
+        let view = UIView()
         view.layer.cornerRadius = 12
         view.backgroundColor = UIColor.segmentInactive
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -42,7 +40,7 @@ final class PaymentViewController: UIViewController {
     }()
     
     private lazy var paymentButton: UIButton = {
-        var button = UIButton(type: .system)
+        let button = UIButton(type: .system)
         button.backgroundColor = UIColor.segmentActive
         button.tintColor = UIColor.whiteModeThemes
         button.setTitle("Оплатить", for: .normal)
@@ -55,7 +53,7 @@ final class PaymentViewController: UIViewController {
     }()
     
     private lazy var stubLabel: UILabel = {
-        var label = UILabel()
+        let label = UILabel()
         label.text = "Совершая покупку, вы соглашаетесь с условиями"
         label.textColor = UIColor.segmentActive
         label.font = .systemFont(ofSize: 13, weight: .regular)
@@ -64,7 +62,7 @@ final class PaymentViewController: UIViewController {
     }()
     
     private lazy var agreementButton: UIButton = {
-        var button = UIButton(type: .system)
+        let button = UIButton(type: .system)
         button.tintColor = UIColor.blueUniversal
         button.setTitle("Пользовательского соглашения", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 13, weight: .regular)
@@ -126,15 +124,15 @@ final class PaymentViewController: UIViewController {
     
     private func bind() {
         viewModel.onChange = { [weak self] in
-            guard let self else { return }
+            guard let self = self else { return }
             self.paymentCollectionView.reloadData()
         }
         
         viewModel.onLoad = { [weak self] onLoad in
-            guard let self else { return }
+            guard let self = self else { return }
             onLoad ? self.activityIndicator.startAnimating() : self.activityIndicator.stopAnimating()
-            if onLoad == false {
-                paymentVerification()
+            if !onLoad {
+                self.paymentVerification()
             }
         }
     }
@@ -151,7 +149,7 @@ final class PaymentViewController: UIViewController {
     private func setupNavBar() {
         self.tabBarController?.tabBar.isHidden = true
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "chevronBasket"), style: .plain, target: self, action:#selector(chevronDidTap))
+            image: UIImage(named: "chevronBasket"), style: .plain, target: self, action: #selector(chevronDidTap))
         self.navigationItem.leftBarButtonItem?.tintColor = UIColor.segmentActive
         self.navigationItem.title = "Выберите способ оплаты"
         let textChangeColor = [NSAttributedString.Key.foregroundColor: UIColor.segmentActive]
@@ -209,7 +207,7 @@ final class PaymentViewController: UIViewController {
     
     private func paymentVerification() {
         let result = self.viewModel.checkBool
-        if result == true {
+        if result {
             setupSuccessView()
             self.viewModel.checkBool = false
             delegate?.updateNftAfterPay()
@@ -221,11 +219,11 @@ final class PaymentViewController: UIViewController {
                     actionSheetTextFirst: "Отмена",
                     actionSheetTextSecond: "Повторить",
                     completionFirst: { [weak self] in
-                        guard let self else { return }
+                        guard let self = self else { return }
                         self.viewModel.checkBool = false
                     },
                     completionSecond: { [weak self] in
-                        guard let self else { return }
+                        guard let self = self else { return }
                         self.viewModel.paymentAttempt()
                     }
                 ))
@@ -241,7 +239,7 @@ final class PaymentViewController: UIViewController {
     }
     
     @objc private func didTapPayButton() {
-        if viewModel.idCurrency != "", viewModel.currencyName != "" {
+        if !viewModel.idCurrency.isEmpty, !viewModel.currencyName.isEmpty {
             self.viewModel.paymentAttempt()
         }
     }

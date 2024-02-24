@@ -20,7 +20,7 @@ protocol PaymentViewModelProtocol {
 
 final class PaymentViewModel: PaymentViewModelProtocol {
     
-    // MARK: - Public properties:
+    // MARK: - Public Properties
     
     var onChange: (() -> Void)?
     var onLoad: ((Bool) -> Void)?
@@ -28,10 +28,9 @@ final class PaymentViewModel: PaymentViewModelProtocol {
     var currencyName: String = ""
     var checkBool: Bool = false
     
-    // MARK: - Private properties:
+    // MARK: - Private Properties
     
     private let service: PaymentServiceProtocol
-    
     private(set) var currency: [CurrenciesModel] = [] {
         didSet {
             onChange?()
@@ -47,43 +46,41 @@ final class PaymentViewModel: PaymentViewModelProtocol {
     // MARK: - Public Methods
     
     func loadCurrency() {
-        service.loadByPayment { result in
+        service.loadByPayment { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let arrayPay):
                 DispatchQueue.main.async {
                     self.currency = arrayPay
                 }
             case .failure(let error):
-                print(error.localizedDescription)
+                print("Failed to load currency: \(error.localizedDescription)")
             }
         }
     }
     
     func paymentAttempt() {
         onLoad?(true)
-        var stubBool: Bool?
-        let dispatch = DispatchGroup()
-        dispatch.enter()
-        service.loadByOrderPayment(by: idCurrency) { result in
+        var checkBoolValue = false
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
+        
+        service.loadByOrderPayment(by: idCurrency) { [weak self] result in
+            guard let self = self else { return }
+            defer { dispatchGroup.leave() }
+            
             switch result {
             case .success(let model):
-                    if model.success == true, model.id == self.currencyName {
-                        stubBool = true
-                    } else {
-                        stubBool = false
-                    }
+                checkBoolValue = model.success && model.id == self.currencyName
             case .failure(let error):
-                print(error.localizedDescription)
-                stubBool = false
+                print("Failed to process payment: \(error.localizedDescription)")
             }
-            dispatch.leave()
-            dispatch.notify(queue: .main) {
-                guard let stubBool else { return }
-                self.checkBool = stubBool
-                self.onLoad?(false)
-            }
+        }
+        
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            guard let self = self else { return }
+            self.checkBool = checkBoolValue
+            self.onLoad?(false)
         }
     }
 }
-
-
