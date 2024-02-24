@@ -168,14 +168,14 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
     // MARK: @objc Methods
 
     @objc private func didTapLikeButton() {
-        isLiked = !isLiked
+        isLiked.toggle()
         likeButton.tintColor = isLiked ? UIColor.redUniversal : UIColor.whiteUniversal
         guard let id = self.nftId else { return }
         delegate?.didTapLikeFor(nft: id)
     }
 
     @objc private func addToCart() {
-        isInCart = !isInCart
+        isInCart.toggle()
         cartButton.setImage(UIImage(named: isInCart ? "tabler_trash-x" : "tabler_trash"), for: .normal)
         guard let id = self.nftId else { return }
         delegate?.didTapCartFor(nft: id)
