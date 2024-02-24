@@ -25,6 +25,7 @@ protocol BasketViewModelProtocol: AnyObject {
     func sorting(with sortList: Filters)
     func loadNftData()
     func deleteNft(index: String)
+    func deleteAllNft()
 }
 
 final class BasketViewModel: BasketViewModelProtocol {
@@ -114,6 +115,19 @@ final class BasketViewModel: BasketViewModelProtocol {
         }
     }
     
+    func deleteAllNft() {
+        onLoad?(true)
+        nft = []
+        let arrayIdString = nft.map( { $0.id } )
+        service.updateByOrders(with: arrayIdString) { result in
+            switch result {
+            case .success: break
+            case .failure: break
+            }
+        }
+        onLoad?(false)
+    }
+    
     // MARK: - Private Methods
     
     private func loadingLastSort() {
@@ -148,10 +162,8 @@ final class BasketViewModel: BasketViewModelProtocol {
         let arrayIdString = nft.map( { $0.id } )
         service.updateByOrders(with: arrayIdString) { result in
             switch result {
-            case .success:
-                print("error by updateOrder")
-            case .failure:
-                print("error by updateOrder")
+            case .success: break
+            case .failure: break
             }
         }
     }

@@ -50,5 +50,4 @@ final class SortAlertPresenter: SortAlertPresenterProtocol {
         
         delegate?.present(alert, animated: true)
     }
-    
 }

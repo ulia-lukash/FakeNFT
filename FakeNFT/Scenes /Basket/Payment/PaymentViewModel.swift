@@ -13,7 +13,7 @@ protocol PaymentViewModelProtocol {
     var currency: [CurrenciesModel] { get }
     var idCurrency: String { get set }
     var currencyName: String { get set }
-    var checkBool: Bool { get }
+    var checkBool: Bool { get set }
     func loadCurrency()
     func paymentAttempt()
 }
@@ -37,6 +37,7 @@ final class PaymentViewModel: PaymentViewModelProtocol {
             onChange?()
         }
     }
+    
     // MARK: - Initializers
     
     init(service: PaymentServiceProtocol) {

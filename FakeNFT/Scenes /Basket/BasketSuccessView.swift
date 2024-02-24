@@ -7,9 +7,16 @@
 
 import UIKit
 
+protocol BasketSuccessViewDelegate: AnyObject {
+    func backToBasket()
+}
+
 final class BasketSuccessView: UIView {
     
     //MARK: - Delegate
+    
+    weak var delegate: BasketSuccessViewDelegate?
+    
     //MARK: - UI
     
     private lazy var innerView: UIView = {
@@ -103,7 +110,7 @@ final class BasketSuccessView: UIView {
     }
     
     @objc private func didTapBackCatalog() {
-        //TODO
+        delegate?.backToBasket()
     }
 }
 

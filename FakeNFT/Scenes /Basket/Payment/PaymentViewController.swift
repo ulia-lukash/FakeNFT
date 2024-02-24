@@ -20,6 +20,8 @@ final class PaymentViewController: UIViewController {
         cellSpacing: 7
     )
     
+    private var errorAlertPresenter: ErrorAlertPresenterProtocol?
+    
     private var viewModel: PaymentViewModelProtocol
     
     // MARK: - UI
@@ -105,12 +107,12 @@ final class PaymentViewController: UIViewController {
         setupConstraints()
         setupNavBar()
         bind()
+        errorAlertPresenter = ErrorAlertPresenter(delegate: self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.viewModel.loadCurrency()
-        
     }
     
     // MARK: - Private Methods
@@ -125,8 +127,7 @@ final class PaymentViewController: UIViewController {
             guard let self else { return }
             onLoad ? self.activityIndicator.startAnimating() : self.activityIndicator.stopAnimating()
             if onLoad == false {
-                var result = self.viewModel.checkBool
-                print(result)
+                paymentVerification()
             }
         }
     }
@@ -177,7 +178,7 @@ final class PaymentViewController: UIViewController {
         ])
     }
     
-    private func setupSuccessView() {
+    private func settingsSuccessView() {
         view.addSubview(successView)
         successView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -189,23 +190,50 @@ final class PaymentViewController: UIViewController {
         ])
     }
     
+    private func setupSuccessView() {
+        self.navigationController?.navigationBar.isHidden = true
+        bottomView.isHidden = true
+        paymentButton.isHidden = true
+        stubLabel.isHidden = true
+        agreementButton.isHidden = true
+        paymentCollectionView.isHidden = true
+        settingsSuccessView()
+    }
+    
+    private func paymentVerification() {
+        let result = self.viewModel.checkBool
+        if result == true {
+            setupSuccessView()
+            self.viewModel.checkBool = false
+        } else {
+            errorAlertPresenter?.showAlert(
+                model: ErrorAlertModel(
+                    title: "Не удалось произвести оплату",
+                    message: "",
+                    actionSheetTextFirst: "Отмена",
+                    actionSheetTextSecond: "Повторить",
+                    completionFirst: { [weak self] in
+                        guard let self else { return }
+                        self.viewModel.checkBool = false
+                    },
+                    completionSecond: { [weak self] in
+                        guard let self else { return }
+                        self.viewModel.paymentAttempt()
+                    }
+                ))
+        }
+    }
+    
+    //MARK: - Objc Methods
+    
     @objc private func chevronDidTap() {
         self.navigationController?.popViewController(animated: true)
     }
     
     @objc private func didTapPayButton() {
-//        self.navigationController?.navigationBar.isHidden = true
-//        bottomView.isHidden = true
-//        paymentButton.isHidden = true
-//        stubLabel.isHidden = true
-//        agreementButton.isHidden = true
-//        paymentCollectionView.isHidden = true
-//        setupSuccessView()
-        
-        self.viewModel.paymentAttempt()
-        
-        
-       
+        if viewModel.idCurrency != "", viewModel.currencyName != "" {
+            self.viewModel.paymentAttempt()
+        }
     }
     
     @objc private func openWebView() {
@@ -260,8 +288,14 @@ extension PaymentViewController: UICollectionViewDelegate {
         viewModel.currencyName = cell.currencyName
     }
     
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        viewModel.idCurrency = ""
+        viewModel.currencyName = ""
+    }
+    
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         collectionView.indexPathsForSelectedItems?.filter({ $0.section == indexPath.section }).forEach({ collectionView.deselectItem(at: $0, animated: false) })
         return true
     }
 }
+

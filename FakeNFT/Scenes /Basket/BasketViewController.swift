@@ -15,7 +15,11 @@ final class BasketViewController: UIViewController, LoadingView {
     
     private var sortedAlertPresenter: SortAlertPresenterProtocol?
     
-    let paymentViewModel = PaymentViewModel(service: PaymentService(networkClient: DefaultNetworkClient()))
+    private let paymentViewModel = PaymentViewModel(
+        service: PaymentService(
+            networkClient: DefaultNetworkClient()
+        )
+    )
     
     // MARK: - UI
     
@@ -131,7 +135,7 @@ final class BasketViewController: UIViewController, LoadingView {
         setupView()
         setupConstraints()
         deleteCardView.delegate = self
-        setupViewModel()
+        bind()
         sortedAlertPresenter = SortAlertPresenter(delegate: self)
     }
     
@@ -191,7 +195,7 @@ final class BasketViewController: UIViewController, LoadingView {
         ])
     }
     
-    private func setupViewModel() {
+    private func bind() {
         viewModel.onSortButtonClicked = { [weak self] in
             guard let self else { return }
             self.setupFilters()
@@ -287,6 +291,8 @@ final class BasketViewController: UIViewController, LoadingView {
         }
     }
     
+    //MARK: - Objc Methods
+    
     @objc private func didTapSortButton() {
         viewModel.sortButtonClicked()
     }
@@ -347,3 +353,8 @@ extension BasketViewController: BasketDeleteCardViewDelegate {
     }
 }
 
+extension BasketViewController: BasketSuccessViewDelegate {
+    func backToBasket() {
+        viewModel.deleteAllNft()
+    }
+}
