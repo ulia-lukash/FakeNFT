@@ -143,6 +143,7 @@ final class BasketViewController: UIViewController, LoadingView {
         super.viewWillAppear(animated)
         self.viewModel.loadNftData()
         self.tabBarController?.tabBar.isHidden = false
+        self.navigationController?.navigationBar.isHidden = false
     }
     
     // MARK: - Private Methods
