@@ -3,7 +3,7 @@ import UIKit
 final class RatingViewController: UIViewController {
     private let viewModel: RatingViewModelProtocol
 
-    private let tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .systemBackground
@@ -120,6 +120,7 @@ final class RatingViewController: UIViewController {
     }
 }
 
+// MARK: - UITableViewDataSource
 extension RatingViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.allUsers.count
@@ -139,6 +140,7 @@ extension RatingViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate
 extension RatingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.userProfileDidTap(withIndex: indexPath)

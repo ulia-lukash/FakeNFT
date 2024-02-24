@@ -1,7 +1,7 @@
 import UIKit
 
 final class RatingCell: UITableViewCell {
-    private let subView: UIView = {
+    private lazy var subView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.segmentInactive
@@ -10,7 +10,7 @@ final class RatingCell: UITableViewCell {
         return view
     }()
 
-    private let ratingPositionLabel: UILabel = {
+    private lazy var ratingPositionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "1"
@@ -18,14 +18,14 @@ final class RatingCell: UITableViewCell {
         return label
     }()
 
-    private let avatarImageView: UIImageView = {
+    private lazy var avatarImageView: UIImageView = {
         let image = UIImage(named: "Userpick")
         let imageView = UIImageView(image: image)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
 
-    private let usernameLabel: UILabel = {
+    private lazy var usernameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Alex"
@@ -33,7 +33,7 @@ final class RatingCell: UITableViewCell {
         return label
     }()
 
-    private let nftAmoutLabel: UILabel = {
+    private lazy var nftAmoutLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "112"

@@ -1,7 +1,7 @@
 import UIKit
 
 final class NFTCell: UICollectionViewCell {
-    private let nftImageView: UIImageView = {
+    private lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 12
@@ -9,7 +9,7 @@ final class NFTCell: UICollectionViewCell {
         return imageView
     }()
 
-    private let nftPriceLabel: UILabel = {
+    private lazy var nftPriceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 10, weight: .medium)
@@ -17,7 +17,7 @@ final class NFTCell: UICollectionViewCell {
         return label
     }()
 
-    private let nftNameLabel: UILabel = {
+    private lazy var nftNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -25,7 +25,7 @@ final class NFTCell: UICollectionViewCell {
         return label
     }()
 
-    private let nftRatingStackView: UIStackView = {
+    private lazy var nftRatingStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal

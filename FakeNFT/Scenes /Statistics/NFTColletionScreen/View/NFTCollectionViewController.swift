@@ -3,7 +3,7 @@ import UIKit
 final class NFTCollectionViewController: UIViewController {
     private let viewModel: NFTCollectionViewModelProtocol
 
-    private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 
     init(viewModel: NFTCollectionViewModelProtocol) {
         self.viewModel = viewModel
@@ -54,6 +54,7 @@ final class NFTCollectionViewController: UIViewController {
     }
 }
 
+// MARK: - UICollectionViewDataSource
 extension NFTCollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.userNFTCollection.count
@@ -73,6 +74,7 @@ extension NFTCollectionViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - UICollectionViewDelegateFlowLayout
 extension NFTCollectionViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.width / Constants.nftsPerLine -

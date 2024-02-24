@@ -39,7 +39,7 @@ final class RatingModel {
     ]
     // swiftlint:enable all
 
-    let defaults = UserDefaults.standard
+    private let defaults = UserDefaults.standard
 
     func getUsers() -> [User] {
         if let sortType = defaults.string(forKey: "SortType") {

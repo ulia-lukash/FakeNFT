@@ -3,7 +3,7 @@ import UIKit
 final class UserInfoViewController: UIViewController {
     private let viewModel: UserInfoViewModelProtocol
 
-    private let usernameLabel: UILabel = {
+    private lazy var usernameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.segmentActive
@@ -11,7 +11,7 @@ final class UserInfoViewController: UIViewController {
         return label
     }()
 
-    private let userDescription: UILabel = {
+    private lazy var userDescription: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.segmentActive
@@ -21,13 +21,13 @@ final class UserInfoViewController: UIViewController {
         return label
     }()
 
-    private let avatarImageView: UIImageView = {
+    private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
 
-    private let userWebsiteButton: UIButton = {
+    private lazy var userWebsiteButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.borderColor = UIColor.segmentActive.cgColor
@@ -69,11 +69,11 @@ final class UserInfoViewController: UIViewController {
     }()
 
     init(user: User, viewModel: UserInfoViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
         usernameLabel.text = user.username
         userDescription.text = user.description
         avatarImageView.image = user.avatar
-        self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
