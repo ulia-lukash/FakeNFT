@@ -12,9 +12,9 @@ import WebKit
 final class AuthorViewController: UIViewController, WKUIDelegate {
 
     // MARK: - Public Properties
-
-    var viewModel: AuthorViewModelProtocol?
-
+    
+    private let url: URL
+    
     // MARK: - Private Properties
 
     private var webView: WKWebView!
@@ -52,7 +52,18 @@ final class AuthorViewController: UIViewController, WKUIDelegate {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
-
+    
+    // MARK: - Initializers
+    
+    init(url: URL) {
+        self.url = url
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Private Methods
 
     private func updateProgress() {
@@ -68,8 +79,7 @@ final class AuthorViewController: UIViewController, WKUIDelegate {
             forKeyPath: #keyPath(WKWebView.estimatedProgress),
             options: .new,
             context: nil)
-        let myURL = viewModel?.webViewUrl
-        let myRequest = URLRequest(url: myURL!)
+        let myRequest = URLRequest(url: url)
         webView.load(myRequest)
         updateProgress()
 

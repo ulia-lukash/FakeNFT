@@ -14,7 +14,8 @@ final class CollectionViewController: UIViewController {
     
     // MARK: - Public Properties
     
-    var viewModel: CollectionViewModelProtocol?
+    private let viewModel: CollectionViewModelProtocol
+    private let collectionId: UUID
     
     // MARK: - Private Properties
     
@@ -105,18 +106,29 @@ final class CollectionViewController: UIViewController {
         nftCollection.dataSource = self
         nftCollection.delegate = self
         setUp()
+        viewModel.getCollectionViewData(collectionId: collectionId)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        viewModel?.clearData()
+        viewModel.clearData()
+    }
+    
+    init(viewModel: CollectionViewModelProtocol, collectionId: UUID) {
+        self.viewModel = viewModel
+        self.collectionId = collectionId
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - ViewModel
     
     private func bind() {
         
-        viewModel?.onChange = { [weak self] in
+        viewModel.onChange = { [weak self] in
             self?.configure()
             self?.nftCollection.reloadData()
             ProgressHUD.dismiss()
@@ -126,7 +138,7 @@ final class CollectionViewController: UIViewController {
     // MARK: - Private Methods
     
     private func configure() {
-        setCoverOfCollection(viewModel?.collection?.cover)
+        setCoverOfCollection(viewModel.collection?.cover)
         setLabels()
     }
     
@@ -206,7 +218,7 @@ final class CollectionViewController: UIViewController {
     }
     
     private func setLabels() {
-        guard let collection = viewModel?.collection else { return }
+        guard let collection = viewModel.collection else { return }
         nameLabel.text = collection.name
         descriptionLabel.text = collection.description
         authorLabel.text = NSLocalizedString("Collection author:", comment: "")
@@ -220,7 +232,6 @@ final class CollectionViewController: UIViewController {
     }
     
     @objc private func didTapAuthorName() {
-        let viewController = AuthorViewController()
         
         /*        Запрос колекции из АПИшки возвращает коллекцию, 
          где в поле автор указано только его имя. Из двух вариантов:
@@ -231,8 +242,7 @@ final class CollectionViewController: UIViewController {
          */
         
         let url = URL(string: "https://practicum.yandex.ru/ios-developer")!
-        viewController.viewModel = AuthorWebViewViewModel()
-        viewController.viewModel?.setUrl(url)
+        let viewController = AuthorViewController(url: url)
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true, completion: nil)
@@ -244,7 +254,7 @@ extension CollectionViewController: UICollectionViewDataSource {
         1
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel?.nfts.count ?? 0
+        viewModel.nfts.count
     }
     
     func collectionView(
@@ -253,11 +263,11 @@ extension CollectionViewController: UICollectionViewDataSource {
             
             let cell = collectionView.dequeueReusableCell(indexPath: indexPath) as NftCollectionCell
 
-            guard let nft = viewModel?.nfts[indexPath.row] else { return UICollectionViewCell() }
+            let nft = viewModel.nfts[indexPath.row]
             let nftId = nft.id
             
-            guard let isLiked = viewModel?.isLiked(nft: nftId),
-                  let isInBasket = viewModel?.isInBasket(nft: nftId) else { return UICollectionViewCell() }
+            guard let isLiked = viewModel.isLiked(nft: nftId),
+                  let isInBasket = viewModel.isInBasket(nft: nftId) else { return UICollectionViewCell() }
             cell.delegate = self
             cell.configure(nft: nft, isLiked: isLiked, isInBasket: isInBasket)
             return cell
@@ -291,11 +301,11 @@ extension CollectionViewController: NftCollectionCellDelegate {
         self.nftCollection.reloadData()
     }
     func didTapLikeFor(nft id: UUID) {
-        viewModel?.didTapLikeFor(nft: id)
+        viewModel.didTapLikeFor(nft: id)
     }
     
     func didTapCartFor(nft id: UUID) {
-        viewModel?.didTapCartFor(nft: id)
+        viewModel.didTapCartFor(nft: id)
     }
     
 }
