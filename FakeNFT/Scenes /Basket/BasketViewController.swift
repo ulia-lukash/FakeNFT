@@ -299,6 +299,7 @@ final class BasketViewController: UIViewController, LoadingView {
     
     @objc private func didTapPayButton() {
         let viewController = PaymentViewController(viewModel: paymentViewModel)
+        viewController.delegate = self
         navigationController?.pushViewController(viewController, animated: true)
     }
 }
@@ -353,8 +354,10 @@ extension BasketViewController: BasketDeleteCardViewDelegate {
     }
 }
 
-extension BasketViewController: BasketSuccessViewDelegate {
-    func backToBasket() {
+extension BasketViewController: PaymentViewControllerDelegate {
+    func updateNftAfterPay() {
         viewModel.deleteAllNft()
     }
 }
+
+

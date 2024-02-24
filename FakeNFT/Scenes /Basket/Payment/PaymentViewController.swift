@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol PaymentViewControllerDelegate: AnyObject {
+    func updateNftAfterPay()
+}
+
 final class PaymentViewController: UIViewController {
     
     // MARK: - Private properties:
@@ -23,6 +27,8 @@ final class PaymentViewController: UIViewController {
     private var errorAlertPresenter: ErrorAlertPresenterProtocol?
     
     private var viewModel: PaymentViewModelProtocol
+    
+    weak var delegate: PaymentViewControllerDelegate?
     
     // MARK: - UI
     
@@ -72,7 +78,7 @@ final class PaymentViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.register(
             PaymentCollectionCell.self,
-            forCellWithReuseIdentifier: PaymentCollectionCell.identifier
+            forCellWithReuseIdentifier: PaymentCollectionCell.cellIdentifier
         )
         collectionView.backgroundColor = .clear
         collectionView.allowsMultipleSelection = true
@@ -108,6 +114,7 @@ final class PaymentViewController: UIViewController {
         setupNavBar()
         bind()
         errorAlertPresenter = ErrorAlertPresenter(delegate: self)
+        successView.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -205,6 +212,7 @@ final class PaymentViewController: UIViewController {
         if result == true {
             setupSuccessView()
             self.viewModel.checkBool = false
+            delegate?.updateNftAfterPay()
         } else {
             errorAlertPresenter?.showAlert(
                 model: ErrorAlertModel(
@@ -228,6 +236,8 @@ final class PaymentViewController: UIViewController {
     
     @objc private func chevronDidTap() {
         self.navigationController?.popViewController(animated: true)
+        viewModel.idCurrency = ""
+        viewModel.currencyName = ""
     }
     
     @objc private func didTapPayButton() {
@@ -272,8 +282,8 @@ extension PaymentViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PaymentCollectionCell.identifier, for: indexPath) as? PaymentCollectionCell else { return UICollectionViewCell()}
-        cell.cellSettings(for: viewModel.currency[indexPath.row])
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PaymentCollectionCell.cellIdentifier, for: indexPath) as? PaymentCollectionCell else { return UICollectionViewCell()}
+        cell.setupCell(with: viewModel.currency[indexPath.row])
         return cell
     }
 }
@@ -284,7 +294,7 @@ extension PaymentViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? PaymentCollectionCell else { return }
         cell.isSelected = true
-        viewModel.idCurrency = cell.idCurrency
+        viewModel.idCurrency = cell.currencyId
         viewModel.currencyName = cell.currencyName
     }
     
@@ -299,3 +309,8 @@ extension PaymentViewController: UICollectionViewDelegate {
     }
 }
 
+extension PaymentViewController: BasketSuccessViewDelegate {
+    func backToBasket() {
+        chevronDidTap()
+    }
+}

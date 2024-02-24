@@ -10,28 +10,27 @@ import UIKit
 
 final class PaymentCollectionCell: UICollectionViewCell {
     
-    //MARK: - Identifer:
+    // MARK: - Identifier
     
-    static let identifier = "PaymentCollectionCell"
+    static let cellIdentifier = "PaymentCollectionCell"
     
-    // MARK: - Public properties:
+    // MARK: - Public Properties
     
     override var isSelected: Bool {
         didSet {
-            self.layer.borderWidth = isSelected ? 1 : 0
-            self.layer.borderColor = isSelected ? UIColor.blackUniversal.cgColor : UIColor.clear.cgColor
+            updateSelectionStyle()
         }
     }
     
-    var idCurrency: String = ""
+    var currencyId: String = ""
     var currencyName: String = ""
     
-    //MARK: - UI:
+    // MARK: - UI Elements
     
     private lazy var currencyImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = UIColor.blackUniversal
+        imageView.backgroundColor = .blackUniversal
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 6
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -39,27 +38,27 @@ final class PaymentCollectionCell: UICollectionViewCell {
     }()
     
     private lazy var paymentSystemLabel: UILabel = {
-        var label = UILabel()
+        let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = UIColor.segmentActive
+        label.textColor = .segmentActive
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var currencyNameLabel: UILabel = {
-        var label = UILabel()
+        let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = UIColor.greenUniversal
+        label.textColor = .greenUniversal
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     // MARK: - Initializers
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.segmentInactive
-        layer.cornerRadius = 12
-        configureCell()
+        setupCellAppearance()
+        configureSubviews()
         setupConstraints()
     }
     
@@ -69,22 +68,35 @@ final class PaymentCollectionCell: UICollectionViewCell {
     
     // MARK: - Public Methods
     
-    func cellSettings(for model: CurrenciesModel) {
-        let url = URL(string: model.image)
+    func setupCell(with model: CurrenciesModel) {
+        guard let imageUrl = URL(string: model.image) else {
+            // Handle invalid URL
+            return
+        }
+        
         currencyImageView.kf.indicatorType = .activity
         currencyImageView.kf.setImage(
-            with: url,
+            with: imageUrl,
             placeholder: UIImage(named: "Placeholder"),
-            options: [.transition(.fade(1))])
+            options: [.transition(.fade(1))]) { result in
+                switch result {
+                case .success(_):
+                    // Image loaded successfully
+                    break
+                case .failure(let error):
+                    print("Error loading image: \(error.localizedDescription)")
+                }
+        }
+        
         paymentSystemLabel.text = model.title
         currencyNameLabel.text = model.name
-        idCurrency = model.id
+        currencyId = model.id
         currencyName = model.name
     }
     
     // MARK: - Private Methods
     
-    private func configureCell() {
+    private func configureSubviews() {
         addSubview(currencyImageView)
         addSubview(paymentSystemLabel)
         addSubview(currencyNameLabel)
@@ -105,5 +117,16 @@ final class PaymentCollectionCell: UICollectionViewCell {
             currencyNameLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
             currencyNameLabel.heightAnchor.constraint(equalToConstant: 18),
         ])
+    }
+    
+    private func setupCellAppearance() {
+        backgroundColor = .segmentInactive
+        layer.cornerRadius = 12
+        updateSelectionStyle()
+    }
+    
+    private func updateSelectionStyle() {
+        layer.borderWidth = isSelected ? 1 : 0
+        layer.borderColor = isSelected ? UIColor.segmentActive.cgColor : UIColor.clear.cgColor
     }
 }
