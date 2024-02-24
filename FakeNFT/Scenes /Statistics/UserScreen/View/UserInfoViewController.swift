@@ -45,21 +45,27 @@ final class UserInfoViewController: UIViewController {
         return button
     }()
 
+    private lazy var nftCollectionButtonLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Коллекция NFT (112)"
+        label.font = .systemFont(ofSize: 17, weight: .bold)
+        label.textColor = .segmentActive
+        return label
+    }()
+
+    private lazy var nftCollectionButtonImageView: UIImageView = {
+        let image = UIImage(named: "forward")
+        let imageView = UIImageView(image: image)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+
     private lazy var nftCollectionButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "forward"), for: .normal)
         button.addTarget(self, action: #selector(didTapNFTCollection), for: .touchUpInside)
         return button
-    }()
-
-    private let nftDescriptionLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Коллекция NFT (112)" // this will be changed in further versions
-        label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        label.textColor = UIColor.segmentActive
-        return label
     }()
 
     init(user: User, viewModel: UserInfoViewModelProtocol) {
@@ -98,7 +104,6 @@ final class UserInfoViewController: UIViewController {
         setupUsernameLabel()
         setupUserDescription()
         setupUserWebsiteButton()
-        setupNFTDescriptionLabel()
         setupNFTCollectionButton()
     }
 
@@ -164,22 +169,31 @@ final class UserInfoViewController: UIViewController {
         ])
     }
 
-    private func setupNFTDescriptionLabel() {
-        view.addSubview(nftDescriptionLabel)
-        NSLayoutConstraint.activate([
-            nftDescriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.defaultInset),
-            nftDescriptionLabel.topAnchor.constraint(equalTo: userWebsiteButton.bottomAnchor, constant: 56)
-        ])
-    }
-
     private func setupNFTCollectionButton() {
         view.addSubview(nftCollectionButton)
+        nftCollectionButton.addSubview(nftCollectionButtonLabel)
+        nftCollectionButton.addSubview(nftCollectionButtonImageView)
+
         NSLayoutConstraint.activate([
+            nftCollectionButton.leadingAnchor.constraint(
+                equalTo: view.leadingAnchor,
+                constant: Constants.defaultInset
+            ),
+            nftCollectionButton.topAnchor.constraint(
+                equalTo: userWebsiteButton.bottomAnchor,
+                constant: Constants.defaultElementSpacing
+            ),
             nftCollectionButton.trailingAnchor.constraint(
                 equalTo: view.trailingAnchor,
-                constant: -Constants.defaultInset
-            ),
-            nftCollectionButton.centerYAnchor.constraint(equalTo: nftDescriptionLabel.centerYAnchor)
+                constant: -Constants.defaultInset)
+        ])
+
+        NSLayoutConstraint.activate([
+            nftCollectionButtonLabel.leadingAnchor.constraint(equalTo: nftCollectionButton.leadingAnchor),
+            nftCollectionButtonLabel.centerYAnchor.constraint(equalTo: nftCollectionButton.centerYAnchor),
+
+            nftCollectionButtonImageView.trailingAnchor.constraint(equalTo: nftCollectionButton.trailingAnchor),
+            nftCollectionButtonImageView.centerYAnchor.constraint(equalTo: nftCollectionButton.centerYAnchor)
         ])
     }
 
@@ -195,6 +209,6 @@ private enum Constants {
     static let userAvatarHeight: CGFloat = 70
     static let userAvatarWidth: CGFloat = 70
     static let defaultInset: CGFloat = 16
-    static let defaultElementSpacing: CGFloat = 41
+    static let defaultElementSpacing: CGFloat = 40
     static let userWebsiteButtonHeight: CGFloat = 40
 }
