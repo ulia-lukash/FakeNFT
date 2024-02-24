@@ -9,15 +9,6 @@ final class NFTCell: UICollectionViewCell {
         return imageView
     }()
 
-    private lazy var likeButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "noLike"), for: .normal)
-        button.setImage(UIImage(named: "like"), for: .selected)
-        button.addTarget(self, action: #selector(toggleLike), for: .touchUpInside)
-        return button
-    }()
-
     private let nftPriceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -44,10 +35,20 @@ final class NFTCell: UICollectionViewCell {
         return stackView
     }()
 
-    private var basketButton: UIButton = {
+    private lazy var likeButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(named: "noLike"), for: .normal)
+        button.setImage(UIImage(named: "like"), for: .selected)
+        button.addTarget(self, action: #selector(toggleLike), for: .touchUpInside)
+        return button
+    }()
+
+    private lazy var basketButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "basket"), for: .normal)
+        button.addTarget(self, action: #selector(didTapBasketButton), for: .touchUpInside)
         return button
     }()
 
@@ -60,6 +61,12 @@ final class NFTCell: UICollectionViewCell {
     private var isLiked = false {
         didSet {
             changeLikeButtonState()
+        }
+    }
+
+    private var inBasket = false {
+        didSet {
+            changeBasketButtonState()
         }
     }
 
@@ -181,8 +188,17 @@ final class NFTCell: UICollectionViewCell {
         likeButton.setImage(image, for: .normal)
     }
 
+    private func changeBasketButtonState() {
+        let image = inBasket ? UIImage(named: "basketX") : UIImage(named: "basket")
+        basketButton.setImage(image, for: .normal)
+    }
+
     @objc private func toggleLike() {
         isLiked.toggle()
+    }
+
+    @objc private func didTapBasketButton() {
+        inBasket.toggle()
     }
 }
 
