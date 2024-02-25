@@ -15,11 +15,11 @@ enum Filters: String {
 }
 
 protocol BasketViewModelProtocol: AnyObject {
-    var onChange: (() -> Void)? { get set }
+    var onChange: ((String, String) -> Void)? { get set }
     var onLoad: ((Bool) -> Void)? { get set }
     var onSortButtonClicked: (() -> Void)? { get set }
-    var nftCount: Int { get set }
-    var nftQuantity: Float { get set }
+    var nftCount: String { get }
+    var nftQuantity: String { get }
     var nftItems: [Nft] { get }
     func sortButtonClicked()
     func sortItems(with sortList: Filters)
@@ -32,11 +32,17 @@ final class BasketViewModel: BasketViewModelProtocol {
     
     // MARK: - Public properties:
     
-    var onChange: (() -> Void)?
+    var onChange: ((String, String) -> Void)?
     var onLoad: ((Bool) -> Void)?
     var onSortButtonClicked: (() -> Void)?
-    var nftCount: Int = 0
-    var nftQuantity: Float = 0
+    var nftCount: String {
+        return "\(nftItems.count) NFT"
+    }
+    var nftQuantity: String {
+        let totalNftPrice = nftItems.reduce(0) { $0 + $1.price }
+        let formatterPrice = String(format: "%.2f", totalNftPrice).replacingOccurrences(of: ".", with: ",")
+        return "\(formatterPrice) ETH"
+    }
     
     // MARK: - Private properties:
     
@@ -45,7 +51,7 @@ final class BasketViewModel: BasketViewModelProtocol {
     
     private(set) var nftItems: [Nft] = [] {
         didSet {
-            onChange?()
+            onChange?(nftCount, nftQuantity)
         }
     }
     

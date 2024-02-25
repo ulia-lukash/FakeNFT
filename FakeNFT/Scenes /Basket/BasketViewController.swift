@@ -15,11 +15,7 @@ final class BasketViewController: UIViewController, LoadingView {
     
     private var sortedAlertPresenter: SortAlertPresenterProtocol?
     
-    private let paymentViewModel = PaymentViewModel(
-        service: PaymentService(
-            networkClient: DefaultNetworkClient()
-        )
-    )
+    private let paymentViewModel: PaymentViewModelProtocol
     
     private lazy var rightButton: UIBarButtonItem = {
         let button = UIBarButtonItem(
@@ -43,7 +39,7 @@ final class BasketViewController: UIViewController, LoadingView {
     private lazy var bottomView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 12
-        view.backgroundColor = UIColor.segmentInactive
+        view.backgroundColor = .segmentInactive
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         view.isHidden = true
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -53,7 +49,7 @@ final class BasketViewController: UIViewController, LoadingView {
     private lazy var paymentButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.segmentActive
-        button.tintColor = UIColor.white
+        button.tintColor = .whiteModeThemes
         button.setTitle("К оплате", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         button.layer.cornerRadius = 16
@@ -66,7 +62,7 @@ final class BasketViewController: UIViewController, LoadingView {
     private lazy var counterNftLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15, weight: .regular)
-        label.textColor = UIColor.segmentActive
+        label.textColor = .segmentActive
         label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -75,7 +71,7 @@ final class BasketViewController: UIViewController, LoadingView {
     private lazy var quantityNftLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.textColor = UIColor.greenUniversal
+        label.textColor = .greenUniversal
         label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -98,7 +94,7 @@ final class BasketViewController: UIViewController, LoadingView {
         let label = UILabel()
         label.text = "Корзина пуста"
         label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.textColor = UIColor.segmentActive
+        label.textColor = .segmentActive
         label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -121,8 +117,9 @@ final class BasketViewController: UIViewController, LoadingView {
     
     // MARK: - Initializers
     
-    init(viewModel: BasketViewModelProtocol) {
+    init(viewModel: BasketViewModelProtocol, paymentViewModel: PaymentViewModelProtocol) {
         self.viewModel = viewModel
+        self.paymentViewModel = paymentViewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -144,8 +141,7 @@ final class BasketViewController: UIViewController, LoadingView {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.loadNftData()
-        tabBarController?.tabBar.isHidden = false
-        navigationController?.navigationBar.isHidden = false
+        setupNavBar()
     }
     
     // MARK: - Private Methods
@@ -199,38 +195,33 @@ final class BasketViewController: UIViewController, LoadingView {
         ])
     }
     
+    private func setupNavBar() {
+        tabBarController?.tabBar.isHidden = false
+        navigationController?.navigationBar.isHidden = false
+    }
+    
     private func bindViewModel() {
         viewModel.onSortButtonClicked = { [weak self] in
             guard let self else { return }
             self.setupFilters()
         }
         
-        viewModel.onChange = { [weak self] in
+        viewModel.onChange = { [weak self] nftCount, nftQuantity in
             guard let self else { return }
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-                self.updateCounterLabel()
-            }
+            self.tableView.reloadData()
+            self.counterNftLabel.text = nftCount
+            self.quantityNftLabel.text = nftQuantity
         }
         
         viewModel.onLoad = { [weak self] onLoad in
             guard let self else { return }
-            DispatchQueue.main.async {
             if onLoad {
                 self.activityIndicator.startAnimating()
             } else {
                 self.activityIndicator.stopAnimating()
                 self.setupStubLabel()
             }
-            }
         }
-    }
-    
-    private func updateCounterLabel() {
-        let totalNftPrice = viewModel.nftItems.reduce(0) { $0 + $1.price }
-        let formattedPrice = String(format: "%.2f", totalNftPrice).replacingOccurrences(of: ".", with: ",")
-        counterNftLabel.text = "\(viewModel.nftItems.count) NFT"
-        quantityNftLabel.text = "\(formattedPrice) ETH"
     }
     
     private func setupBlurView() {
@@ -330,9 +321,9 @@ extension BasketViewController: UITableViewDataSource {
 //MARK: - BasketTableViewCellDelegate
 
 extension BasketViewController: BasketTableViewCellDelegate {
-    func deleteButtonClicked(image: UIImage, idNftToDelete: String) {
+    func deleteButtonClicked(image: UIImage, id: String) {
         setupBlurView()
-        deleteCardView.configureView(image: image, idNftToDelete: idNftToDelete)
+        deleteCardView.configureView(image: image, id: id)
     }
 }
 

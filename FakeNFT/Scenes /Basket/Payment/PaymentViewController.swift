@@ -33,7 +33,7 @@ final class PaymentViewController: UIViewController {
     private lazy var bottomView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 12
-        view.backgroundColor = UIColor.segmentInactive
+        view.backgroundColor = .segmentInactive
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -41,8 +41,8 @@ final class PaymentViewController: UIViewController {
     
     private lazy var paymentButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.segmentActive
-        button.tintColor = UIColor.whiteModeThemes
+        button.backgroundColor = .segmentActive
+        button.tintColor = .whiteModeThemes
         button.setTitle("Оплатить", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         button.layer.masksToBounds = true
@@ -55,7 +55,7 @@ final class PaymentViewController: UIViewController {
     private lazy var stubLabel: UILabel = {
         let label = UILabel()
         label.text = "Совершая покупку, вы соглашаетесь с условиями"
-        label.textColor = UIColor.segmentActive
+        label.textColor = .segmentActive
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -63,7 +63,7 @@ final class PaymentViewController: UIViewController {
     
     private lazy var agreementButton: UIButton = {
         let button = UIButton(type: .system)
-        button.tintColor = UIColor.blueUniversal
+        button.tintColor = .blueUniversal
         button.setTitle("Пользовательского соглашения", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 13, weight: .regular)
         button.layer.masksToBounds = true
@@ -117,7 +117,7 @@ final class PaymentViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.viewModel.loadCurrency()
+        viewModel.loadCurrency()
     }
     
     // MARK: - Private Methods
@@ -147,14 +147,19 @@ final class PaymentViewController: UIViewController {
     }
     
     private func setupNavBar() {
-        self.tabBarController?.tabBar.isHidden = true
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "chevronBasket"), style: .plain, target: self, action: #selector(chevronDidTap))
-        self.navigationItem.leftBarButtonItem?.tintColor = UIColor.segmentActive
-        self.navigationItem.title = "Выберите способ оплаты"
+        tabBarController?.tabBar.isHidden = true
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(
+            named: "chevronBasket"),
+            style: .plain,
+            target: self,
+            action: #selector(chevronDidTap)
+        )
+        navigationItem.leftBarButtonItem?.tintColor = UIColor.segmentActive
+        navigationItem.title = "Выберите способ оплаты"
         let textChangeColor = [NSAttributedString.Key.foregroundColor: UIColor.segmentActive]
-        self.navigationController?.navigationBar.titleTextAttributes = textChangeColor
-        self.navigationController?.navigationBar.largeTitleTextAttributes = textChangeColor
+        navigationController?.navigationBar.titleTextAttributes = textChangeColor
+        navigationController?.navigationBar.largeTitleTextAttributes = textChangeColor
     }
     
     private func setupConstraints() {
@@ -206,10 +211,9 @@ final class PaymentViewController: UIViewController {
     }
     
     private func paymentVerification() {
-        let result = self.viewModel.checkBool
-        if result {
+        if viewModel.verifyPayment() {
             setupSuccessView()
-            self.viewModel.checkBool = false
+            viewModel.paymentStatus = false
             delegate?.updateNftAfterPay()
         } else {
             errorAlertPresenter?.showAlert(
@@ -220,7 +224,7 @@ final class PaymentViewController: UIViewController {
                     actionSheetTextSecond: "Повторить",
                     completionFirst: { [weak self] in
                         guard let self = self else { return }
-                        self.viewModel.checkBool = false
+                        self.viewModel.paymentStatus = false
                     },
                     completionSecond: { [weak self] in
                         guard let self = self else { return }
@@ -234,14 +238,11 @@ final class PaymentViewController: UIViewController {
     
     @objc private func chevronDidTap() {
         self.navigationController?.popViewController(animated: true)
-        viewModel.idCurrency = ""
-        viewModel.currencyName = ""
+        viewModel.removeIdAndNameCurrency()
     }
     
     @objc private func didTapPayButton() {
-        if !viewModel.idCurrency.isEmpty, !viewModel.currencyName.isEmpty {
-            self.viewModel.paymentAttempt()
-        }
+        viewModel.checkCurrencyEmpty()
     }
     
     @objc private func openWebView() {
@@ -292,13 +293,13 @@ extension PaymentViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? PaymentCollectionCell else { return }
         cell.isSelected = true
-        viewModel.idCurrency = cell.currencyId
-        viewModel.currencyName = cell.currencyName
+        guard let cellId = cell.currencyId else { return }
+        guard let cellName = cell.currencyName else { return }
+        viewModel.setCurrencyIdAndName(id: cellId, name: cellName)
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        viewModel.idCurrency = ""
-        viewModel.currencyName = ""
+        viewModel.removeIdAndNameCurrency()
     }
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {

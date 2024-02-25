@@ -11,11 +11,15 @@ protocol PaymentViewModelProtocol {
     var onChange: (() -> Void)? { get set }
     var onLoad: ((Bool) -> Void)? { get set }
     var currency: [CurrenciesModel] { get }
-    var idCurrency: String { get set }
-    var currencyName: String { get set }
-    var checkBool: Bool { get set }
+    var idCurrency: String? { get set }
+    var currencyName: String? { get set }
+    var paymentStatus: Bool { get set }
     func loadCurrency()
     func paymentAttempt()
+    func verifyPayment() -> Bool
+    func removeIdAndNameCurrency()
+    func checkCurrencyEmpty()
+    func setCurrencyIdAndName(id: String, name: String)
 }
 
 final class PaymentViewModel: PaymentViewModelProtocol {
@@ -24,9 +28,9 @@ final class PaymentViewModel: PaymentViewModelProtocol {
     
     var onChange: (() -> Void)?
     var onLoad: ((Bool) -> Void)?
-    var idCurrency: String = ""
-    var currencyName: String = ""
-    var checkBool: Bool = false
+    var idCurrency: String?
+    var currencyName: String?
+    var paymentStatus: Bool = false
     
     // MARK: - Private Properties
     
@@ -44,6 +48,26 @@ final class PaymentViewModel: PaymentViewModelProtocol {
     }
     
     // MARK: - Public Methods
+    
+    func setCurrencyIdAndName(id: String, name: String) {
+        currencyName = name
+        idCurrency = id
+    }
+    
+    func checkCurrencyEmpty() {
+        if idCurrency != nil, currencyName != nil {
+            paymentAttempt()
+        }
+    }
+    
+    func removeIdAndNameCurrency() {
+        currencyName = nil
+        idCurrency = nil
+    }
+    
+    func verifyPayment() -> Bool {
+        return paymentStatus
+    }
     
     func loadCurrency() {
         service.loadByPayment { [weak self] result in
@@ -64,7 +88,7 @@ final class PaymentViewModel: PaymentViewModelProtocol {
         var checkBoolValue = false
         let dispatchGroup = DispatchGroup()
         dispatchGroup.enter()
-        
+        guard let idCurrency else { return }
         service.loadByOrderPayment(by: idCurrency) { [weak self] result in
             guard let self = self else { return }
             defer { dispatchGroup.leave() }
@@ -79,7 +103,7 @@ final class PaymentViewModel: PaymentViewModelProtocol {
         
         dispatchGroup.notify(queue: .main) { [weak self] in
             guard let self = self else { return }
-            self.checkBool = checkBoolValue
+            self.paymentStatus = checkBoolValue
             self.onLoad?(false)
         }
     }

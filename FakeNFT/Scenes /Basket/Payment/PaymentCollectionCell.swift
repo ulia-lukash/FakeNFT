@@ -22,8 +22,8 @@ final class PaymentCollectionCell: UICollectionViewCell {
         }
     }
     
-    var currencyId: String = ""
-    var currencyName: String = ""
+    var currencyId: String?
+    var currencyName: String?
     
     // MARK: - UI Elements
     

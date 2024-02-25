@@ -9,7 +9,7 @@ import Kingfisher
 import UIKit
 
 protocol BasketTableViewCellDelegate: AnyObject {
-    func deleteButtonClicked(image: UIImage, idNftToDelete: String)
+    func deleteButtonClicked(image: UIImage, id: String)
 }
 
 final class BasketTableViewCell: UITableViewCell {
@@ -20,7 +20,7 @@ final class BasketTableViewCell: UITableViewCell {
     
     weak var delegate: BasketTableViewCellDelegate?
     
-    private var idNftToDelete: String = ""
+    private var idNftToDelete: String?
     
     private let imageNFT: UIImageView = {
         let imageView = UIImageView()
@@ -158,6 +158,7 @@ final class BasketTableViewCell: UITableViewCell {
     
     @objc private func didTapDeleteButton() {
         guard let image = imageNFT.image else { return }
-        delegate?.deleteButtonClicked(image: image, idNftToDelete: idNftToDelete)
+        guard let id = idNftToDelete else { return }
+        delegate?.deleteButtonClicked(image: image, id: id)
     }
 }

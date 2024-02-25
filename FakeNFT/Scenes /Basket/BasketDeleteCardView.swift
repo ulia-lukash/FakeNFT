@@ -18,7 +18,7 @@ final class BasketDeleteCardView: UIView {
     
     // MARK: - Private Properties
     
-    private var idNftToDelete = ""
+    private var idNft: String?
     
     // MARK: - UI Elements
     
@@ -37,15 +37,15 @@ final class BasketDeleteCardView: UIView {
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.numberOfLines = 2
         label.textAlignment = .center
-        label.textColor = UIColor.segmentActive
+        label.textColor = .segmentActive
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var deleteCardButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.segmentActive
-        button.tintColor = UIColor.redUniversal
+        button.backgroundColor = .segmentActive
+        button.tintColor = .redUniversal
         button.setTitle("Удалить", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.layer.masksToBounds = true
@@ -57,8 +57,8 @@ final class BasketDeleteCardView: UIView {
     
     private lazy var backCardButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.segmentActive
-        button.tintColor = UIColor.whiteModeThemes
+        button.backgroundColor = .segmentActive
+        button.tintColor = .whiteModeThemes
         button.setTitle("Вернуться", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.layer.masksToBounds = true
@@ -88,9 +88,9 @@ final class BasketDeleteCardView: UIView {
     
     // MARK: - Public Methods
     
-    func configureView(image: UIImage, idNftToDelete: String) {
+    func configureView(image: UIImage, id: String) {
         deleteCardImage.image = image
-        self.idNftToDelete = idNftToDelete
+        idNft = id
     }
     
     // MARK: - Private Methods
@@ -129,7 +129,8 @@ final class BasketDeleteCardView: UIView {
     // MARK: - Objc Methods
     
     @objc private func didTapDeleteCardButton() {
-        delegate?.didTapDeleteCardButton(index: idNftToDelete)
+        guard let index = idNft else { return }
+        delegate?.didTapDeleteCardButton(index: index)
     }
     
     @objc private func didTapBackCardButton() {
