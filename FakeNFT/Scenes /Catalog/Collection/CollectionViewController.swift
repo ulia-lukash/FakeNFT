@@ -267,9 +267,9 @@ extension CollectionViewController: UICollectionViewDataSource {
             let nftId = nft.id
             
             guard let isLiked = viewModel.isLiked(nft: nftId),
-                  let isInBasket = viewModel.isInBasket(nft: nftId) else { return UICollectionViewCell() }
+                  let isInCart = viewModel.isInCart(nft: nftId) else { return UICollectionViewCell() }
             cell.delegate = self
-            cell.configure(nft: nft, isLiked: isLiked, isInBasket: isInBasket)
+            cell.configure(nft: nft, isLiked: isLiked, isInCart: isInCart)
             return cell
         }
 }
@@ -291,6 +291,13 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
         return UIEdgeInsets(top: 4, left: widthParameters.leftInset, bottom: 4, right: widthParameters.rightInset)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let id = viewModel.nfts[indexPath.row].id
+        
+        let viewController = NftViewController(viewModel: NftViewModel(), nftId: id)
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
     
 }

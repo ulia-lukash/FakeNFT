@@ -19,7 +19,7 @@ protocol NftViewModelProtocol: AnyObject {
     var nft: Nft? { get }
     var nfts: [Nft]? { get }
     func isLiked(nft nftId: UUID) -> Bool
-    func isInBasket(nft nftId: UUID) -> Bool
+    func isInCart(nft nftId: UUID) -> Bool
     func didTapLikeFor(nft id: UUID)
     func didTapCartFor(nft id: UUID)
     func fetchMoreNfts()
@@ -70,7 +70,7 @@ final class NftViewModel: NftViewModelProtocol {
         return profile.likes.contains(nftId)
     }
     
-    func isInBasket(nft nftId: UUID) -> Bool {
+    func isInCart(nft nftId: UUID) -> Bool {
         guard let order = order else { return false }
         return order.nfts.contains(nftId)
     }
