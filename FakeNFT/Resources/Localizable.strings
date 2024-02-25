@@ -32,9 +32,9 @@
 "basketSortName" = "По названию";
 "basketClose" = "Закрыть";
 "basketPrice" = "Цена";
-"basketWantToDelete" = "Вы уверены, что хотите /nудалить объект из корзины?";
+"basketWantToDelete" = "Вы уверены, что хотите \nудалить объект из корзины?";
 "basketRemove" = "Удалить";
 "basketReturn" = "Вернуться";
-"basketSuccess" = "Успех! Оплата прошла, /nпоздравляем с покупкой!";
+"basketSuccess" = "Успех! Оплата прошла, \nпоздравляем с покупкой!";
 "basketReturnCatalog" = "Вернуться в каталог";
 "basket" = "Корзина";
