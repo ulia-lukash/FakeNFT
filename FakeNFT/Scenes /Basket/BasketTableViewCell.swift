@@ -48,7 +48,7 @@ final class BasketTableViewCell: UITableViewCell {
     private let stubNFTLabel: UILabel = {
         let label = UILabel()
         label.textColor = .segmentActive
-        label.text = "Цена"
+        label.text = ConstLocalizable.basketPrice
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

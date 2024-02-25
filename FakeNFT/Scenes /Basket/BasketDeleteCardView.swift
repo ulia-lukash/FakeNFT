@@ -33,7 +33,7 @@ final class BasketDeleteCardView: UIView {
     
     private lazy var deleteCardLabel: UILabel = {
         let label = UILabel()
-        label.text = "Вы уверены, что хотите \nудалить объект из корзины?"
+        label.text = ConstLocalizable.basketWantToDelete
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.numberOfLines = 2
         label.textAlignment = .center
@@ -46,7 +46,7 @@ final class BasketDeleteCardView: UIView {
         let button = UIButton(type: .system)
         button.backgroundColor = .segmentActive
         button.tintColor = .redUniversal
-        button.setTitle("Удалить", for: .normal)
+        button.setTitle(ConstLocalizable.basketRemove, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 12
@@ -59,7 +59,7 @@ final class BasketDeleteCardView: UIView {
         let button = UIButton(type: .system)
         button.backgroundColor = .segmentActive
         button.tintColor = .whiteModeThemes
-        button.setTitle("Вернуться", for: .normal)
+        button.setTitle(ConstLocalizable.basketRepeat, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 12

@@ -50,7 +50,7 @@ final class BasketViewController: UIViewController, LoadingView {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.segmentActive
         button.tintColor = .whiteModeThemes
-        button.setTitle("К оплате", for: .normal)
+        button.setTitle(ConstLocalizable.basketToBePaid, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(didTapPayButton), for: .touchUpInside)
@@ -92,7 +92,7 @@ final class BasketViewController: UIViewController, LoadingView {
     
     private lazy var stubLabel: UILabel = {
         let label = UILabel()
-        label.text = "Корзина пуста"
+        label.text = ConstLocalizable.basketIsEmpty
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = .segmentActive
         label.isHidden = true
@@ -241,12 +241,12 @@ final class BasketViewController: UIViewController, LoadingView {
     
     private func setupFilters() {
         sortedAlertPresenter?.showAlert(model: SortAlertModel(
-            title: "Сортировка",
+            title: ConstLocalizable.basketSort,
             message: nil,
-            actionSheetTextFirst: "По цене",
-            actionSheetTextSecond: "По рейтингу",
-            actionSheetTextThird: "По названию",
-            actionSheetTextCancel: "Закрыть",
+            actionSheetTextFirst: ConstLocalizable.basketSortPrice,
+            actionSheetTextSecond: ConstLocalizable.basketSortRait,
+            actionSheetTextThird: ConstLocalizable.basketSortName,
+            actionSheetTextCancel: ConstLocalizable.basketClose,
             completionFirst: { [weak self] in
                 guard let self else { return }
                 self.viewModel.sortItems(with: .price)

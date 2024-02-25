@@ -43,7 +43,7 @@ final class PaymentViewController: UIViewController {
         let button = UIButton(type: .system)
         button.backgroundColor = .segmentActive
         button.tintColor = .whiteModeThemes
-        button.setTitle("Оплатить", for: .normal)
+        button.setTitle(ConstLocalizable.basketPay, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 16
@@ -54,7 +54,7 @@ final class PaymentViewController: UIViewController {
     
     private lazy var stubLabel: UILabel = {
         let label = UILabel()
-        label.text = "Совершая покупку, вы соглашаетесь с условиями"
+        label.text = ConstLocalizable.basketMakingAPurchase
         label.textColor = .segmentActive
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +64,7 @@ final class PaymentViewController: UIViewController {
     private lazy var agreementButton: UIButton = {
         let button = UIButton(type: .system)
         button.tintColor = .blueUniversal
-        button.setTitle("Пользовательского соглашения", for: .normal)
+        button.setTitle(ConstLocalizable.basketUserAgreement, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 13, weight: .regular)
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(openWebView), for: .touchUpInside)
@@ -156,7 +156,7 @@ final class PaymentViewController: UIViewController {
             action: #selector(chevronDidTap)
         )
         navigationItem.leftBarButtonItem?.tintColor = UIColor.segmentActive
-        navigationItem.title = "Выберите способ оплаты"
+        navigationItem.title = ConstLocalizable.basketDelete
         let textChangeColor = [NSAttributedString.Key.foregroundColor: UIColor.segmentActive]
         navigationController?.navigationBar.titleTextAttributes = textChangeColor
         navigationController?.navigationBar.largeTitleTextAttributes = textChangeColor
@@ -218,10 +218,10 @@ final class PaymentViewController: UIViewController {
         } else {
             errorAlertPresenter?.showAlert(
                 model: ErrorAlertModel(
-                    title: "Не удалось произвести оплату",
+                    title: ConstLocalizable.basketPaymentFail,
                     message: "",
-                    actionSheetTextFirst: "Отмена",
-                    actionSheetTextSecond: "Повторить",
+                    actionSheetTextFirst: ConstLocalizable.basketCancel,
+                    actionSheetTextSecond: ConstLocalizable.basketRepeat,
                     completionFirst: { [weak self] in
                         guard let self = self else { return }
                         self.viewModel.paymentStatus = false

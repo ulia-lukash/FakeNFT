@@ -30,7 +30,7 @@ final class BasketSuccessView: UIView {
     
     private lazy var stubCardLabel: UILabel = {
         let label = UILabel()
-        label.text = "Успех! Оплата прошла, \nпоздравляем с покупкой!"
+        label.text = ConstLocalizable.basketSuccess
         label.font = .systemFont(ofSize: 22, weight: .bold)
         label.numberOfLines = 2
         label.textAlignment = .center
@@ -43,7 +43,7 @@ final class BasketSuccessView: UIView {
         let button = UIButton(type: .system)
         button.backgroundColor = .segmentActive
         button.tintColor = .whiteModeThemes
-        button.setTitle("Вернуться в каталог", for: .normal)
+        button.setTitle(ConstLocalizable.basketReturnCatalog, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 16

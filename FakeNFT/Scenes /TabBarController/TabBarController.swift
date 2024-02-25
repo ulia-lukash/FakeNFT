@@ -23,7 +23,7 @@ final class TabBarController: UITabBarController {
     )
     
     private let basketTabBarItem = UITabBarItem(
-        title: "Корзина",
+        title: ConstLocalizable.basket,
         image: UIImage(named: "BasketNoActive"),
         tag: 1
     )
