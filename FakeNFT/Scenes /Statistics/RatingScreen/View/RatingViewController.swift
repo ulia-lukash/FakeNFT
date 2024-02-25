@@ -3,7 +3,7 @@ import UIKit
 final class RatingViewController: UIViewController {
     private let viewModel: RatingViewModelProtocol
 
-    private let tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .systemBackground
@@ -40,6 +40,9 @@ final class RatingViewController: UIViewController {
         viewModel.onUsersListChange = { [weak self] in
             self?.tableView.reloadData()
         }
+        viewModel.onUserProfileDidTap = { [weak self] user in
+            self?.pushUserInfoViewController(withUser: user)
+        }
     }
 
     private func setupNavBar() {
@@ -63,6 +66,7 @@ final class RatingViewController: UIViewController {
     private func setupTableView() {
         tableView.register(RatingCell.self, forCellReuseIdentifier: "ratingCell")
         tableView.dataSource = self
+        tableView.delegate = self
 
         view.addSubview(tableView)
         NSLayoutConstraint.activate([
@@ -107,8 +111,16 @@ final class RatingViewController: UIViewController {
 
         present(alert, animated: true, completion: nil)
     }
+
+    private func pushUserInfoViewController(withUser user: User) {
+        let viewModel = UserInfoViewModel()
+        navigationController?.pushViewController(
+            UserInfoViewController(user: user, viewModel: viewModel),
+            animated: true)
+    }
 }
 
+// MARK: - UITableViewDataSource
 extension RatingViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.allUsers.count
@@ -125,6 +137,13 @@ extension RatingViewController: UITableViewDataSource {
         }
 
         return cell
+    }
+}
+
+// MARK: - UITableViewDelegate
+extension RatingViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        viewModel.userProfileDidTap(withIndex: indexPath)
     }
 }
 

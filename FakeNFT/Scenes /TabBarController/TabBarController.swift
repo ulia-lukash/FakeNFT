@@ -23,11 +23,13 @@ final class TabBarController: UITabBarController {
         )
         catalogController.tabBarItem = catalogTabBarItem
 
-        let userModel = UserModel()
+        let userModel = RatingModel()
         let ratingViewModel = RatingViewModel(for: userModel)
-        let ratingViewController = UINavigationController(rootViewController: RatingViewController(
-            viewModel: ratingViewModel
-        ))
+        let ratingViewController = UINavigationController(
+            rootViewController: RatingViewController(
+                viewModel: ratingViewModel
+            )
+        )
         ratingViewController.tabBarItem = statisticsTabBarItem
 
         viewControllers = [catalogController, ratingViewController]
