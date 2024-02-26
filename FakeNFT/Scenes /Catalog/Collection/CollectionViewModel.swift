@@ -54,6 +54,8 @@ final class CollectionViewModel: CollectionViewModelProtocol {
                         guard let self = self else { return }
                         self.collection = collectionService.collection
                         self.getProfile()
+                        self.getOrder()
+                        self.fetchNfts()
                     }
             let id = id.uuidString.lowercased()
             self.collectionService.fetchCollection(withId: id)
@@ -105,7 +107,7 @@ final class CollectionViewModel: CollectionViewModelProtocol {
         
         self.nftCollectionServiceObserver = NotificationCenter.default
             .addObserver(
-                forName: NftService.didChangeNftNotification,
+                forName: NftService.didGetNftNotification,
                 object: nil,
                 queue: .main) { [weak self] _ in
                     guard let self = self else { return }
@@ -134,7 +136,6 @@ final class CollectionViewModel: CollectionViewModelProtocol {
                     queue: .main) { [weak self] _ in
                         guard let self = self else { return }
                         self.order = orderService.order
-                        self.fetchNfts()
                     }
             self.orderService.fetchOrder()
         }
@@ -148,7 +149,6 @@ final class CollectionViewModel: CollectionViewModelProtocol {
                     queue: .main) { [weak self] _ in
                         guard let self = self else { return }
                         self.profile = profileService.profile
-                        getOrder()
                     }
             self.profileService.fetchProfile()
         }

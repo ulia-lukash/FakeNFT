@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import ProgressHUD
 
 final class NftViewController: UIViewController {
     let viewModel: NftViewModelProtocol
@@ -41,10 +42,60 @@ final class NftViewController: UIViewController {
         return collectionView
     }()
     
+    private lazy var pageControl = LinePageControl()
+    
+    private lazy var nameLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 22, weight: .bold)
+        return label
+    }()
+    
+    private lazy var ratingView = StarRatingView()
+    
+    private lazy var collectionNameLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 17, weight: .bold)
+        return label
+    }()
+    
+    private lazy var price: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 15, weight: .regular)
+        label.text = NSLocalizedString("Price", comment: "")
+        return label
+    }()
+    
+    private lazy var priceLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 17, weight: .bold)
+        return label
+    }()
+    
+    private lazy var addToCartButton: UIButton = {
+        let button = UIButton()
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 16
+        return button
+    }()
+    
+    private lazy var currenciesTable: UITableView = {
+        let tableView = UITableView()
+        tableView.isScrollEnabled = false
+        tableView.register(CurrenciesTableCell.self)
+        tableView.separatorColor = .clear
+        tableView.layer.masksToBounds = true
+        tableView.layer.cornerRadius = 12
+        tableView.backgroundColor = .segmentInactive
+        tableView.dataSource = self
+        return tableView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.getNft(withId: nftId)
+        ProgressHUD.show()
+        
         bind()
+        viewModel.getNft(withId: nftId)
         setUp()
     }
     
@@ -60,7 +111,48 @@ final class NftViewController: UIViewController {
     
     private func bind() {
         self.viewModel.onChange = { [weak self] in
-//            self.setLabelValues()
+            guard let nft = self?.viewModel.nft else { return }
+            self?.pageControl.numberOfItems = nft.images.count
+            self?.setLabels()
+            self?.currenciesTable.reloadData()
+            ProgressHUD.dismiss()
+        }
+    }
+    
+    private func setLabels() {
+        
+        setCartButtonState()
+        setLikeButtonState()
+        guard let nft = viewModel.nft else { return }
+        
+        nameLabel.text = nft.name
+        ratingView.setRating(with: nft.rating)
+/* Нет в nft указателя на его коллекцию.
+Подтаскивать все коллекции и искать, откуда
+эта конкретная штука - нецелесообразно.
+Ждем когда доведут до ума бэк */
+        collectionNameLabel.text = "Peach"
+        
+        priceLabel.text = "\(nft.price) ETH"
+    }
+    
+    private func setLikeButtonState() {
+        likeButton.tintColor = viewModel.isLiked(nft: nftId) ? .redUniversal : .whiteUniversal
+    }
+    
+    private func setCartButtonState() {
+        if viewModel.isInCart(nft: nftId) {
+            addToCartButton.backgroundColor = .segmentInactive
+            addToCartButton.setTitleColor(.segmentActive, for: .normal)
+            let title = NSLocalizedString("Go to cart", comment: "")
+            addToCartButton.setTitle(title, for: .normal)
+            addToCartButton.addTarget(self, action: #selector(goToCart), for: .touchUpInside)
+        } else {
+            addToCartButton.backgroundColor = .segmentActive
+            addToCartButton.setTitleColor(.whiteModeThemes, for: .normal)
+            let title = NSLocalizedString("Add to cart", comment: "")
+            addToCartButton.setTitle(title, for: .normal)
+            addToCartButton.addTarget(self, action: #selector(addToCart), for: .touchUpInside)
         }
     }
     
@@ -72,19 +164,63 @@ final class NftViewController: UIViewController {
         scrollView.constraintEdges(to: view)
         scrollView.addSubview(scrollViewContent)
         scrollViewContent.constraintEdges(to: scrollView)
+        setUpScrollView()
+        setConstraints()
     }
     
     private func setUpScrollView() {
-        [imagesCollection].forEach {
+        [imagesCollection, pageControl, nameLabel, ratingView, collectionNameLabel, price, priceLabel, addToCartButton, currenciesTable].forEach {
             scrollViewContent.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
+        imagesCollection.backgroundColor = .systemPink
     }
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
             scrollViewContent.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            scrollViewContent.heightAnchor.constraint(equalToConstant: 1400)
+            scrollViewContent.heightAnchor.constraint(equalToConstant: 1400),
+            
+            imagesCollection.topAnchor.constraint(equalTo: scrollViewContent.topAnchor, constant: -100),
+            imagesCollection.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor),
+            imagesCollection.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor),
+            imagesCollection.heightAnchor.constraint(equalTo: scrollViewContent.widthAnchor),
+            
+            pageControl.topAnchor.constraint(equalTo: imagesCollection.bottomAnchor, constant: 12),
+            pageControl.heightAnchor.constraint(equalToConstant: 4),
+            pageControl.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            pageControl.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+            
+            nameLabel.topAnchor.constraint(equalTo: pageControl.bottomAnchor, constant: 28),
+            nameLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            nameLabel.heightAnchor.constraint(equalToConstant: 28),
+            
+            ratingView.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 8),
+            ratingView.heightAnchor.constraint(equalToConstant: 12),
+            ratingView.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
+            
+            collectionNameLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+            collectionNameLabel.heightAnchor.constraint(equalToConstant: 22),
+            collectionNameLabel.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
+            
+            price.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            price.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 24),
+            price.heightAnchor.constraint(equalToConstant: 20),
+            
+            priceLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            priceLabel.topAnchor.constraint(equalTo: price.bottomAnchor, constant: 2),
+            priceLabel.heightAnchor.constraint(equalToConstant: 22),
+            
+            addToCartButton.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+            addToCartButton.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 24),
+            addToCartButton.heightAnchor.constraint(equalToConstant: 44),
+            addToCartButton.widthAnchor.constraint(equalToConstant: 240),
+            
+            currenciesTable.topAnchor.constraint(equalTo: addToCartButton.bottomAnchor, constant: 24),
+            currenciesTable.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            currenciesTable.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+            currenciesTable.heightAnchor.constraint(equalToConstant: 576)
+            
         ])
     }
     
@@ -96,6 +232,19 @@ final class NftViewController: UIViewController {
         viewModel.didTapLikeFor(nft: nftId)
         
         likeButton.tintColor = likeButton.tintColor == .redUniversal ? .whiteUniversal : .redUniversal
+    }
+    
+    @objc private func addToCart() {
+        viewModel.didTapCartFor(nft: nftId)
+        addToCartButton.backgroundColor = .segmentInactive
+        addToCartButton.setTitleColor(.segmentActive, for: .normal)
+        let title = NSLocalizedString("Go to cart", comment: "")
+        addToCartButton.setTitle(title, for: .normal)
+        addToCartButton.addTarget(self, action: #selector(goToCart), for: .touchUpInside)
+    }
+    
+    @objc private func goToCart() {
+//        TODO: make segue to cart page
     }
 }
 
@@ -128,5 +277,19 @@ extension NftViewController: UICollectionViewDataSource {
 }
 
 extension NftViewController: UICollectionViewDelegate {
+    
+}
+
+extension NftViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        viewModel.currencies.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell() as CurrenciesTableCell
+        let currency = viewModel.currencies[indexPath.row]
+        cell.configure(forCurrency: currency)
+        return cell
+    }
     
 }

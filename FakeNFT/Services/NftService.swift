@@ -12,7 +12,7 @@ final class NftService: RequestService {
     // MARK: - Public Properties
 
     static let shared = NftService()
-    static let didChangeNftNotification = Notification.Name(rawValue: "Did fetch NFT")
+    static let didGetNftNotification = Notification.Name(rawValue: "Did fetch NFT")
     static let didChangeNftsNotification = Notification.Name(rawValue: "Did fetch NFTs")
     // MARK: - Private Properties
 
@@ -42,7 +42,7 @@ final class NftService: RequestService {
             guard let self = self else { return }
             switch result {
             case .success(let nfts):
-                self.mapNfts(nfts)
+                self.nfts.append(contentsOf: nfts)
                 NotificationCenter.default.post(name: NftService.didChangeNftsNotification, object: self, userInfo: ["nfts": self.nfts] )
             case .failure(let error):
                 print(error)
@@ -51,10 +51,6 @@ final class NftService: RequestService {
         }
         self.task = task
         task.resume()
-    }
-    
-    func mapNfts(_ nfts: [Nft]) {
-        self.nfts.append(contentsOf: nfts)
     }
     
     func fetchNft(withId id: String) {
@@ -66,7 +62,11 @@ final class NftService: RequestService {
             guard let self = self else { return }
             switch result {
             case .success(let nft):
-                self.mapNft(nft)
+                self.nft = nft
+                NotificationCenter.default.post(
+                    name: NftService.didGetNftNotification,
+                    object: self,
+                    userInfo: ["nft": self.nft as Any] )
             case .failure(let error):
                 print(error)
             }
@@ -81,21 +81,5 @@ final class NftService: RequestService {
     }
 
     // MARK: - Private Methods
-
-    private func mapNft(_ nft: Nft) {
-        self.nft = Nft(
-            name: nft.name,
-            images: nft.images,
-            rating: nft.rating,
-            description: nft.description,
-            price: nft.price,
-            author: nft.author,
-            id: nft.id)
-        
-        NotificationCenter.default.post(
-            name: NftService.didChangeNftNotification,
-            object: self,
-            userInfo: ["nft": self.nft as Any] )
-    }
     
 }

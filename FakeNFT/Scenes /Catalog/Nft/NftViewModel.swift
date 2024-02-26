@@ -13,7 +13,6 @@ protocol NftViewModelDelegateProtocol: AnyObject {
 protocol NftViewModelProtocol: AnyObject {
     var delegate: (NftViewModelDelegateProtocol)? { get set }
     var onChange: (() -> Void)? { get set }
-    var willChangeNfts: (() -> Void)? { get set }
     func getNft(withId id: UUID)
     var currencies: [Currency] { get }
     var nft: Nft? { get }
@@ -25,10 +24,9 @@ protocol NftViewModelProtocol: AnyObject {
     func fetchMoreNfts()
 }
 final class NftViewModel: NftViewModelProtocol {
-             
+    
     weak var delegate: NftViewModelDelegateProtocol?
     var onChange: (() -> Void)?
-    var willChangeNfts: (() -> Void)?
     
     private var currencyServiceObserver: NSObjectProtocol?
     private var nftServiceObserver: NSObjectProtocol?
@@ -41,24 +39,27 @@ final class NftViewModel: NftViewModelProtocol {
     private let orderService = OrderService.shared
     
     private(set) var profile: Profile?
-    private(set) var order: Order? {
+    private(set) var order: Order?
+    private(set) var nft: Nft?
+    private(set) var nfts: [Nft]?
+    private(set) var currencies: [Currency] = [] {
         didSet {
             onChange?()
         }
     }
-    private(set) var nft: Nft?
-    private(set) var nfts: [Nft]?
-    private(set) var currencies: [Currency] = []
     
     func getNft(withId id: UUID) {
         self.nftServiceObserver = NotificationCenter.default
             .addObserver(
-                forName: NftService.didChangeNftNotification,
+                forName: NftService.didGetNftNotification,
                 object: nil,
                 queue: .main) { [weak self] _ in
                     guard let self = self else { return }
                     self.nft = nftService.nft
                     self.getCurrencies()
+                    self.getProfile()
+                    self.getOrder()
+                    self.fetchMoreNfts()
                 }
         let id = id.uuidString.lowercased()
         nftService.fetchNft(withId: id)
@@ -107,7 +108,6 @@ final class NftViewModel: NftViewModelProtocol {
                 queue: .main) { [weak self] _ in
                     guard let self = self else { return }
                     self.currencies = currencyService.currencies
-                    self.getProfile()
                 }
         currencyService.fetchCurrencies()
     }
@@ -120,7 +120,6 @@ final class NftViewModel: NftViewModelProtocol {
                 queue: .main) { [weak self] _ in
                     guard let self = self else { return }
                     self.profile = profileService.profile
-                    self.getOrder()
                 }
         profileService.fetchProfile()
     }
@@ -133,7 +132,6 @@ final class NftViewModel: NftViewModelProtocol {
                 queue: .main) { [weak self] _ in
                     guard let self = self else { return }
                     self.order = orderService.order
-                    self.fetchMoreNfts()
                 }
         orderService.fetchOrder()
     }
