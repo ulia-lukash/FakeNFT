@@ -218,10 +218,9 @@ extension MyNFTTableCell {
         starRatingView.settings.filledBorderColor = .clear
         
         NSLayoutConstraint.activate([
-            starRatingView.topAnchor.constraint(equalTo: nameNFTLabel.bottomAnchor, constant: 4),
             starRatingView.leadingAnchor.constraint(equalTo: nameNFTView.leadingAnchor),
-            starRatingView.trailingAnchor.constraint(equalTo: nameNFTView.trailingAnchor, constant: -2),
-            starRatingView.heightAnchor.constraint(equalToConstant: 12)
+            starRatingView.centerYAnchor.constraint(equalTo: nameNFTView.centerYAnchor),
+            starRatingView.heightAnchor.constraint(equalToConstant: 16)
         ])
     }
     
