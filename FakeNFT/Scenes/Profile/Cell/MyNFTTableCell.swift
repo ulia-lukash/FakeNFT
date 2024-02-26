@@ -210,6 +210,7 @@ extension MyNFTTableCell {
         starRatingView.translatesAutoresizingMaskIntoConstraints = false
         starRatingView.backgroundColor = .clear
         starRatingView.rating = 0
+        starRatingView.settings.starSize = 16
         starRatingView.settings.filledColor = .yellowUniversal
         starRatingView.settings.starMargin = 1
         starRatingView.settings.emptyColor = .lightGreyUniversal
@@ -219,7 +220,7 @@ extension MyNFTTableCell {
         NSLayoutConstraint.activate([
             starRatingView.topAnchor.constraint(equalTo: nameNFTLabel.bottomAnchor, constant: 4),
             starRatingView.leadingAnchor.constraint(equalTo: nameNFTView.leadingAnchor),
-            starRatingView.trailingAnchor.constraint(equalTo: nameNFTView.trailingAnchor, constant: -10),
+            starRatingView.trailingAnchor.constraint(equalTo: nameNFTView.trailingAnchor, constant: -2),
             starRatingView.heightAnchor.constraint(equalToConstant: 12)
         ])
     }
@@ -265,7 +266,7 @@ extension MyNFTTableCell {
         
         NSLayoutConstraint.activate([
             priceView.heightAnchor.constraint(equalToConstant: 42),
-            priceView.widthAnchor.constraint(equalToConstant: 75)
+            priceView.widthAnchor.constraint(equalToConstant: 100)
         ])
     }
     
