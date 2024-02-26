@@ -63,7 +63,6 @@ final class ProfileService: RequestService {
                let response = response,
                let statusCode = (response as? HTTPURLResponse)?.statusCode {
                 if 200 ..< 300 ~= statusCode {
-
                 } else {
                     print(NetworkError.httpStatusCode(statusCode))
                 }

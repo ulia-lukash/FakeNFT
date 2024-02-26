@@ -28,13 +28,6 @@ final class CollectionViewController: UIViewController {
         interCellSpacing: 10
     )
     
-    private lazy var backButtonItem = UIBarButtonItem(
-        image: UIImage(systemName: "chevron.left"),
-        style: .plain,
-        target: self,
-        action: #selector(backButtonTapped)
-    )
-    
     private lazy var coverImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.masksToBounds = true
@@ -93,6 +86,10 @@ final class CollectionViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.tintColor = .segmentActive
+        self.navigationController?.navigationBar.topItem?.title = ""
+
+        view.backgroundColor = UIColor.whiteModeThemes
         ProgressHUD.show()
         self.viewModelNftsObserver = NotificationCenter.default
             .addObserver(
@@ -105,7 +102,6 @@ final class CollectionViewController: UIViewController {
         bind()
         nftCollection.dataSource = self
         nftCollection.delegate = self
-        setUp()
         viewModel.getCollectionViewData(collectionId: collectionId)
     }
     
@@ -130,7 +126,9 @@ final class CollectionViewController: UIViewController {
         
         viewModel.onChange = { [weak self] in
             self?.configure()
+            self?.setUp()
             self?.nftCollection.reloadData()
+            
             ProgressHUD.dismiss()
         }
     }
@@ -153,9 +151,6 @@ final class CollectionViewController: UIViewController {
         }
         
         setConstraints()
-        backButtonItem.tintColor = UIColor.segmentActive
-        navigationItem.leftBarButtonItem = backButtonItem
-        view.backgroundColor = UIColor.whiteModeThemes
     }
     
     private func setConstraints() {
@@ -226,10 +221,6 @@ final class CollectionViewController: UIViewController {
     }
     
     // MARK: - @objc Methods
-    
-    @objc private func backButtonTapped() {
-        self.dismiss(animated: true)
-    }
     
     @objc private func didTapAuthorName() {
         

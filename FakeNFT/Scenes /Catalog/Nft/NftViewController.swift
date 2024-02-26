@@ -15,14 +15,6 @@ final class NftViewController: UIViewController {
     
     private lazy var scrollView = UIScrollView()
     private lazy var scrollViewContent = UIView()
-    
-    private lazy var backButton: UIBarButtonItem = {
-        let image = UIImage(systemName: "chevron.left")
-        let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(backButtonTapped))
-        button.tintColor = .segmentActive
-        return button
-    }()
-    
     private lazy var likeButton: UIBarButtonItem = {
         let image = UIImage(systemName: "heart.fill")
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(likeButtonTapped))
@@ -120,11 +112,15 @@ final class NftViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.rightBarButtonItem = likeButton
+        self.navigationController?.navigationBar.tintColor = .segmentActive
+        self.navigationController?.navigationBar.topItem?.title = ""
+        view.backgroundColor = .whiteModeThemes
         ProgressHUD.show()
         viewModel.delegate = self
         bind()
         viewModel.getNft(withId: nftId)
-        setUp()
+        
     }
     
     init(viewModel: NftViewModelProtocol, nftId: UUID) {
@@ -140,6 +136,7 @@ final class NftViewController: UIViewController {
     private func bind() {
         self.viewModel.onChange = { [weak self] in
             guard let nft = self?.viewModel.nft else { return }
+            self?.setUp()
             self?.pageControl.numberOfItems = nft.images.count
             self?.setLabels()
             self?.imagesCollection.reloadData()
@@ -186,9 +183,6 @@ final class NftViewController: UIViewController {
     }
     
     private func setUp() {
-        navigationItem.backBarButtonItem = backButton
-        navigationItem.rightBarButtonItem = likeButton
-        view.backgroundColor = .whiteModeThemes
         view.addSubview(scrollView)
         scrollView.constraintEdges(to: view)
         scrollView.addSubview(scrollViewContent)
@@ -261,10 +255,6 @@ final class NftViewController: UIViewController {
         ])
     }
     
-    @objc private func backButtonTapped() {
-        self.dismiss(animated: false)
-    }
-    
     @objc private func likeButtonTapped() {
         viewModel.didTapLikeFor(nft: nftId)
         
@@ -323,12 +313,13 @@ extension NftViewController: UICollectionViewDelegate {
         }
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let nft = viewModel.nfts?[indexPath.row] else { return }
         if collectionView == nftsCollection {
-            guard let nft = viewModel.nfts?[indexPath.row] else { return }
             let viewController = NftViewController(viewModel: NftViewModel(), nftId: nft.id)
             self.navigationController?.pushViewController(viewController, animated: true)
         } else {
-            
+            let viewController = NftDetailViewController(urls: nft.images)
+            self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
 }
