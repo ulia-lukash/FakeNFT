@@ -17,7 +17,6 @@ final class CurrencyService: RequestService {
 
     private (set) var currencies: [Currency] = []
     private var task: URLSessionTask?
-    private let urlSession = URLSession.shared
     private let defaults = UserDefaults.standard
 
     // MARK: - Public Methods

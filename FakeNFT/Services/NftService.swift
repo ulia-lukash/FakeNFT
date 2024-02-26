@@ -20,7 +20,6 @@ final class NftService: RequestService {
     private (set) var nfts: [Nft] = []
     private var task: URLSessionTask?
     private var lastLoadedPage: Int?
-    private let urlSession = URLSession.shared
     private let defaults = UserDefaults.standard
 
     // MARK: - Public Methods

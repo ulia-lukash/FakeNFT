@@ -42,6 +42,9 @@ final class NftViewModel: NftViewModelProtocol {
     private(set) var order: Order?
     private(set) var nft: Nft?
     private(set) var nfts: [Nft]?
+    private var likes: [UUID] = []
+    private var cart: [UUID] = []
+    
     private(set) var currencies: [Currency] = [] {
         didSet {
             onChange?()
@@ -77,27 +80,21 @@ final class NftViewModel: NftViewModelProtocol {
     }
     
     func didTapLikeFor(nft id: UUID) {
-        guard let profile = self.profile else { return }
-        var likes: [UUID] = []
-        if profile.likes.contains(id) {
-            likes = profile.likes.filter { $0 != id}
+        if likes.contains(id) {
+            likes = likes.filter { $0 != id}
         } else {
-            likes = profile.likes
             likes.append(id)
         }
-        profileService.changeLikesWith(likes)
+        profileService.putData(likes, url: RequestConstants.profileFetchEndpoint, isLikes: true)
     }
     
     func didTapCartFor(nft id: UUID) {
-        guard let order = self.order else { return }
-        var nfts: [UUID] = []
-        if order.nfts.contains(id) {
-            nfts = order.nfts.filter { $0 != id}
+        if cart.contains(id) {
+            cart = cart.filter { $0 != id}
         } else {
-            nfts = order.nfts
-            nfts.append(id)
+            cart.append(id)
         }
-        orderService.changeOrderWith(nfts)
+        orderService.putData(cart, url: RequestConstants.orderFetchEndpoint, isLikes: false)
     }
     
     private func getCurrencies() {
@@ -120,6 +117,7 @@ final class NftViewModel: NftViewModelProtocol {
                 queue: .main) { [weak self] _ in
                     guard let self = self else { return }
                     self.profile = profileService.profile
+                    self.likes = profile?.likes ?? []
                 }
         profileService.fetchProfile()
     }
@@ -132,6 +130,7 @@ final class NftViewModel: NftViewModelProtocol {
                 queue: .main) { [weak self] _ in
                     guard let self = self else { return }
                     self.order = orderService.order
+                    self.cart = order?.nfts ?? []
                 }
         orderService.fetchOrder()
     }

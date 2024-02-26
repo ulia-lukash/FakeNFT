@@ -18,7 +18,6 @@ final class OrderService: RequestService {
 
     private (set) var order: Order?
     private var task: URLSessionTask?
-    private let urlSession = URLSession.shared
     private let defaults = UserDefaults.standard
 
     // MARK: - Public Methods
@@ -44,34 +43,6 @@ final class OrderService: RequestService {
             self.task = nil
         }
         self.task = task
-        task.resume()
-    }
-
-    func changeOrderWith(_ nfts: [UUID]) {
-        let nfts = nfts.map {$0.uuidString.lowercased()}
-        let nftsString = nfts.map { "nfts=\($0)" }.joined(separator: "&")
-        let reqData = Data(nftsString.utf8)
-
-        guard let request = makePutRequest(
-            path: RequestConstants.orderFetchEndpoint,
-            data: reqData) else { assertionFailure("Failed to make order put request")
-            return
-        }
-        let task = urlSession.dataTask(with: request) { data, response, error in
-            if let _ = data,
-               let response = response,
-               let statusCode = (response as? HTTPURLResponse)?.statusCode {
-                if 200 ..< 300 ~= statusCode {
-
-                } else {
-                    print(NetworkError.httpStatusCode(statusCode))
-                }
-            } else if let error = error {
-                print(NetworkError.urlRequestError(error))
-            } else {
-                print(NetworkError.urlSessionError)
-            }
-        }
         task.resume()
     }
 }
