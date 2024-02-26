@@ -322,6 +322,15 @@ extension NftViewController: UICollectionViewDelegate {
             }
         }
     }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == nftsCollection {
+            guard let nft = viewModel.nfts?[indexPath.row] else { return }
+            let viewController = NftViewController(viewModel: NftViewModel(), nftId: nft.id)
+            self.navigationController?.pushViewController(viewController, animated: true)
+        } else {
+            
+        }
+    }
 }
 
 extension NftViewController: UICollectionViewDelegateFlowLayout {
