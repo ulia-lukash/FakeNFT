@@ -90,10 +90,38 @@ final class NftViewController: UIViewController {
         return tableView
     }()
     
+    private lazy var goToSellerButton: UIButton = {
+        let button = UIButton()
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 16
+        button.layer.borderWidth = 1
+        button.backgroundColor = .clear
+        button.tintColor = .segmentActive
+        button.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
+        let title = NSLocalizedString("Go to seller's website", comment: "")
+        button.setTitle(title, for: .normal)
+        button.setTitleColor(.segmentActive, for: .normal)
+        return button
+    }()
+    
+    private lazy var nftsCollection: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 108, height: 192)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
+        collectionView.register(NftCollectionCell.self)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.isPagingEnabled = true
+        return collectionView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         ProgressHUD.show()
-        
+        viewModel.delegate = self
         bind()
         viewModel.getNft(withId: nftId)
         setUp()
@@ -114,6 +142,7 @@ final class NftViewController: UIViewController {
             guard let nft = self?.viewModel.nft else { return }
             self?.pageControl.numberOfItems = nft.images.count
             self?.setLabels()
+            self?.imagesCollection.reloadData()
             self?.currenciesTable.reloadData()
             ProgressHUD.dismiss()
         }
@@ -169,11 +198,10 @@ final class NftViewController: UIViewController {
     }
     
     private func setUpScrollView() {
-        [imagesCollection, pageControl, nameLabel, ratingView, collectionNameLabel, price, priceLabel, addToCartButton, currenciesTable].forEach {
+        [imagesCollection, pageControl, nameLabel, ratingView, collectionNameLabel, price, priceLabel, addToCartButton, currenciesTable, goToSellerButton, nftsCollection].forEach {
             scrollViewContent.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-        imagesCollection.backgroundColor = .systemPink
     }
     
     private func setConstraints() {
@@ -219,7 +247,16 @@ final class NftViewController: UIViewController {
             currenciesTable.topAnchor.constraint(equalTo: addToCartButton.bottomAnchor, constant: 24),
             currenciesTable.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
             currenciesTable.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
-            currenciesTable.heightAnchor.constraint(equalToConstant: 576)
+            currenciesTable.heightAnchor.constraint(equalToConstant: 576),
+            goToSellerButton.topAnchor.constraint(equalTo: currenciesTable.bottomAnchor, constant: 24),
+            goToSellerButton.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            goToSellerButton.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+            goToSellerButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            nftsCollection.topAnchor.constraint(equalTo: goToSellerButton.bottomAnchor, constant: 36),
+            nftsCollection.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor),
+            nftsCollection.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor),
+            nftsCollection.heightAnchor.constraint(equalToConstant: 192)
             
         ])
     }
@@ -266,7 +303,7 @@ extension NftViewController: UICollectionViewDataSource {
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(indexPath: indexPath) as NftCollectionCell
-            guard let nft = viewModel.nft else { return UICollectionViewCell() }
+            guard let nft = viewModel.nfts?[indexPath.row] else { return UICollectionViewCell() }
             let isLiked = viewModel.isLiked(nft: nftId)
             let isInCart = viewModel.isInCart(nft: nftId)
             cell.configure(nft: nft, isLiked: isLiked, isInCart: isInCart)
@@ -277,7 +314,29 @@ extension NftViewController: UICollectionViewDataSource {
 }
 
 extension NftViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if collectionView == nftsCollection {
+            guard let nfts = viewModel.nfts else { return }
+            if indexPath.row + 1 == nfts.count {
+                viewModel.fetchMoreNfts()
+            }
+        }
+    }
+}
+
+extension NftViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if collectionView == imagesCollection {
+            return collectionView.bounds.size
+        } else {
+            return CGSize(width: 108, height: 192)
+        }
+    }
     
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        let selectedItem = Int(scrollView.contentOffset.x / scrollView.frame.size.width)
+        pageControl.selectedItem = selectedItem
+    }
 }
 
 extension NftViewController: UITableViewDataSource {
@@ -292,4 +351,31 @@ extension NftViewController: UITableViewDataSource {
         return cell
     }
     
+}
+
+extension NftViewController: NftViewModelDelegateProtocol {
+    func updateCollectionView(oldCount: Int, newCount: Int) {
+        if oldCount != newCount {
+            nftsCollection.performBatchUpdates {
+                let indexPaths = (oldCount..<newCount).map { index in
+                    IndexPath(row: index, section: 0)
+                }
+                nftsCollection.insertItems(at: indexPaths)
+            } completion: { _ in }
+        }
+    }
+}
+
+extension NftViewController: NftCollectionCellDelegate {
+    func didTapLikeFor(nft id: UUID) {
+        viewModel.didTapLikeFor(nft: id)
+    }
+    
+    func didTapCartFor(nft id: UUID) {
+        viewModel.didTapCartFor(nft: id)
+    }
+    
+    func reloadTable() {
+        nftsCollection.reloadData()
+    }
 }

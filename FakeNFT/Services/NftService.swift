@@ -27,10 +27,7 @@ final class NftService: RequestService {
 
     // MARK: - Public Methods
     func fetchNftsNextPage() {
-        
-        assert(Thread.isMainThread)
-        if task != nil { return }
-        
+                
         let nextPage = lastLoadedPage == nil
         ? 1
         : lastLoadedPage! + 1

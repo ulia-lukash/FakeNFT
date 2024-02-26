@@ -297,9 +297,7 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
         let id = viewModel.nfts[indexPath.row].id
         
         let viewController = NftViewController(viewModel: NftViewModel(), nftId: id)
-        viewController.modalPresentationStyle = .fullScreen
-        present(viewController, animated: true)
-//        self.navigationController?.pushViewController(viewController, animated: true)
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
     
 }
