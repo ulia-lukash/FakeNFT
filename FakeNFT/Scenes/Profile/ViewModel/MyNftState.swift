@@ -12,5 +12,5 @@ enum MyNftState {
     case loading
     case update
     case failed(Error)
-    case data([MyNFTCellModel])
+    case data
 }

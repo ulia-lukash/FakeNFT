@@ -372,7 +372,7 @@ extension EditProfileViewController: NSLayoutManagerDelegate {
 }
 
 //MARK: - ProfileVCDelegate
-extension EditProfileViewController: ProfileVCDelegate {
+extension EditProfileViewController: ProfileVCEditDelegate {
     func setDataUI(model: ProfileUIModel) {
         displayProfile(model: model)
     }

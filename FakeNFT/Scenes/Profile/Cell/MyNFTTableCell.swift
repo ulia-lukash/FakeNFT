@@ -9,11 +9,17 @@ import Kingfisher
 import Cosmos
 import UIKit
 
+protocol MyNFTTableCellDelegate: AnyObject {
+    func likeTap(_ cell: UITableViewCell)
+}
+
 final class MyNFTTableCell: UITableViewCell {
     private enum ConstMyNFTCell: String {
         static let imageCornerRadius = CGFloat(12)
         case favouritesIcons
     }
+    
+    weak var delegate: MyNFTTableCellDelegate?
     
     private lazy var horisontalStackView: UIStackView = {
         let horisontalStackView = UIStackView()
@@ -91,6 +97,7 @@ final class MyNFTTableCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .clear
+        isUserInteractionEnabled = true
         selectionStyle = .none
         setupUIItem()
     }
@@ -100,18 +107,22 @@ final class MyNFTTableCell: UITableViewCell {
     }
     
     override func prepareForReuse() {
-        super.prepareForReuse()
-        // Отменяем загрузку, чтобы избежать багов при переиспользовании ячеек
         nftImageView.kf.cancelDownloadTask()
-        
     }
 }
 
 extension MyNFTTableCell {
+    //MARK: private @objc func
+    @objc
+    private func didLike() {
+        guard let delegate else { return }
+        delegate.likeTap(self)
+    }
+    
+    //MARK: private func
     private func setupUIItem() {
-        setupHorisontalStack()
         setupNftImageView()
-        setupLikeButton()
+        setupHorisontalStack()
         setupnameNFTView()
         setupHorisontaNameStack()
         setupNameNFTLabel()
@@ -121,15 +132,17 @@ extension MyNFTTableCell {
         setupPriceView()
         setupPriceLabel()
         setupPriceValueLabel()
+        setupLikeButton()
     }
     
     private func setupHorisontalStack() {
-        addSubview(horisontalStackView)
+        contentView.addSubview(horisontalStackView)
         [nftImageView, nameNFTView, priceView].forEach {
             horisontalStackView.addArrangedSubview($0)
         }
         horisontalStackView.axis = .horizontal
         horisontalStackView.spacing = 20
+        horisontalStackView.isUserInteractionEnabled = true
         horisontalStackView.translatesAutoresizingMaskIntoConstraints = false
         horisontalStackView.backgroundColor = .clear
         horisontalStackView.alignment = .center
@@ -147,6 +160,7 @@ extension MyNFTTableCell {
         nftImageView.backgroundColor = .clear
         nftImageView.layer.cornerRadius = ConstMyNFTCell.imageCornerRadius
         nftImageView.layer.masksToBounds = true
+        nftImageView.isUserInteractionEnabled = true
         NSLayoutConstraint.activate([
             nftImageView.heightAnchor.constraint(equalToConstant: 108),
             nftImageView.widthAnchor.constraint(equalToConstant: 108)
@@ -157,10 +171,13 @@ extension MyNFTTableCell {
         nftImageView.addSubview(likeButton)
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         likeButton.backgroundColor = .clear
-        let image = UIImage(named: ConstMyNFTCell.favouritesIcons.rawValue)
+        likeButton.isUserInteractionEnabled = true
+        let image = UIImage(
+            named: ConstMyNFTCell.favouritesIcons.rawValue)?.withRenderingMode(.alwaysTemplate)
         likeButton.setImage(image, for: .normal)
         likeButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
         likeButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        likeButton.addTarget(self, action: #selector(didLike), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
             likeButton.trailingAnchor.constraint(equalTo: nftImageView.trailingAnchor),
@@ -192,7 +209,7 @@ extension MyNFTTableCell {
         nameNFTView.addSubview(starRatingView)
         starRatingView.translatesAutoresizingMaskIntoConstraints = false
         starRatingView.backgroundColor = .clear
-        starRatingView.rating = 4
+        starRatingView.rating = 0
         starRatingView.settings.filledColor = .yellowUniversal
         starRatingView.settings.starMargin = 1
         starRatingView.settings.emptyColor = .lightGreyUniversal
@@ -203,7 +220,7 @@ extension MyNFTTableCell {
             starRatingView.topAnchor.constraint(equalTo: nameNFTLabel.bottomAnchor, constant: 4),
             starRatingView.leadingAnchor.constraint(equalTo: nameNFTView.leadingAnchor),
             starRatingView.trailingAnchor.constraint(equalTo: nameNFTView.trailingAnchor, constant: -10),
-            starRatingView.heightAnchor.constraint(equalToConstant: 8)
+            starRatingView.heightAnchor.constraint(equalToConstant: 12)
         ])
     }
     
@@ -278,6 +295,10 @@ extension MyNFTTableCell {
             priceValueLabel.leadingAnchor.constraint(equalTo: priceView.leadingAnchor),
             priceValueLabel.trailingAnchor.constraint(equalTo: priceView.trailingAnchor)
         ])
+    }
+    
+    func like(flag: Bool) {
+        likeButton.tintColor = flag ? .white : .redUniversal
     }
     
     func config(model: MyNFTCellModel) {

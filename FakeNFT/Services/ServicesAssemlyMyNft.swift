@@ -20,7 +20,7 @@ final class MyNftServicesAssemly {
         self.nftStorage = nftStorage
     }
 
-    var nftService: MyNFTServiceProtocol {
+    var nftService: MyNFTServiceIml {
         MyNFTServiceIml(
             networkClient: networkClient,
             storage: nftStorage

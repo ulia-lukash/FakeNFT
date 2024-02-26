@@ -9,8 +9,8 @@ import Foundation
 
 protocol MyNftStorageProtocol: AnyObject {
     func saveMyNft(_ myNft: [MyListNFT])
-//    func getNft() -> MyNFT
-    func addNft()
+    func getNft() -> [MyListNFT]
+    func updateStorage(nft: [MyListNFT])
 }
 
 final class MyNftStorageImpl: MyNftStorageProtocol {
@@ -19,16 +19,22 @@ final class MyNftStorageImpl: MyNftStorageProtocol {
     private let queue = DispatchQueue(label: "sync-myNft-queue")
     
     func saveMyNft(_ myNft: [MyListNFT]) {
-        storage = myNft
+        queue.async { [weak self] in
+            self?.storage = myNft
+        }
     }
     
-//    func getNft() -> MyNFT {
-//        MyNFT(name: <#T##String#>, images: <#T##[String]#>, rating: <#T##Int#>, description: <#T##String#>, price: <#T##Float#>, author: <#T##String#>, id: <#T##String#>)
-//    }
-    
-    func addNft() {
-        
+    func getNft() -> [MyListNFT] {
+        queue.sync {  [weak self] in
+            guard let self else { return [] }
+            return self.storage
+        }
     }
     
-    
+    func updateStorage(nft: [MyListNFT]) {
+        queue.async { [weak self] in
+            self?.storage = nft
+        }
+    }
 }
+

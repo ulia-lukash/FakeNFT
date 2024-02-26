@@ -8,9 +8,9 @@
 import Foundation
 
 struct MyNftRequest: NetworkRequest {
-    var page: Int
+    var id: String
     
     var endpoint: URL? {
-        URL(string: "\(RequestConstants.baseURL)/nft?page=\(page)&size=\(ApiConstants.pageSize)")
+        URL(string: "\(RequestConstants.baseURL)/nft/\(id)")
     }
 }

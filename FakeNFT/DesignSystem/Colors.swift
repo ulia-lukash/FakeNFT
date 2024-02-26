@@ -56,8 +56,8 @@ extension UIColor {
 
     static let segmentInactive = UIColor { traits in
         return traits.userInterfaceStyle == .dark
-        ? .yaLightGrayLight
-        : .yaLightGrayDark
+        ? .yaLightGrayDark
+        : .yaLightGrayLight
     }
 
     static let closeButton = UIColor { traits in

@@ -10,31 +10,28 @@ import Kingfisher
 
 protocol MyNftViewModelProtocol {
     func loadMyNFT()
-    func loadSortForPrice()
-    func loadSortForRating()
-    func loadSortForName()
     func makeErrorModel(error: Error) -> ErrorModel
     func getListMyNft() -> [MyNFTCellModel]
-    func getCurrentListMyNft() -> [MyNFTCellModel]
-    func getIndexPaths() -> [IndexPath]
-    func sort()
-    func reset()
-    func getSortState() -> SortState
+    func getLikeIndexPath() -> IndexPath?
     func setSortState(state: SortState)
+    func setLikeIndexPathAndUpdateId(_ indexPath: IndexPath?)
+    func setUpdateId(id: String)
+    func saveProfile(profile: Profile?)
+    func setState(state: MyNftState)
+    var isUpdate: Bool { get set }
 }
 
+//MARK: - MyNftViewModel
 final class MyNftViewModel {
     @Observable<MyNftState> private(set) var state: MyNftState = .initial
     @Observable<SortState> private(set) var sortState: SortState = .none
     
-    private var indexPaths: [IndexPath] = []
     private var listMyNft: [MyNFTCellModel] = []
-    private var currentPageData: [MyNFTCellModel] = []
+    private(set) var profile: Profile?
+    private(set) var likeId: String?
+    private(set) var likeIndexPath: IndexPath?
+    var isUpdate = false
     private let service: MyNFTServiceProtocol
-    private let mainQueue = DispatchQueue.main
-    private var isNoneSort = false
-    private var currentPage = 0
-    private(set) var flagDownload = true
     
     init(service: MyNFTServiceProtocol) {
         self.service = service
@@ -42,99 +39,99 @@ final class MyNftViewModel {
 }
 
 private extension MyNftViewModel {
+    //MARK: - private func
     func convertUI(_ model: MyListNFT) -> MyNFTCellModel {
         MyNFTCellModel(urlNFT: URL(string: model.images.first ?? ""),
                        nameNFT: model.name,
-                       nameAuthor: "Grifon",
+                       nameAuthor: model.author,
                        rating: Double(model.rating),
-                       priceETN: Float(model.price))
+                       priceETN: Float(model.price),
+                       id: model.id,
+                       islike: false)
     }
     
     func createListMyNft(_ listMyNft: [MyListNFT]) -> [MyNFTCellModel] {
         listMyNft.map { convertUI($0) }
     }
     
-    func setListMyNft(_ listMyNft: [MyNFTCellModel]) {
-        self.listMyNft = listMyNft
-    }
-    
-    func addNftInList(_ nft: [MyNFTCellModel]) {
-        listMyNft.append(contentsOf: nft)
-    }
-    
-    func sortPage(nft: [MyNFTCellModel]) {
-        self.listMyNft.append(contentsOf: nft)
-        let startIndex = currentPage == 0 ? 0 : ApiConstants.pageSize * currentPage
-        currentPage += 1
-        let endIndex = min(startIndex + ApiConstants.pageSize, listMyNft.count)
-        if flagDownload {
-            indexPaths = (startIndex..<endIndex).map { IndexPath(row: $0, section: 0) }
-            currentPageData = Array(listMyNft[startIndex..<endIndex])
-        }
-    }
-    
-    func resetMyListNft() {
-        listMyNft = []
-    }
-    
-    func resetIsNoneSort() {
-        isNoneSort = false
-    }
-    
-    func resetCurrentPage() {
-        currentPage = 0
-    }
-    
-    func resetPage() {
-        service.resetPage()
-    }
-    
-    func resetCurrentListMyNft() {
-        currentPageData = []
-    }
-    
-    func resetIndexPath() {
-        indexPaths = []
-    }
-    
     func setIsDownload() {
-        flagDownload = true
+        isUpdate = true
     }
     
-    func loadForSortState() {
+    func createDataString(likes: [String], like: String, flag: Bool) -> String {
+        var returnLikes: [String] = likes
+        if flag {
+            returnLikes.append(like)
+        } else {
+            returnLikes = returnLikes.filter { $0 != like }
+        }
+        
+        return networkFormat(likes: returnLikes)
+    }
+    
+    func networkFormat(likes: [String]) -> String {
+        let likesParams = likes.map { "likes=\($0)" }
+        let likesQueryString = likesParams.joined(separator: "&")
+        return likesQueryString
+    }
+    
+    func sortListNft() -> [MyNFTCellModel] {
+        var sortList: [MyNFTCellModel] = []
         switch sortState {
         case .price:
-            loadSortForPrice()
+            sortList = listMyNft.sorted { $0.priceETN < $1.priceETN}
         case .rating:
-            loadSortForRating()
+            sortList = listMyNft.sorted { $0.rating < $1.rating }
         case .name:
-            loadSortForName()
+            sortList = listMyNft.sorted { $0.nameNFT < $1.nameNFT }
         case .none:
-            loadMyNFT()
+            break
+        }
+        return sortList
+    }
+    
+    func loadResult(_ result: Result<[MyListNFT], Error>) {
+        var returnSortList: [MyNFTCellModel] = []
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            switch result {
+            case .success(let myNft):
+                let nft = self.createListMyNft(myNft)
+                returnSortList = nft
+                if sortState != .none {
+                    returnSortList = sortListNft()
+                }
+                listMyNft = returnSortList
+                self.state = .data
+            case .failure(let error):
+                self.state = .failed(error)
+            }
         }
     }
     
-    func result(_ result: Result<[MyListNFT], Error>) {
-        isNoneSort = true
-        if flagDownload {
-            self.mainQueue.async {
-                switch result {
-                case .success(let myNft):
-                    let nft = self.createListMyNft(myNft)
-                    if !nft.isEmpty {
-                        self.sortPage(nft: nft)
-                        self.state = .data(nft)
-                    } else {
-                        self.flagDownload = false
-                    }
-                case .failure(let error):
-                    self.state = .failed(error)
-                }
+    func updateResult(_ result: Result<Void, Error>, _ likes: [String]) {
+        self.state = .loading
+        switch result {
+        case .success():
+            let returnNft = listMyNft.map { nft in
+                MyNFTCellModel(urlNFT: nft.urlNFT,
+                               nameNFT: nft.nameNFT,
+                               nameAuthor: nft.nameAuthor,
+                               rating: nft.rating,
+                               priceETN: nft.priceETN,
+                               id: nft.id,
+                               islike: nft.id == likeId)
             }
+            listMyNft = returnNft
+            self.isUpdate = true
+            self.state = .data
+        case .failure(let error):
+            self.state = .failed(error)
         }
     }
 }
 
+//MARK: - MyNftViewModelProtocol
 extension MyNftViewModel: MyNftViewModelProtocol {
     func makeErrorModel(error: Error) -> ErrorModel {
         let message: String
@@ -147,39 +144,49 @@ extension MyNftViewModel: MyNftViewModelProtocol {
         let actionText = ConstLocalizable.errorRepeat
         return ErrorModel(message: message, actionText: actionText) { [weak self] in
             guard let self else { return }
-            loadMyNFT()
+            if !isUpdate { loadMyNFT() }
+        }
+    }
+    
+    func loadProfile(id: String, completion: @escaping ProfileCompletion) {
+        service.loadProfile { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let profile):
+                self.profile = profile
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func updateNft(flag: Bool) {
+        state = .update
+        guard let likeId,
+              let likes = profile?.likes
+        else { return }
+        let dto = createDataString(likes: likes, like: likeId, flag: flag)
+        service.updateNftPut(dto: dto) { [weak self] updateResult in
+            guard let self else { return }
+            service.loadProfile { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .success(let profile):
+                    self.profile = profile
+                    self.updateResult(updateResult, likes)
+                case .failure(let error):
+                    self.state = .failed(error)
+                }
+            }
         }
     }
     
     func loadMyNFT() {
         state = .loading
-        service.loadMyNFT { [weak self] result in
+        guard let profile else { return }
+        service.load(listId: profile.nfts){ [weak self] result in
             guard let self else { return }
-            self.result(result)
-        }
-    }
-    
-    func loadSortForPrice() {
-        state = .loading
-        service.filterForPrice { [weak self] result in
-            guard let self else { return }
-            self.result(result)
-        }
-    }
-    
-    func loadSortForRating() {
-        state = .loading
-        service.filterForRating { [weak self] result in
-            guard let self else { return }
-            self.result(result)
-        }
-    }
-    
-    func loadSortForName() {
-        self.state = .loading
-        service.filterForName { [weak self] result in
-            guard let self else { return }
-            self.result(result)
+            self.loadResult(result)
         }
     }
     
@@ -187,33 +194,29 @@ extension MyNftViewModel: MyNftViewModelProtocol {
         listMyNft
     }
     
-    func getCurrentListMyNft() -> [MyNFTCellModel] {
-        currentPageData
+    func getLikeIndexPath() -> IndexPath? {
+        likeIndexPath
     }
     
-    func getSortState() -> SortState {
-        sortState
-    }
-    
-    func getIndexPaths() -> [IndexPath] {
-        indexPaths
-    }
-    
-    func sort() {
-        loadForSortState()
+    func setLikeIndexPathAndUpdateId(_ indexPath: IndexPath?) {
+        guard let indexPath else { return }
+        likeIndexPath = indexPath
+        likeId = listMyNft[indexPath.row].id
     }
     
     func setSortState(state: SortState) {
         self.sortState = state
     }
-
-    func reset() {
-        resetIndexPath()
-        resetPage()
-        resetMyListNft()
-        resetCurrentListMyNft()
-        resetCurrentPage()
-        resetIsNoneSort()
-        setIsDownload()
+    
+    func setUpdateId(id: String) {
+        likeId = id
+    }
+    
+    func setState(state: MyNftState) {
+        self.state = state
+    }
+    
+    func saveProfile(profile: Profile?) {
+        self.profile = profile
     }
 }

@@ -14,5 +14,4 @@ enum ApiConstants {
     static let tockenValue = "58877909-79ca-45a2-afe0-c1f0bb21bde4"
     static let acceptHeader = "Accept"
     static let contentTypeValuePUT = "application/x-www-form-urlencoded"
-    static let pageSize = 10
 }

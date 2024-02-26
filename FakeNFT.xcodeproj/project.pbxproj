@@ -48,7 +48,6 @@
 		1A7C3EB62B7CB28A005D2A35 /* ProfileCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C3EB52B7CB28A005D2A35 /* ProfileCellModel.swift */; };
 		1A92E2A12B7D2EE700D03C04 /* ProfileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A92E2A02B7D2EE700D03C04 /* ProfileRequest.swift */; };
 		1AABF3922B7659BB003C71C3 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AABF3912B7659BB003C71C3 /* ProfileViewController.swift */; };
-		1ABFCAF02B86025500FD3816 /* MyNftSortRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABFCAEF2B86025500FD3816 /* MyNftSortRequest.swift */; };
 		1ABFCAF22B86039E00FD3816 /* SortState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABFCAF12B86039E00FD3816 /* SortState.swift */; };
 		1AD543A42B83CE82009CD133 /* ProfileState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD543A32B83CE82009CD133 /* ProfileState.swift */; };
 		1AD543A62B83CEF6009CD133 /* JsonKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD543A52B83CEF6009CD133 /* JsonKey.swift */; };
@@ -143,7 +142,6 @@
 		1A7C3EB52B7CB28A005D2A35 /* ProfileCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCellModel.swift; sourceTree = "<group>"; };
 		1A92E2A02B7D2EE700D03C04 /* ProfileRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRequest.swift; sourceTree = "<group>"; };
 		1AABF3912B7659BB003C71C3 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		1ABFCAEF2B86025500FD3816 /* MyNftSortRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNftSortRequest.swift; sourceTree = "<group>"; };
 		1ABFCAF12B86039E00FD3816 /* SortState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortState.swift; sourceTree = "<group>"; };
 		1AD543A32B83CE82009CD133 /* ProfileState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileState.swift; sourceTree = "<group>"; };
 		1AD543A52B83CEF6009CD133 /* JsonKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonKey.swift; sourceTree = "<group>"; };
@@ -436,13 +434,14 @@
 				0CFCB74C2A7817C30009A829 /* MemoryStorage */,
 				3F6806CF29CBBDB100B4F915 /* NetworkClient */,
 				3F6806D629CBC50A00B4F915 /* CellsReusingUtils.swift */,
+				1A7304BE2B83DBF0000BABDB /* String+Width.swift */,
 				1A64C8892B7A5E2B00DE3242 /* UITextView+Padding.swift */,
 				1AFD1D3A2B7F672900C6E1A2 /* UIViewController+hideKeyboard.swift */,
 				1AFD1D382B7F626500C6E1A2 /* UITextField+Padding.swift */,
 				1A0F47342B77AF4A00ED5DCC /* ConstLocalizable.swift */,
 				3FC8C39229D246BA0081F015 /* DateFormatters+Presets.swift */,
-				1A2FB15E2B7AA6F400A4C11C /* Observable.swift */,
 				0CFCB74A2A780EA80009A829 /* UIView+Constraints.swift */,
+				1A2FB15E2B7AA6F400A4C11C /* Observable.swift */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -454,7 +453,6 @@
 				3F6806D229CBBE9600B4F915 /* NetworkRequest.swift */,
 				3F6806D429CBBEC700B4F915 /* NetworkTask.swift */,
 				1A2FE7102B7F8B1400B1C6EC /* ApiConstants.swift */,
-				1A7304BE2B83DBF0000BABDB /* String+Width.swift */,
 			);
 			path = NetworkClient;
 			sourceTree = "<group>";
@@ -478,7 +476,6 @@
 				1A92E2A02B7D2EE700D03C04 /* ProfileRequest.swift */,
 				1A54BFED2B84AFB5009C956C /* MyNftRequest.swift */,
 				1A54BFEF2B84B445009C956C /* ProfilePutRequest.swift */,
-				1ABFCAEF2B86025500FD3816 /* MyNftSortRequest.swift */,
 			);
 			path = Requests;
 			sourceTree = "<group>";
@@ -676,7 +673,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1ABFCAF02B86025500FD3816 /* MyNftSortRequest.swift in Sources */,
 				3FC8C38B29D242E90081F015 /* ProductDetailsTableViewCell.swift in Sources */,
 				1A7304C52B83DD2A000BABDB /* MyNFTViewController.swift in Sources */,
 				1AFAE8842B7B56B600C155C3 /* ProfileService.swift in Sources */,

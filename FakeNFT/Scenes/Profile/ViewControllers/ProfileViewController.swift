@@ -8,10 +8,15 @@
 import UIKit
 import Kingfisher
 
-protocol ProfileVCDelegate: AnyObject {
+protocol ProfileVCEditDelegate: AnyObject {
     func setDataUI(model: ProfileUIModel)
 }
 
+protocol ProfileVCMyNftDelegate: AnyObject {
+    func setProfile(model: Profile?, vc: UIViewController)
+}
+
+// MARK: - ProfileViewController
 final class ProfileViewController: UIViewController {
     private enum ConstantsProfileVC: String {
         static let assertionMEssage = "can't move to initial state"
@@ -26,7 +31,8 @@ final class ProfileViewController: UIViewController {
         case editProfile
     }
     
-    weak var delegate: ProfileVCDelegate?
+    weak var editDelegate: ProfileVCEditDelegate?
+    weak var myNftDelegate: ProfileVCMyNftDelegate?
     private var textHeightConstraint: NSLayoutConstraint?
     internal lazy var activityIndicator = UIActivityIndicatorView()
     private let viewModel: ProfileViewModelProtocol
@@ -170,12 +176,12 @@ private extension ProfileViewController {
     @objc
     func didEditTap() {
         let editVC = EditProfileViewController(delegate: self)
-        self.delegate = editVC
+        self.editDelegate = editVC
         editVC.modalPresentationStyle = .formSheet
         present(editVC, animated: true) { [weak self] in
             guard let self,
                   let model = self.viewModel.getProfileUIModel() else { return }
-            delegate?.setDataUI(model: model)
+            editDelegate?.setDataUI(model: model)
         }
     }
     
@@ -188,7 +194,8 @@ private extension ProfileViewController {
     
     func adjustTextViewHeight() {
         let fixedWidth = descriptionTextView.frame.size.width
-        let newSize = descriptionTextView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
+        let newSize = descriptionTextView.sizeThatFits(CGSize(
+            width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
         if newSize.height > 100 {
             descriptionTextView.isScrollEnabled = true
             textHeightConstraint?.constant = 100
@@ -204,9 +211,13 @@ private extension ProfileViewController {
                                       storage: MyNftStorageImpl())
         let viewModel = MyNftViewModel(service: service)
         let myNFTController = MyNFTViewController(viewModel: viewModel)
+        myNftDelegate = myNFTController
+        myNFTController.delegate = self
         let navController = UINavigationController(rootViewController: myNFTController)
+        navController.modalPresentationStyle = .fullScreen
+        self.myNftDelegate?.setProfile(model: self.viewModel.getProfile(), vc: self)
+        viewModel.loadMyNFT()
         present(navController, animated: true)
-        viewModel.sort()
     }
     
     //MARK: - setupUI function
@@ -306,7 +317,7 @@ extension ProfileViewController: UITableViewDelegate {
             displayMyNft()
         }
         if indexPath.row == CountProfileCell.one.rawValue {
-            
+            //TODO: - epic 3-3 show webView
         }
         if indexPath.row == CountProfileCell.one.rawValue {
             //TODO: - epic 3-3 show webView
@@ -325,7 +336,8 @@ extension ProfileViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "\(ProfileTableViewCell.self)") as? ProfileTableViewCell,
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: "\(ProfileTableViewCell.self)") as? ProfileTableViewCell,
               let viewModel = viewModel as? ProfileViewModel
         else { return UITableViewCell()}
         let cellModel = viewModel.cellModel
@@ -366,5 +378,13 @@ extension ProfileViewController: EditProfileVCDelegate {
 extension ProfileViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         self.adjustTextViewHeight()
+    }
+}
+
+// MARK: - MyNFTViewControllerDlegate
+extension ProfileViewController: MyNFTViewControllerDlegate {
+    func updateProfile(vc: UIViewController) {
+        viewModel.loadProfile(id: "1")
+        viewModel.setStateLoading()
     }
 }

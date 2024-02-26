@@ -39,14 +39,19 @@ extension NetworkClient {
                             onResponse: @escaping (Result<T, Error>) -> Void) -> NetworkTask? {
         send(request: request, type: type, completionQueue: .main, onResponse: onResponse)
     }
+    
+    @discardableResult
+    func sendProfilePUT(request: NetworkRequest,
+                        completionQueue: DispatchQueue,
+                        onResponse: @escaping (Result<Data, Error>) -> Void) -> NetworkTask? {
+        send(request: request, completionQueue: .main, onResponse: onResponse)
+    }
 }
 
 struct DefaultNetworkClient: NetworkClient {
     private let session: URLSession
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
-    
-    private var profileTask: URLSessionTask?
     
     init(session: URLSession = URLSession.shared,
          decoder: JSONDecoder = JSONDecoder(),
@@ -101,32 +106,35 @@ struct DefaultNetworkClient: NetworkClient {
         completionQueue: DispatchQueue,
         onResponse: @escaping (Result<Void, Error>) -> Void
     ) -> NetworkTask? {
-        guard profileTask == nil else { return nil }
         let onResponse: (Result<Void, Error>) -> Void = { result in
             completionQueue.async {
                 onResponse(result)
             }
         }
         guard let urlRequest = createProfile(request: request) else { return nil }
-        let task = session.dataTask(with: urlRequest) { _, response, error  in
+        let task = session.dataTask(with: urlRequest) { data, response, error in
             guard let response = response as? HTTPURLResponse else {
                 onResponse(.failure(NetworkClientError.urlSessionError))
                 return
             }
             
-            guard 200 == response.statusCode else {
+            guard 200 ..< 300 ~= response.statusCode else {
                 onResponse(.failure(NetworkClientError.httpStatusCode(response.statusCode)))
                 return
             }
             
-            onResponse(.success(()))
-            profileTask?.cancel()
-            
-            if let error = error {
+            if let _ = data {
+                onResponse(.success(Void()))
+                return
+            } else if let error = error {
                 onResponse(.failure(NetworkClientError.urlRequestError(error)))
+                return
+            } else {
+                assertionFailure("Unexpected condition!")
                 return
             }
         }
+        
         task.resume()
         
         return DefaultNetworkTask(dataTask: task)
@@ -157,21 +165,13 @@ struct DefaultNetworkClient: NetworkClient {
             return nil
         }
         var urlRequest = URLRequest(url: endpoint)
+        urlRequest.httpMethod = request.httpMethod.rawValue
         urlRequest.setValue(ApiConstants.tockenValue,
                             forHTTPHeaderField: ApiConstants.tokenHeder)
-        
-        if let request = request as? ProfilePutRequest,
-           let json = request.dto as? [String: String] {
-            urlRequest.httpMethod = request.httpMethod.rawValue
-            let jsonString = json.reduce("") { "\($0)\($1.0)=\($1.1)&" }.dropLast()
-            guard let jsonString = jsonString.data(using: .utf8,
-                                                   allowLossyConversion: false)
-            else { return nil }
-            urlRequest.setValue(ApiConstants.contentTypeValueGET,
-                                forHTTPHeaderField: ApiConstants.acceptHeader)
+        if let dto = request.dto as? String {
             urlRequest.setValue(ApiConstants.contentTypeValuePUT ,
                                 forHTTPHeaderField: ApiConstants.contenTypeHeader)
-            urlRequest.httpBody = jsonString
+            urlRequest.httpBody = Data(dto.utf8)
         }
         return urlRequest
     }

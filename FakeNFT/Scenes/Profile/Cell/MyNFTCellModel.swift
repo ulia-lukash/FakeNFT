@@ -13,4 +13,6 @@ public struct MyNFTCellModel {
     let nameAuthor: String
     let rating: Double
     let priceETN: Float
+    let id: String
+    let islike: Bool
 }

@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol MyNFTViewControllerDlegate: AnyObject {
+    func updateProfile(vc: UIViewController)
+}
+
+//MARK: - MyNFTViewController
 final class MyNFTViewController: UIViewController, ErrorView, LoadingView  {
     private enum ConstMyNFTVC: String {
         static let heightCell = CGFloat(140)
@@ -14,6 +19,7 @@ final class MyNFTViewController: UIViewController, ErrorView, LoadingView  {
         case sortProfile
     }
     
+    weak var delegate: MyNFTViewControllerDlegate?
     internal lazy var activityIndicator = UIActivityIndicatorView()
     private let viewModel: MyNftViewModelProtocol
     
@@ -29,13 +35,6 @@ final class MyNFTViewController: UIViewController, ErrorView, LoadingView  {
         return empryNftLabel
     }()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .white
-        bind()
-        setupUIItem()
-    }
-    
     init(viewModel: MyNftViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -44,9 +43,24 @@ final class MyNFTViewController: UIViewController, ErrorView, LoadingView  {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        bind()
+        viewModel.setState(state: .loading)
+        view.backgroundColor = .white
+        setupUIItem()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        guard let delegate else { return }
+        delegate.updateProfile(vc: self)
+    }
 }
 
 private extension MyNFTViewController {
+    //MARK: - private func
     func bind() {
         guard let viewModel = viewModel as? MyNftViewModel else { return }
         viewModel.$state.bind { [weak self] state in
@@ -55,42 +69,33 @@ private extension MyNFTViewController {
             case .initial:
                 assertionFailure("can't move to initial state")
             case .loading:
-                if viewModel.flagDownload {
-                    view.isUserInteractionEnabled = false
-                    self.showLoading()
-                }
+                view.isUserInteractionEnabled = false
+                self.showLoading()
             case .update:
-                break
+                view.isUserInteractionEnabled = false
+                self.showLoading()
             case .failed(let error):
                 let errorModel = viewModel.makeErrorModel(error: error)
                 self.showError(errorModel)
-            case .data(_):
-                updateMyTableView()
+            case .data:
+                if viewModel.isUpdate, let indexPath = viewModel.likeIndexPath {
+                    myNFTTable.reloadRows(at: [indexPath], with: .automatic)
+                    self.hideLoading()
+                    view.isUserInteractionEnabled = true
+                    return
+                }
+                self.myNFTTable.reloadData()
+                myNFTTable.scrollToRow(at: IndexPath(row: .zero, section: .zero),
+                                       at: .bottom, animated: true)
                 self.hideLoading()
                 view.isUserInteractionEnabled = true
-            }
-        }
-        
-        viewModel.$sortState.bind { _ in
-            viewModel.sort()
-        }
-    }
-    
-    func updateMyTableView() {
-        if viewModel.getListMyNft().count == ApiConstants.pageSize {
-            myNFTTable.reloadData()
-        } else {
-            myNFTTable.performBatchUpdates { [weak self] in
-                guard let self else { return }
-                self.myNFTTable.insertRows(at: self.viewModel.getIndexPaths(),
-                                           with: .automatic)
             }
         }
     }
     
     func setupUIItem() {
         setupNavigationBar()
-        setupMyNFTTable()
+        !viewModel.getListMyNft().isEmpty ? setupEmptyLabel() : setupMyNFTTable()
         setupActivitiIndicator()
     }
     
@@ -160,8 +165,10 @@ private extension MyNFTViewController {
     }
     
     func actionAlert(state: SortState) {
-        self.viewModel.reset()
-        self.viewModel.setSortState(state: state)
+        guard let viewModel = viewModel as? MyNftViewModel else { return }
+        viewModel.isUpdate = false
+        viewModel.setSortState(state: state)
+        viewModel.loadMyNFT()
     }
     
     func setupMyNFTTable() {
@@ -171,6 +178,8 @@ private extension MyNFTViewController {
         myNFTTable.translatesAutoresizingMaskIntoConstraints = false
         myNFTTable.backgroundColor = .clear
         myNFTTable.separatorColor = .clear
+        myNFTTable.allowsMultipleSelection = false
+        myNFTTable.isUserInteractionEnabled = true
         myNFTTable.register(MyNFTTableCell.self,
                             forCellReuseIdentifier: "\(MyNFTTableCell.self)")
         NSLayoutConstraint.activate([
@@ -184,10 +193,11 @@ private extension MyNFTViewController {
     func setupEmptyLabel() {
         view.addSubview(empryNftLabel)
         empryNftLabel.translatesAutoresizingMaskIntoConstraints = false
-        empryNftLabel.backgroundColor = .blackUniversal
+        empryNftLabel.backgroundColor = .clear
         empryNftLabel.font = .bodyBold
         empryNftLabel.text = ConstLocalizable.myNftVCEmpty
-        empryNftLabel.center = view.center
+        empryNftLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        empryNftLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
     
     func setupActivitiIndicator() {
@@ -197,20 +207,9 @@ private extension MyNFTViewController {
     }
 }
 
-extension MyNFTViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let viewModel = viewModel as? MyNftViewModel else { return }
-        if indexPath.row + 1 == viewModel.getListMyNft().count {
-            viewModel.sort()
-        }
-        if !viewModel.flagDownload {
-            //TODO: -
-            hideLoading()
-            view.isUserInteractionEnabled = true
-        }
-    }
-}
+extension MyNFTViewController: UITableViewDelegate {}
 
+//MARK: - UITableViewDataSource
 extension MyNFTViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.getListMyNft().count
@@ -221,13 +220,38 @@ extension MyNFTViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "\(MyNFTTableCell.self)") as? MyNFTTableCell
-        else {
-            return UITableViewCell() }
-        guard let viewModel = viewModel as? MyNftViewModel else { return UITableViewCell() }
-        if viewModel.flagDownload && !viewModel.getListMyNft().isEmpty {
-            cell.config(model: viewModel.getListMyNft()[indexPath.row])
-        }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "\(MyNFTTableCell.self)") as? MyNFTTableCell,
+              let viewModel = viewModel as? MyNftViewModel,
+              let profile = viewModel.profile
+        else { return UITableViewCell() }
+        cell.delegate = self
+        cell.config(model: viewModel.getListMyNft()[indexPath.row])
+        let isLike = profile.likes.filter { $0 == viewModel.getListMyNft()[indexPath.row].id }.isEmpty
+        cell.like(flag: isLike)
+        
         return cell
+    }
+}
+
+//MARK: - MyNFTTableCellDelegate
+extension MyNFTViewController: MyNFTTableCellDelegate {
+    func likeTap(_ cell: UITableViewCell) {
+        guard let myNftCell = cell as? MyNFTTableCell,
+              let viewModel = viewModel as? MyNftViewModel,
+              let profile = viewModel.profile,
+              let indexPath = myNFTTable.indexPath(for: myNftCell)
+        else { return }
+        viewModel.setLikeIndexPathAndUpdateId(indexPath)
+        let id = viewModel.getListMyNft()[indexPath.row].id
+        let flag = profile.likes.filter { $0 == id }.isEmpty
+        viewModel.updateNft(flag: flag)
+        viewModel.setUpdateId(id: id)
+    }
+}
+
+//MARK: - ProfileVCMyNftDelegate
+extension MyNFTViewController: ProfileVCMyNftDelegate {
+    func setProfile(model: Profile?, vc: UIViewController) {
+        viewModel.saveProfile(profile: model)
     }
 }

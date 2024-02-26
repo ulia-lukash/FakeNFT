@@ -7,39 +7,36 @@
 
 import Foundation
 
-typealias MyNftCompletion = (Result<[MyListNFT], Error>) -> Void
+typealias MyNftCompletion = (Result<MyListNFT, Error>) -> Void
+typealias MyListNftCompletion = (Result<[MyListNFT], Error>) -> Void
+typealias likeNftCompletion = (Result<Void, Error>) -> Void
 
 protocol MyNFTServiceProtocol {
-    func loadMyNFT(completion: @escaping MyNftCompletion)
-    func filterForPrice(completion: @escaping MyNftCompletion)
-    func filterForRating(completion: @escaping MyNftCompletion)
-    func filterForName(completion: @escaping MyNftCompletion)
-    func resetPage()
+    func load(listId: [String], completion: @escaping MyListNftCompletion)
+    func updateNftPut(dto: String,
+                      completion: @escaping likeNftCompletion)
+    func loadProfile(completion: @escaping ProfileCompletion)
+    func getStorageNft() -> [MyListNFT]
+    func updateStorage(nft: [MyListNFT])
 }
 
-final class MyNFTServiceIml: MyNFTServiceProtocol {
+
+final class MyNFTServiceIml {
     private let networkClient: NetworkClient
     private let storage: MyNftStorageProtocol
-    private let queue = DispatchQueue(label: "get-myNft", qos: .userInitiated)
     
     init(networkClient: NetworkClient, storage: MyNftStorageProtocol) {
         self.storage = storage
         self.networkClient = networkClient
     }
-    
-    private (set) var lastLoadedPage: Int = 0
 }
 
 private extension MyNFTServiceIml {
-    func setPage() {
-        lastLoadedPage = lastLoadedPage == 0 ? 1 : lastLoadedPage + 1
-    }
-    
+    //MARK: - private func
     func load(request: NetworkRequest,
               completion: @escaping MyNftCompletion) {
         networkClient.send(request: request,
-                           type: [MyListNFT].self,
-                           completionQueue: queue) { result in
+                           type: MyListNFT.self) { result in
             switch result {
             case .success(let myNft):
                 completion(.success(myNft))
@@ -48,109 +45,112 @@ private extension MyNFTServiceIml {
             }
         }
     }
+    
+    func updateLikeAndNftPut(request: NetworkRequest,
+                             completion: @escaping likeNftCompletion) {
+        networkClient.sendProfilePUT(request: request, completionQueue: .main) { result in
+            switch result {
+            case .success():
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func searchName(urlStr: String) -> String? {
+        if let host = URL(string: urlStr)?.host {
+            let components = host.components(separatedBy: "_")
+            let combinedString = components.joined(separator: " ")
+            return combinedString.capitalized
+        }
+        return nil
+    }
+    
+    func loadMyNFT(listId: [String], completion: @escaping MyListNftCompletion)  {
+        var returnNft: [MyListNFT] = []
+        
+        let operationQueue = OperationQueue()
+        operationQueue.maxConcurrentOperationCount = 1
+        
+        for id in listId {
+            let operation = BlockOperation {
+                let request = MyNftRequest(id: id)
+                var nft: MyListNFT?
+                
+                let semaphore = DispatchSemaphore(value: 0)
+                
+                self.load(request: request) { result in
+                    switch result {
+                    case .success(let loadedNFT):
+                        nft = loadedNFT
+                    case .failure(let error):
+                        completion(.failure(error))
+                        return
+                    }
+                    semaphore.signal()
+                }
+                _ = semaphore.wait(timeout: .distantFuture)
+                
+                if let nft = nft {
+                    let name = self.searchName(urlStr: nft.author)
+                    let myListNFT = MyListNFT(name: nft.name,
+                                              images: nft.images,
+                                              rating: nft.rating,
+                                              description: nft.description,
+                                              price: nft.price,
+                                              author: name ?? "Grifon",
+                                              id: nft.id)
+                    
+                    returnNft.append(myListNFT)
+                    
+                    if returnNft.count == listId.count {
+                        self.storage.saveMyNft(returnNft)
+                        completion(.success(returnNft))
+                    }
+                }
+            }
+            operationQueue.addOperation(operation)
+        }
+    }
 }
 
-extension MyNFTServiceIml {
-    func loadMyNFT(completion: @escaping MyNftCompletion) {
-        setPage()
-        let request = MyNftRequest(page: lastLoadedPage)
-        load(request: request, completion: completion)
+//MARK: - MyNFTServiceProtocol
+extension MyNFTServiceIml: MyNFTServiceProtocol {
+    func load(listId: [String], completion: @escaping MyListNftCompletion) {
+        if !storage.getNft().isEmpty {
+            completion(.success(storage.getNft()))
+            return
+        }
+        loadMyNFT(listId: listId, completion: completion)
     }
     
-    func filterForPrice(completion: @escaping MyNftCompletion) {
-        setPage()
-        let request = MyNftSortRequest(sort: .price, page: lastLoadedPage)
-        load(request: request, completion: completion)
+    func loadProfile(completion: @escaping ProfileCompletion) {
+        let request = ProfileRequest()
+        networkClient.send(request: request,
+                           type: Profile.self,
+                           completionQueue: .main) {result in
+            switch result {
+            case .success(let profile):
+                completion(.success(profile))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+        
+    func updateNftPut(dto: String,
+                      completion: @escaping likeNftCompletion) {
+                let request = ProfilePutRequest(dto: dto)
+                updateLikeAndNftPut(request: request, completion: completion)
     }
     
-    func filterForRating(completion: @escaping MyNftCompletion) {
-        setPage()
-        let request = MyNftSortRequest(sort: .rating, page: lastLoadedPage)
-        load(request: request, completion: completion)
+    func updateStorage(nft: [MyListNFT]) {
+        storage.updateStorage(nft: nft)
     }
     
-    func filterForName(completion: @escaping MyNftCompletion) {
-        setPage()
-        let request = MyNftSortRequest(sort: .name, page: lastLoadedPage)
-        load(request: request, completion: completion)
+    func getStorageNft() -> [MyListNFT] {
+        storage.getNft()
     }
-    
-    func resetPage() {
-        lastLoadedPage = 0
-    }
-    
-//    func fetchPhotosNextPage() {
-//        assert(Thread.isMainThread)
-//        guard photosNextPageTask == nil else { return }
-//        let nextPage = lastLoadedPage == nil ? 1 : lastLoadedPage! + 1
-//        lastLoadedPage = nextPage
-//        var request: URLRequest?
-//        do { let modelRequest = try imageListServiceRequestForPage(page: nextPage)
-//            request = modelRequest
-//        }
-//        catch {
-//            let errorRequest = NetworkError.urlComponentsError
-//            print(errorRequest)
-//        }
-//        guard let request = request else { return }
-//        let task = urlSession.objectTask(for: request) { [weak self] (result: Result <[PhotoResult], Error>) in
-//            guard let self = self else { return }
-//            switch result {
-//            case .success(let listModel):
-//                listModel.forEach {
-//                    let photoModel = self.convertModel(model: $0)
-//                        self.photos.append(photoModel)
-//                }
-//                NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self, userInfo: [Constants.userInfoKey: self.photos])
-//                self.photosNextPageTask = nil
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
-//        self.photosNextPageTask = task
-//        task.resume()
-//    }
-//
-//    func imageListServiceRequestForPage(page: Int) throws -> URLRequest {
-//        guard var component = component else { throw NetworkError.urlComponentsError}
-//        component.queryItems = [URLQueryItem(name: Constants.pageString, value: "\(page)")]
-//        component.path = Constants.path
-//        guard let url = component.url else { throw NetworkError.urlComponentsError}
-//
-//        guard let token = OAuth2TokenKeychainStorage().getToken() else { throw KeychainError.errorStorageToken}
-//        let bearerToken = "\(ConstantsImageFeed.bearer) \(token)"
-//
-//        return URLRequest.makeHTTPRequestForModel(url: url, bearerToken: bearerToken, forHTTPHeaderField: ConstantsImageFeed.hTTPHeaderField)
-//    }
-    
-//    func loadNftData() {
-//             onLoad?(true)
-//             var arrayWithNft: [Nft] = []
-//             let dispatch = DispatchGroup()
-//             service.loadByOrders { result in
-//                 switch result {
-//                 case .success(let order):
-//                     for id in order {
-//                         dispatch.enter()
-//                         self.service.loadByNft(by: id) { models in
-//                             switch models {
-//                             case .success(let model):
-//                                 arrayWithNft.append(model)
-//                             case .failure(let error):
-//                                 print(error.localizedDescription)
-//                             }
-//                             dispatch.leave()
-//                         }
-//                     }
-//                 case .failure(let error):
-//                     print(error.localizedDescription)
-//                 }
-//                 dispatch.notify(queue: .main) {
-//                     let filterNfts = self.sortingArrayFromServer(arrayWithNft)
-//                     self.nft = filterNfts
-//                     self.onLoad?(false)
-//                 }
-//             }
-//         }
 }
 

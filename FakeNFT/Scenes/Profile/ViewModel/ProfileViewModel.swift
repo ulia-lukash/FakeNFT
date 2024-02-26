@@ -18,6 +18,7 @@ protocol ProfileViewModelProtocol {
     func setProfileUIModel(model: ProfileUIModel)
     func setProfileID(id: String)
     func getProfileUIModel() -> ProfileUIModel?
+    func getProfile() -> Profile?
     func setStateLoading()
     func stringClear(str: String) -> String
 }
@@ -29,6 +30,7 @@ final class ProfileViewModel {
     @Observable<ProfileState> private(set) var state: ProfileState = .initial
     
     private(set) var profileUIModel: ProfileUIModel?
+    private(set) var profile: Profile?
     private(set) var profileID: String?
     private let service: ProfileService
     private let mainQueue = DispatchQueue.main
@@ -39,9 +41,9 @@ final class ProfileViewModel {
 }
 
 private extension ProfileViewModel {
-    func createJson(_ newModel: ProfileUIModel) -> [String: String] {
+    func createNetworlFormat(_ newModel: ProfileUIModel) -> String {
         var json: [String: String] = [:]
-        guard let model = profileUIModel else { return json }
+        guard let model = profileUIModel else { return "" }
         if newModel.description != model.description {
             json[JsonKey.description.rawValue] = newModel.description
         }
@@ -54,10 +56,16 @@ private extension ProfileViewModel {
         if newModel.avatar != model.avatar {
             json[JsonKey.avatar.rawValue] = newModel.avatar?.absoluteString
         }
-        return json
+        let dto = String(json.reduce("") { "\($0)\($1.0)=\($1.1)&" }.dropLast())
+        return dto
+    }
+    
+    func saveProfile(model: Profile) {
+        self.profile = model
     }
 }
 
+//MARK: - ProfileViewModelProtocol
 extension ProfileViewModel: ProfileViewModelProtocol {
     func loadProfile(id: String) {
         service.loadProfile(id: id) { [weak self] result in
@@ -65,6 +73,7 @@ extension ProfileViewModel: ProfileViewModelProtocol {
             mainQueue.async {
                 switch result {
                 case .success(let profile):
+                    self.saveProfile(model: profile)
                     self.state = .data(profile)
                 case .failure(let error):
                     self.state = .failed(error)
@@ -74,15 +83,16 @@ extension ProfileViewModel: ProfileViewModelProtocol {
     }
     
     func updateProfile(newModel: ProfileUIModel) {
-        let json = createJson(newModel)
+        let json = createNetworlFormat(newModel)
         if !json.isEmpty {
             state = .update
             guard let profileID else { return }
-            service.updateProfile(json: json, id: profileID) { [weak self] result in
+            service.updateProfile(dto: json, id: profileID) { [weak self] result in
                 guard let self else { return }
                 mainQueue.async {
                     switch result {
                     case .success(let profile):
+                        self.saveProfile(model: profile)
                         self.state = .data(profile)
                     case .failure(let error):
                         self.state = .failed(error)
@@ -100,7 +110,7 @@ extension ProfileViewModel: ProfileViewModelProtocol {
         default:
             message = ConstLocalizable.errorUnknown
         }
-
+        
         let actionText = ConstLocalizable.errorRepeat
         return ErrorModel(message: message, actionText: actionText) { [weak self] in
             guard let self else { return }
@@ -146,6 +156,10 @@ extension ProfileViewModel: ProfileViewModelProtocol {
     
     func getProfileUIModel() -> ProfileUIModel? {
         self.profileUIModel
+    }
+    
+    func getProfile() -> Profile? {
+        self.profile
     }
     
     func stringClear(str: String) -> String {

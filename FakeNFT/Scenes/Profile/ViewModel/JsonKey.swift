@@ -12,4 +12,6 @@ enum JsonKey: String {
     case name
     case website
     case avatar
+    case likes
+    case nfts
 }
