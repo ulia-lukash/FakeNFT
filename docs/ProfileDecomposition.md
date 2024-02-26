@@ -4,7 +4,7 @@
 <br /> Эпик: Профиль
 <br /> Верстка: кодом
 <br /> Архитектура: MVVM
-<br /> [Ссылка на доску] (https://github.com/users/chrnivan/projects/1: )
+<br /> [Ссылка на доску] (https://github.com/users/chrnivan/projects/1)
 
 # Profile Flow Decomposition   
 
@@ -54,7 +54,8 @@
 
 #### Составление запросов
 - Запрос на получение NFT (est: 3 h; fact: 6 h).
-- Запрос на добавление лайков (est: 3 h; fact: 5 h)
+- Запрос на добавление лайков (est: 3 h; fact: 5 h).
+
 `Total:` est: 12 h; fact: 20 h .
 
 ##** Module 3:
