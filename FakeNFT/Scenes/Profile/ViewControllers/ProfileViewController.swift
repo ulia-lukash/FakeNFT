@@ -16,6 +16,10 @@ protocol ProfileVCMyNftDelegate: AnyObject {
     func setProfile(model: Profile?, vc: UIViewController)
 }
 
+protocol ProfileVCFavoriteDelegate: AnyObject {
+    func setLikesId(model: Profile, vc: UIViewController)
+}
+
 // MARK: - ProfileViewController
 final class ProfileViewController: UIViewController, ErrorView, LoadingView {
     private enum ConstantsProfileVC: String {
@@ -33,6 +37,7 @@ final class ProfileViewController: UIViewController, ErrorView, LoadingView {
     
     weak var editDelegate: ProfileVCEditDelegate?
     weak var myNftDelegate: ProfileVCMyNftDelegate?
+    weak var favoriteDelegate: ProfileVCFavoriteDelegate?
     private var textHeightConstraint: NSLayoutConstraint?
     private let viewModel: ProfileViewModelProtocol
     
@@ -197,6 +202,20 @@ private extension ProfileViewController {
         linkLabelView.text = viewModel.stringClear(str: model.link)
     }
     
+    func displayFavoriteNft() {
+        let favoriteAssembly = FavoriteAssembly(
+            service: FavoriteNftServiceImp(networkClient: DefaultNetworkClient()))
+        guard let favoriteVc = favoriteAssembly.build() as? FavoriteViewController,
+            let profile = viewModel.getProfile()
+        else { return }
+        favoriteDelegate = favoriteVc
+        favoriteVc.delegate = self
+        favoriteDelegate?.setLikesId(model: profile, vc: self)
+        let navController = UINavigationController(rootViewController: favoriteVc)
+        navController.modalPresentationStyle = .fullScreen
+        present(navController, animated: true)
+    }
+    
     func adjustTextViewHeight() {
         let fixedWidth = descriptionTextView.frame.size.width
         let newSize = descriptionTextView.sizeThatFits(CGSize(
@@ -297,7 +316,7 @@ extension ProfileViewController: UITableViewDelegate {
             displayMyNft()
         }
         if indexPath.row == CountProfileCell.two.rawValue {
-            //TODO: - epic 3-3 show webView
+            displayFavoriteNft()
         }
         if indexPath.row == CountProfileCell.three.rawValue {
             //TODO: - epic 3-3 show webView
@@ -358,7 +377,15 @@ extension ProfileViewController: UITextViewDelegate {
 
 // MARK: - MyNFTViewControllerDlegate
 extension ProfileViewController: MyNFTViewControllerDlegate {
-    func updateProfile(vc: UIViewController) {
+    func updateProfileForMyNft(vc: UIViewController) {
+        viewModel.loadProfile(id: "1")
+        viewModel.setStateLoading()
+    }
+}
+
+// MARK: - FavoriteViewControllerDelegate
+extension ProfileViewController: FavoriteViewControllerDelegate {
+    func updateProfileForLikes(vc: UIViewController) {
         viewModel.loadProfile(id: "1")
         viewModel.setStateLoading()
     }

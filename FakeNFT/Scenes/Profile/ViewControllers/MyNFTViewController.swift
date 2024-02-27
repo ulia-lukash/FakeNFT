@@ -8,7 +8,7 @@
 import UIKit
 
 protocol MyNFTViewControllerDlegate: AnyObject {
-    func updateProfile(vc: UIViewController)
+    func updateProfileForMyNft(vc: UIViewController)
 }
 
 //MARK: - MyNFTViewController
@@ -66,7 +66,7 @@ final class MyNFTViewController: UIViewController, ErrorView, LoadingView  {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         guard let delegate else { return }
-        delegate.updateProfile(vc: self)
+        delegate.updateProfileForMyNft(vc: self)
     }
 }
 
