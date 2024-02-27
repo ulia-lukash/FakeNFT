@@ -32,6 +32,7 @@ final class MyNftViewModel {
     private(set) var likeIndexPath: IndexPath?
     var isUpdate = false
     private let service: MyNFTServiceProtocol
+    private let helperMyNft: HelperMyNftProtocol = HelperMyNft()
     
     init(service: MyNFTServiceProtocol) {
         self.service = service
@@ -66,7 +67,7 @@ private extension MyNftViewModel {
             returnLikes = returnLikes.filter { $0 != like }
         }
         
-        return networkFormat(likes: returnLikes)
+        return helperMyNft.networkFormat(likes: returnLikes)
     }
     
     func networkFormat(likes: [String]) -> String {
@@ -108,7 +109,7 @@ private extension MyNftViewModel {
             guard let self else { return }
             switch result {
             case .success(let myNft):
-                let nft = self.createListMyNft(myNft)
+                let nft = helperMyNft.createMyListNftCellModels(myNft)
                 returnSortList = nft
                 if sortState != .none {
                     returnSortList = sortListNft()
