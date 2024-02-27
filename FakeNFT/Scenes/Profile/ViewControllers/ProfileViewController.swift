@@ -8,11 +8,16 @@
 import UIKit
 import Kingfisher
 
-protocol ProfileVCDelegate: AnyObject {
+protocol ProfileVCEditDelegate: AnyObject {
     func setDataUI(model: ProfileUIModel)
 }
 
-final class ProfileViewController: UIViewController {
+protocol ProfileVCMyNftDelegate: AnyObject {
+    func setProfile(model: Profile?, vc: UIViewController)
+}
+
+// MARK: - ProfileViewController
+final class ProfileViewController: UIViewController, ErrorView, LoadingView {
     private enum ConstantsProfileVC: String {
         static let assertionMEssage = "can't move to initial state"
         static let horisontalStackSpacing = CGFloat(20)
@@ -26,9 +31,9 @@ final class ProfileViewController: UIViewController {
         case editProfile
     }
     
-    weak var delegate: ProfileVCDelegate?
+    weak var editDelegate: ProfileVCEditDelegate?
+    weak var myNftDelegate: ProfileVCMyNftDelegate?
     private var textHeightConstraint: NSLayoutConstraint?
-    internal lazy var activityIndicator = UIActivityIndicatorView()
     private let viewModel: ProfileViewModelProtocol
     
     private lazy var editProfileButton: UIButton = {
@@ -107,6 +112,13 @@ final class ProfileViewController: UIViewController {
         return nftTableView
     }()
     
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView()
+        activityIndicator.color = .blackUniversal
+        
+        return activityIndicator
+    }()
+    
     // MARK: - Init
     init(viewModel: ProfileViewModelProtocol) {
         self.viewModel = viewModel
@@ -123,7 +135,6 @@ final class ProfileViewController: UIViewController {
         view.backgroundColor = .whiteUniversal
         bind()
         setupUIItem()
-        setupHeightTextView()
         viewModel.setStateLoading()
     }
 }
@@ -170,12 +181,12 @@ private extension ProfileViewController {
     @objc
     func didEditTap() {
         let editVC = EditProfileViewController(delegate: self)
-        self.delegate = editVC
+        self.editDelegate = editVC
         editVC.modalPresentationStyle = .formSheet
         present(editVC, animated: true) { [weak self] in
             guard let self,
                   let model = self.viewModel.getProfileUIModel() else { return }
-            delegate?.setDataUI(model: model)
+            editDelegate?.setDataUI(model: model)
         }
     }
     
@@ -188,7 +199,8 @@ private extension ProfileViewController {
     
     func adjustTextViewHeight() {
         let fixedWidth = descriptionTextView.frame.size.width
-        let newSize = descriptionTextView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
+        let newSize = descriptionTextView.sizeThatFits(CGSize(
+            width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
         if newSize.height > 100 {
             descriptionTextView.isScrollEnabled = true
             textHeightConstraint?.constant = 100
@@ -196,57 +208,37 @@ private extension ProfileViewController {
             descriptionTextView.isScrollEnabled = false
             textHeightConstraint?.constant = newSize.height
         }
-        self.view.layoutIfNeeded()
+        view.layoutIfNeeded()
+    }
+    
+    func displayMyNft() {
+        let service = MyNFTServiceIml(networkClient: DefaultNetworkClient(),
+                                      storage: MyNftStorageImpl())
+        let viewModel = MyNftViewModel(service: service)
+        let myNFTController = MyNFTViewController(viewModel: viewModel)
+        myNftDelegate = myNFTController
+        myNFTController.delegate = self
+        let navController = UINavigationController(rootViewController: myNFTController)
+        navController.modalPresentationStyle = .fullScreen
+        self.myNftDelegate?.setProfile(model: self.viewModel.getProfile(), vc: self)
+        viewModel.loadMyNFT()
+        present(navController, animated: true)
     }
     
     //MARK: - setupUI function
     func setupUIItem() {
-        setupEditProfileImageView()
-        setupHorisontalStack()
-        setupVerticalStackView()
-        setupActivitiIndicator()
-        setupTableView()
+        addSubViewsAndBackColor()
+        setupConstraint()
     }
     
-    func setupActivitiIndicator() {
-        activityIndicator.color = .blackUniversal
-        view.addSubview(activityIndicator)
-        activityIndicator.constraintCenters(to: view)
-    }
-    
-    func setupEditProfileImageView() {
-        view.addSubview(editProfileButton)
-        editProfileButton.translatesAutoresizingMaskIntoConstraints = false
-        editProfileButton.backgroundColor = .clear
-        
+    func setupConstraint() {
+        verticalStackView.setCustomSpacing(20, after: horisontalStackView)
         NSLayoutConstraint.activate([
+            editProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9),
             editProfileButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            editProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9)
-        ])
-    }
-    
-    func setupHorisontalStack() {
-        [userImageView, fullNameLabelView].forEach {
-            horisontalStackView.addArrangedSubview($0)
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.backgroundColor = .clear
-        }
-        NSLayoutConstraint.activate([
             userImageView.leadingAnchor.constraint(equalTo: horisontalStackView.leadingAnchor),
             userImageView.widthAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize),
-            userImageView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize)
-        ])
-    }
-    
-    func setupVerticalStackView() {
-        view.addSubview(verticalStackView)
-        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
-        [horisontalStackView, descriptionTextView, linkLabelView].forEach {
-            verticalStackView.addArrangedSubview($0)
-            $0.backgroundColor = .clear
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-        NSLayoutConstraint.activate([
+            userImageView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize),
             verticalStackView.topAnchor.constraint(equalTo: editProfileButton.bottomAnchor,
                                                    constant: 20),
             verticalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
@@ -256,27 +248,36 @@ private extension ProfileViewController {
             descriptionTextView.bottomAnchor.constraint(equalTo: linkLabelView.topAnchor),
             descriptionTextView.heightAnchor.constraint(equalToConstant: 72),
             descriptionTextView.leadingAnchor.constraint(equalTo: verticalStackView.leadingAnchor),
-            linkLabelView.heightAnchor.constraint(equalToConstant: 38)
-        ])
-        verticalStackView.setCustomSpacing(20, after: horisontalStackView)
-    }
-    
-    func setupTableView() {
-        view.addSubview(nftTableView)
-        NSLayoutConstraint.activate([
+            linkLabelView.heightAnchor.constraint(equalToConstant: 38),
             nftTableView.topAnchor.constraint(equalTo: verticalStackView.bottomAnchor, constant: 40),
             nftTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             nftTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             nftTableView.heightAnchor.constraint(equalToConstant: CGFloat(ConstantsProfileVC.countCellTableView)
-                                                 * ConstantsProfileVC.heigtTableCell)
+                                                 * ConstantsProfileVC.heigtTableCell),
+            descriptionTextView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.maxHeightTextView)
         ])
+        activityIndicator.constraintCenters(to: view)
     }
     
-    func setupHeightTextView() {
-        self.textHeightConstraint = descriptionTextView.heightAnchor.constraint(
-            equalToConstant: ConstantsProfileVC.maxHeightTextView
-        )
-        self.textHeightConstraint?.isActive = true
+    func addSubViewsAndBackColor() {
+        [userImageView, fullNameLabelView].forEach {
+            horisontalStackView.addArrangedSubview($0)
+            $0.backgroundColor = .clear
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        [horisontalStackView,
+         descriptionTextView,
+         linkLabelView].forEach {
+            verticalStackView.addArrangedSubview($0)
+            $0.backgroundColor = .clear
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        [activityIndicator, nftTableView,
+         verticalStackView, editProfileButton].forEach {
+            view.addSubview($0)
+            $0.backgroundColor = .clear
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
 }
 
@@ -291,7 +292,17 @@ extension ProfileViewController: NSLayoutManagerDelegate {
 
 //MARK: - UITableViewDelegate
 extension ProfileViewController: UITableViewDelegate {
-    //TODO: - Next
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == CountProfileCell.one.rawValue {
+            displayMyNft()
+        }
+        if indexPath.row == CountProfileCell.two.rawValue {
+            //TODO: - epic 3-3 show webView
+        }
+        if indexPath.row == CountProfileCell.three.rawValue {
+            //TODO: - epic 3-3 show webView
+        }
+    }
 }
 
 //MARK: - UITableViewDataSource
@@ -305,7 +316,8 @@ extension ProfileViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "\(ProfileTableViewCell.self)") as? ProfileTableViewCell,
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: "\(ProfileTableViewCell.self)") as? ProfileTableViewCell,
               let viewModel = viewModel as? ProfileViewModel
         else { return UITableViewCell()}
         let cellModel = viewModel.cellModel
@@ -330,11 +342,6 @@ extension ProfileViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - ErrorView, LoadingView
-extension ProfileViewController: ErrorView, LoadingView {
-    //TODO: - Next
-}
-
 // MARK: - EditProfileVCDelegate
 extension ProfileViewController: EditProfileVCDelegate {
     func update(profile: ProfileUIModel) {
@@ -346,5 +353,13 @@ extension ProfileViewController: EditProfileVCDelegate {
 extension ProfileViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         self.adjustTextViewHeight()
+    }
+}
+
+// MARK: - MyNFTViewControllerDlegate
+extension ProfileViewController: MyNFTViewControllerDlegate {
+    func updateProfile(vc: UIViewController) {
+        viewModel.loadProfile(id: "1")
+        viewModel.setStateLoading()
     }
 }

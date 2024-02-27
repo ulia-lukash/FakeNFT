@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+// MARK: - ProfileTableViewCell
 final class ProfileTableViewCell: UITableViewCell {
     private enum ConstansCell {
         static let selectImage = UIImage(named: "chevron.forward")

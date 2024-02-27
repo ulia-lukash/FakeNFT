@@ -21,9 +21,8 @@ protocol NetworkClient {
     
     @discardableResult
     func sendProfilePUT(request: NetworkRequest,
-                 json: [String: String],
-                 completionQueue: DispatchQueue,
-                 onResponse: @escaping (Result<Void, Error>) -> Void) -> NetworkTask?
+                        completionQueue: DispatchQueue,
+                        onResponse: @escaping (Result<Void, Error>) -> Void) -> NetworkTask?
 }
 
 extension NetworkClient {
@@ -39,6 +38,13 @@ extension NetworkClient {
                             type: T.Type,
                             onResponse: @escaping (Result<T, Error>) -> Void) -> NetworkTask? {
         send(request: request, type: type, completionQueue: .main, onResponse: onResponse)
+    }
+    
+    @discardableResult
+    func sendProfilePUT(request: NetworkRequest,
+                        completionQueue: DispatchQueue,
+                        onResponse: @escaping (Result<Data, Error>) -> Void) -> NetworkTask? {
+        send(request: request, completionQueue: .main, onResponse: onResponse)
     }
 }
 
@@ -66,13 +72,12 @@ struct DefaultNetworkClient: NetworkClient {
                 onResponse(result)
             }
         }
-        guard let urlRequest = create(request: request) else { return nil }
+        guard let urlRequest = createProfile(request: request) else { return nil }
         let task = session.dataTask(with: urlRequest) { data, response, error in
             guard let response = response as? HTTPURLResponse else {
                 onResponse(.failure(NetworkClientError.urlSessionError))
                 return
             }
-            
             guard 200 ..< 300 ~= response.statusCode else {
                 onResponse(.failure(NetworkClientError.httpStatusCode(response.statusCode)))
                 return
@@ -98,7 +103,6 @@ struct DefaultNetworkClient: NetworkClient {
     @discardableResult
     func sendProfilePUT(
         request: NetworkRequest,
-        json: [String: String],
         completionQueue: DispatchQueue,
         onResponse: @escaping (Result<Void, Error>) -> Void
     ) -> NetworkTask? {
@@ -107,22 +111,26 @@ struct DefaultNetworkClient: NetworkClient {
                 onResponse(result)
             }
         }
-        guard let urlRequest = createPUT(request: request, json: json) else { return nil }
-        let task = session.dataTask(with: urlRequest) { _, response, error  in
+        guard let urlRequest = createProfile(request: request) else { return nil }
+        let task = session.dataTask(with: urlRequest) { data, response, error in
             guard let response = response as? HTTPURLResponse else {
                 onResponse(.failure(NetworkClientError.urlSessionError))
                 return
             }
             
-            guard 200 == response.statusCode else {
+            guard 200 ..< 300 ~= response.statusCode else {
                 onResponse(.failure(NetworkClientError.httpStatusCode(response.statusCode)))
                 return
             }
             
-            onResponse(.success(()))
-            
-            if let error = error {
+            if let _ = data {
+                onResponse(.success(Void()))
+                return
+            } else if let error = error {
                 onResponse(.failure(NetworkClientError.urlRequestError(error)))
+                return
+            } else {
+                assertionFailure("Unexpected condition!")
                 return
             }
         }
@@ -151,6 +159,23 @@ struct DefaultNetworkClient: NetworkClient {
     
     // MARK: - Private
     
+    private func createProfile(request: NetworkRequest) -> URLRequest? {
+        guard let endpoint = request.endpoint else {
+            assertionFailure("Empty endpoint")
+            return nil
+        }
+        var urlRequest = URLRequest(url: endpoint)
+        urlRequest.httpMethod = request.httpMethod.rawValue
+        urlRequest.setValue(ApiConstants.tockenValue,
+                            forHTTPHeaderField: ApiConstants.tokenHeder)
+        if let dto = request.dto as? String {
+            urlRequest.setValue(ApiConstants.contentTypeValuePUT ,
+                                forHTTPHeaderField: ApiConstants.contenTypeHeader)
+            urlRequest.httpBody = Data(dto.utf8)
+        }
+        return urlRequest
+    }
+    
     private func create(request: NetworkRequest) -> URLRequest? {
         guard let endpoint = request.endpoint else {
             assertionFailure("Empty endpoint")
@@ -159,36 +184,13 @@ struct DefaultNetworkClient: NetworkClient {
         
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
-        
-        urlRequest.setValue(ApiConstants.contentTypeValueGET,
-                            forHTTPHeaderField: ApiConstants.acceptHeader)
         urlRequest.setValue(ApiConstants.tockenValue,
                             forHTTPHeaderField: ApiConstants.tokenHeder)
         
-        return urlRequest
-    }
-    
-    private func createPUT(request: NetworkRequest, json: [String: String]) -> URLRequest? {
-        guard let endpoint = request.endpoint else {
-            assertionFailure("Empty endpoint")
-            return nil
+        if let dto = request.dto as? String {
+            urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = Data(dto.utf8)
         }
-        var urlRequest = URLRequest(url: endpoint)
-        urlRequest.httpMethod = request.httpMethod.rawValue
-        var jsonData = Data()
-        if JSONSerialization.isValidJSONObject(json) {
-            let jsonString = json.reduce("") { "\($0)\($1.0)=\($1.1)&" }.dropLast()
-            guard let jsonString = jsonString.data(using: .utf8, allowLossyConversion: false)
-            else { return nil }
-            jsonData = jsonString
-        }
-        urlRequest.httpBody = jsonData
-        urlRequest.setValue(ApiConstants.contentTypeValueGET,
-                            forHTTPHeaderField: ApiConstants.acceptHeader)
-        urlRequest.setValue(ApiConstants.contentTypeValuePUT ,
-                            forHTTPHeaderField: ApiConstants.contenTypeHeader)
-        urlRequest.setValue(ApiConstants.tockenValue,
-                            forHTTPHeaderField: ApiConstants.tokenHeder)
         
         return urlRequest
     }

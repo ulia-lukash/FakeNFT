@@ -4,7 +4,7 @@
 <br /> Эпик: Профиль
 <br /> Верстка: кодом
 <br /> Архитектура: MVVM
-<br /> [Ссылка на доску] (https://github.com/users/chrnivan/projects/1: )
+<br /> [Ссылка на доску] (https://github.com/users/chrnivan/projects/1)
 
 # Profile Flow Decomposition   
 
@@ -41,35 +41,37 @@
 
 #### Верстка экран "Мои NFT"
 
-- NavBar (est: 30 min; fact: x min).
-- Table (est: 30 min; fact: x min).  
-- Ячейка (est: 1 h; fact: x min).
-- Label StubView (est: 30 min; fact: x min).
-- Alert (est: 40 min; fact: x min).
+- NavBar (est: 30 min; fact: 50 min).
+- Table (est: 30 min; fact: 60 min).  
+- Ячейка (est: 1 h; fact: 3 h).
+- Label StubView (est: 30 min; fact: 20 min).
+- Alert (est: 40 min; fact: 60 min).
 
 #### Логика
-- Сортировка по цене (est: 2 h; fact: x min).
-- Сортировка по рейтнгу (est: 2 h; fact: x min).
-- Сортировка по названию (est: 2 h; fact: x min).
+- Сортировка по цене (est: 2 h; fact: 2 h).
+- Сортировка по рейтнгу (est: 2 h; fact: 30 min).
+- Сортировка по названию (est: 2 h; fact: 30 min).
 
 #### Составление запросов
-- Запрос на получение NFT (est: 3 h; fact: x min).
+- Запрос на получение NFT (est: 3 h; fact: 6 h).
+- Запрос на добавление лайков (est: 3 h; fact: 5 h).
 
-`Total:` est: 12 h; fact: x min.
+`Total:` est: 12 h; fact: 20 h .
 
 ##** Module 3:
 
 #### Экран "Избранные NFT"
 
-- Коллекция (est: 2 h; fact: x min).
-- Ячейка коллекции (est: 2 h; fact: x min).
+- CollectionView (est: 2 h; fact: x min).
+- CollectionCell (est: 2 h; fact: x min).
 - Label Stub (est: 30 min; fact: x min).                
                                                    
 #### Составление запросов
 - Запрос на получение избранных NFT (est: 4 h; fact: x min).
+- Запрос на лайки NFT (est: 4 h; fact: x min).
 
 #### Верстка WebView
-- (est: 60 min; fact: x min).
+- Верстка (est: 60 min; fact: x min).
 
 `Total:` est: 9h 30 min; fact: x min.
 
