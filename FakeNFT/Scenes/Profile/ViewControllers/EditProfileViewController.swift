@@ -11,6 +11,7 @@ protocol EditProfileVCDelegate: AnyObject {
     func update(profile: ProfileUIModel)
 }
 
+//MARK: - EditProfileViewController
 final class EditProfileViewController: UIViewController {
     private enum ConstansEditVC: String {
         static let editButtonSize = CGSize(width: 42, height: 42)
@@ -52,14 +53,17 @@ final class EditProfileViewController: UIViewController {
         let userImageView = UserImageView(image: nil)
         let userImageModel = UserImageModel(url: nil)
         userImageView.config(with: userImageModel)
+        userImageView.backgroundColor = .clear
         
         return userImageView
     }()
     
     private lazy var userImageEditLabelView: UILabel = {
-        let userImageEditLabelView = UILabel(frame: CGRect(origin: .zero,
-                                                           size: ConstansEditVC.editImageViewSize))
+        let userImageEditLabelView = UILabel(
+            frame: CGRect(origin: .zero, size: ConstansEditVC.editImageViewSize))
         userImageEditLabelView.text = ConstLocalizable.editUserImage
+        userImageEditLabelView.backgroundColor =
+            .blackUniversal.withAlphaComponent(ConstansEditVC.editImageViewAlphaComponent)
         userImageEditLabelView.numberOfLines = ConstansEditVC.editLabelNumberOfLines
         userImageEditLabelView.textAlignment = .center
         userImageEditLabelView.textColor = .whiteUniversal
@@ -143,7 +147,7 @@ final class EditProfileViewController: UIViewController {
         descriptionTextView.layer.masksToBounds = true
         descriptionTextView.layoutManager.delegate = self
         descriptionTextView.font = .bodyRegular
-        descriptionTextView.textColor = .blackUniversal
+        descriptionTextView.textColor = .segmentActive
         descriptionTextView.backgroundColor = .segmentInactive
         
         return descriptionTextView
@@ -196,7 +200,6 @@ private extension EditProfileViewController {
         guard let userInfo = notification.userInfo else { return }
         if var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             keyboardFrame = self.view.convert(keyboardFrame, from: nil)
-            
             var contentInset:UIEdgeInsets = self.scrollView.contentInset
             contentInset.bottom = keyboardFrame.size.height + 70
             scrollView.contentInset = contentInset
@@ -253,13 +256,40 @@ private extension EditProfileViewController {
     
     //MARK: - Setup UIItem
     func setupUIItem() {
+        userImageView.addSubview(userImageEditLabelView)
         setupScrollView()
         setupStackView()
-        setupExitButton()
-        setupUserImageView()
-        setupuserImageEditLabelView()
-        setupEditLoadImageLabel()
-        setupTextField()
+        setupUserImageTap()
+        setupConstraints()
+    }
+    
+    func setupConstraints() {
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            exitButton.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
+            exitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            userImageView.topAnchor.constraint(equalTo: exitButton.bottomAnchor, constant: 22),
+            userImageView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            userImageView.heightAnchor.constraint(equalToConstant: 70),
+            userImageView.widthAnchor.constraint(equalToConstant: 70),
+            editLoadImageButton.topAnchor.constraint(equalTo: userImageView.bottomAnchor, constant: 15),
+            editLoadImageButton.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            editImageLinkTextField.heightAnchor.constraint(equalToConstant: 44),
+            nameTextField.heightAnchor.constraint(equalToConstant: 44),
+            descriptionTextView.heightAnchor.constraint(equalToConstant: 132),
+            linkTextField.heightAnchor.constraint(equalToConstant: 44),
+            verticalStackView.topAnchor.constraint(equalTo: editLoadImageButton.bottomAnchor, constant: -14),
+            verticalStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
+            verticalStackView.widthAnchor.constraint(equalToConstant: view.frame.width - 32),
+            verticalStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+        ])
+        let customSpacing = CGFloat(13)
+        verticalStackView.setCustomSpacing(customSpacing, after: nameLabelView)
+        verticalStackView.setCustomSpacing(customSpacing, after: descriptionLabelView)
+        verticalStackView.setCustomSpacing(customSpacing, after: linkLabelView)
     }
     
     func setupScrollView() {
@@ -273,50 +303,6 @@ private extension EditProfileViewController {
             scrollView.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        ])
-    }
-    
-    func setupExitButton() {
-        NSLayoutConstraint.activate([
-            exitButton.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
-            exitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
-        ])
-    }
-    
-    func setupUserImageView() {
-        userImageView.backgroundColor = .clear
-        NSLayoutConstraint.activate([
-            userImageView.topAnchor.constraint(equalTo: exitButton.bottomAnchor, constant: 22),
-            userImageView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
-            userImageView.heightAnchor.constraint(equalToConstant: 70),
-            userImageView.widthAnchor.constraint(equalToConstant: 70)
-        ])
-        setupUserImageTap()
-    }
-    
-    func setupuserImageEditLabelView() {
-        userImageView.addSubview(userImageEditLabelView)
-        userImageEditLabelView.backgroundColor =
-            .blackUniversal.withAlphaComponent(ConstansEditVC.editImageViewAlphaComponent)
-    }
-    
-    func setupEditLoadImageLabel() {
-        NSLayoutConstraint.activate([
-            editLoadImageButton.topAnchor.constraint(equalTo: userImageView.bottomAnchor, constant: 15),
-            editLoadImageButton.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor)
-        ])
-    }
-    
-    func setupTextField() {
-        editImageLinkTextField.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        nameTextField.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        descriptionTextView.heightAnchor.constraint(equalToConstant: 132).isActive = true
-        linkTextField.heightAnchor.constraint(equalToConstant: 44).isActive = true
     }
     
     func setupStackView() {
@@ -332,10 +318,11 @@ private extension EditProfileViewController {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        [editImageLinkTextField, nameTextField, linkTextField].forEach {
+        [editImageLinkTextField, nameTextField,
+         linkTextField, ].forEach {
             $0.layer.cornerRadius = ConstansEditVC.textFieldCornerRadius
             $0.layer.masksToBounds = true
-            $0.textColor = .blackUniversal
+            $0.textColor = .segmentActive
             $0.backgroundColor = .segmentInactive
         }
         
@@ -347,18 +334,6 @@ private extension EditProfileViewController {
             $0.textColor = .blackUniversal
             $0.textAlignment = .left
         }
-        
-        let customSpacing = CGFloat(13)
-        verticalStackView.setCustomSpacing(customSpacing, after: nameLabelView)
-        verticalStackView.setCustomSpacing(customSpacing, after: descriptionLabelView)
-        verticalStackView.setCustomSpacing(customSpacing, after: linkLabelView)
-        
-        NSLayoutConstraint.activate([
-            verticalStackView.topAnchor.constraint(equalTo: editLoadImageButton.bottomAnchor, constant: -14),
-            verticalStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
-            verticalStackView.widthAnchor.constraint(equalToConstant: view.frame.width - 32),
-            verticalStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
-        ])
     }
 }
 

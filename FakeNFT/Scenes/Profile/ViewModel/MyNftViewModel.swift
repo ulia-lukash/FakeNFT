@@ -90,6 +90,18 @@ private extension MyNftViewModel {
         return sortList
     }
     
+    func createMyListNftLikes() -> [MyNFTCellModel] {
+        listMyNft.map { nft in
+            MyNFTCellModel(urlNFT: nft.urlNFT,
+                           nameNFT: nft.nameNFT,
+                           nameAuthor: nft.nameAuthor,
+                           rating: nft.rating,
+                           priceETN: nft.priceETN,
+                           id: nft.id,
+                           islike: nft.id == likeId)
+        }
+    }
+    
     func loadResult(_ result: Result<[MyListNFT], Error>) {
         var returnSortList: [MyNFTCellModel] = []
         DispatchQueue.main.async { [weak self] in
@@ -109,20 +121,11 @@ private extension MyNftViewModel {
         }
     }
     
-    func updateResult(_ result: Result<Void, Error>, _ likes: [String]) {
+    func updateResult(_ result: Result<Void, Error>) {
         self.state = .loading
         switch result {
         case .success():
-            let returnNft = listMyNft.map { nft in
-                MyNFTCellModel(urlNFT: nft.urlNFT,
-                               nameNFT: nft.nameNFT,
-                               nameAuthor: nft.nameAuthor,
-                               rating: nft.rating,
-                               priceETN: nft.priceETN,
-                               id: nft.id,
-                               islike: nft.id == likeId)
-            }
-            listMyNft = returnNft
+            listMyNft = createMyListNftLikes()
             self.isUpdate = true
             self.state = .data
         case .failure(let error):
@@ -173,7 +176,7 @@ extension MyNftViewModel: MyNftViewModelProtocol {
                 switch result {
                 case .success(let profile):
                     self.profile = profile
-                    self.updateResult(updateResult, likes)
+                    self.updateResult(updateResult)
                 case .failure(let error):
                     self.state = .failed(error)
                 }

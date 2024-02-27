@@ -20,7 +20,7 @@ protocol MyNFTServiceProtocol {
     func updateStorage(nft: [MyListNFT])
 }
 
-
+//MARK: - MyNFTServiceIml
 final class MyNFTServiceIml {
     private let networkClient: NetworkClient
     private let storage: MyNftStorageProtocol
@@ -69,17 +69,13 @@ private extension MyNFTServiceIml {
     
     func loadMyNFT(listId: [String], completion: @escaping MyListNftCompletion)  {
         var returnNft: [MyListNFT] = []
-        
         let operationQueue = OperationQueue()
         operationQueue.maxConcurrentOperationCount = 1
-        
         for id in listId {
             let operation = BlockOperation {
                 let request = MyNftRequest(id: id)
                 var nft: MyListNFT?
-                
                 let semaphore = DispatchSemaphore(value: 0)
-                
                 self.load(request: request) { result in
                     switch result {
                     case .success(let loadedNFT):
@@ -91,7 +87,6 @@ private extension MyNFTServiceIml {
                     semaphore.signal()
                 }
                 _ = semaphore.wait(timeout: .distantFuture)
-                
                 if let nft = nft {
                     let name = self.searchName(urlStr: nft.author)
                     let myListNFT = MyListNFT(name: nft.name,
@@ -101,9 +96,7 @@ private extension MyNFTServiceIml {
                                               price: nft.price,
                                               author: name ?? "Grifon",
                                               id: nft.id)
-                    
                     returnNft.append(myListNFT)
-                    
                     if returnNft.count == listId.count {
                         self.storage.saveMyNft(returnNft)
                         completion(.success(returnNft))
@@ -128,8 +121,7 @@ extension MyNFTServiceIml: MyNFTServiceProtocol {
     func loadProfile(completion: @escaping ProfileCompletion) {
         let request = ProfileRequest()
         networkClient.send(request: request,
-                           type: Profile.self,
-                           completionQueue: .main) {result in
+                           type: Profile.self) {result in
             switch result {
             case .success(let profile):
                 completion(.success(profile))

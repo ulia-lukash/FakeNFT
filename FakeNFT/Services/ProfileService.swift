@@ -16,6 +16,7 @@ protocol ProfileService {
                        completion:  @escaping ProfileCompletion)
 }
 
+//MARK: - ProfileServiceImpl
 final class ProfileServiceImpl {
     private let networkClient: NetworkClient
     private let storage: ProfileStorageProtocol

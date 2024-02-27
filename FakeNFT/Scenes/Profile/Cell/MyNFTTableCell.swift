@@ -13,6 +13,7 @@ protocol MyNFTTableCellDelegate: AnyObject {
     func likeTap(_ cell: UITableViewCell)
 }
 
+//MARK: MyNFTTableCell
 final class MyNFTTableCell: UITableViewCell {
     private enum ConstMyNFTCell: String {
         static let imageCornerRadius = CGFloat(12)
@@ -23,54 +24,85 @@ final class MyNFTTableCell: UITableViewCell {
     
     private lazy var horisontalStackView: UIStackView = {
         let horisontalStackView = UIStackView()
+        horisontalStackView.axis = .horizontal
+        horisontalStackView.spacing = 20
+        horisontalStackView.isUserInteractionEnabled = true
+        horisontalStackView.alignment = .center
         
         return horisontalStackView
     }()
     
     private lazy var nftImageView: UIImageView = {
         let nftImageView = UIImageView()
+        nftImageView.layer.cornerRadius = ConstMyNFTCell.imageCornerRadius
+        nftImageView.layer.masksToBounds = true
+        nftImageView.isUserInteractionEnabled = true
         
         return nftImageView
     }()
     
     private lazy var likeButton: UIButton = {
         let likeButton = UIButton()
+        likeButton.isUserInteractionEnabled = true
+        let image = UIImage(
+            named: ConstMyNFTCell.favouritesIcons.rawValue)?.withRenderingMode(.alwaysTemplate)
+        likeButton.setImage(image, for: .normal)
+        likeButton.addTarget(self, action: #selector(didLike), for: .touchUpInside)
         
         return likeButton
     }()
     
-    private lazy var nameNFTView: UIView = {
-        let nameNFTView = UIView()
+    private lazy var nameNFStackTView: UIStackView = {
+        let nameNFStackTView = UIStackView()
+        nameNFStackTView.axis = .vertical
+        nameNFStackTView.spacing = 6
         
-        return nameNFTView
+        return nameNFStackTView
     }()
     
     private lazy var nameNFTLabel: UILabel = {
         let nameNFTLabel = UILabel()
+        nameNFTLabel.font = .headline5
+        nameNFTLabel.textColor = .blackUniversal
         
         return nameNFTLabel
     }()
     
     private lazy var starRatingView: CosmosView = {
         let starRatingView = CosmosView()
+        starRatingView.rating = 0
+        starRatingView.settings.starSize = 16
+        starRatingView.settings.filledColor = .yellowUniversal
+        starRatingView.settings.starMargin = 1
+        starRatingView.settings.emptyColor = .lightGreyUniversal
+        starRatingView.settings.emptyBorderColor = .clear
+        starRatingView.settings.filledBorderColor = .clear
         
         return starRatingView
     }()
     
     private lazy var horisontaNameStack: UIStackView = {
         let horisontaNameStack = UIStackView()
+        horisontaNameStack.spacing = 4
         
         return horisontaNameStack
     }()
     
     private lazy var fromLabel: UILabel = {
         let fromLabel = UILabel()
+        fromLabel.font = .caption1
+        fromLabel.text = ConstLocalizable.myNFTCellFrom
+        fromLabel.textColor = .blackUniversal
+        fromLabel.textAlignment = .left
         
         return fromLabel
     }()
     
     private lazy var nameAuthorLabel: UILabel = {
         let nameAuthorLabel = UILabel()
+        nameAuthorLabel.font = .caption2
+        nameAuthorLabel.textColor = .blackUniversal
+        nameAuthorLabel.textAlignment = .left
         
         return nameAuthorLabel
     }()
@@ -84,12 +116,18 @@ final class MyNFTTableCell: UITableViewCell {
     private lazy var priceLabel: UILabel = {
         let priceLabel = UILabel()
         priceLabel.text = ConstLocalizable.profileCellMyNFT
+        priceLabel.text = ConstLocalizable.myNFTCellPrice
+        priceLabel.textColor = .blackUniversal
+        priceLabel.font = .caption2
         
         return priceLabel
     }()
     
     private lazy var priceValueLabel: UILabel = {
         let priceValueLabel = UILabel()
+        priceValueLabel.textAlignment = .center
+        priceValueLabel.textColor = .blackUniversal
+        priceValueLabel.font = .bodyBold
         
         return priceValueLabel
     }()
@@ -121,180 +159,76 @@ extension MyNFTTableCell {
     
     //MARK: private func
     private func setupUIItem() {
-        setupNftImageView()
         setupHorisontalStack()
-        setupnameNFTView()
-        setupHorisontaNameStack()
-        setupNameNFTLabel()
-        setupNameUserLabel()
-        setupRatingView()
-        setupFromLabel()
-        setupPriceView()
-        setupPriceLabel()
-        setupPriceValueLabel()
-        setupLikeButton()
+        addSubviews()
+        setupConstraint()
+        setupAutoresizingMaskAndBackColor()
     }
     
-    private func setupHorisontalStack() {
-        contentView.addSubview(horisontalStackView)
-        [nftImageView, nameNFTView, priceView].forEach {
-            horisontalStackView.addArrangedSubview($0)
+    func setupAutoresizingMaskAndBackColor() {
+        [horisontalStackView, likeButton, nameNFStackTView,
+         nameNFTLabel, horisontaNameStack, fromLabel,
+         nameAuthorLabel, priceLabel, priceValueLabel
+        ].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.backgroundColor = .clear
         }
-        horisontalStackView.axis = .horizontal
-        horisontalStackView.spacing = 20
-        horisontalStackView.isUserInteractionEnabled = true
-        horisontalStackView.translatesAutoresizingMaskIntoConstraints = false
-        horisontalStackView.backgroundColor = .clear
-        horisontalStackView.alignment = .center
-        
+    }
+    
+    private func setupConstraint() {
+        let width = fromLabel.text?.width(withConstrainedHeight: 20, font: .caption1)
         NSLayoutConstraint.activate([
             horisontalStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             horisontalStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40),
             horisontalStackView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            horisontalStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
-        ])
-    }
-    
-    private func setupNftImageView() {
-        nftImageView.translatesAutoresizingMaskIntoConstraints = false
-        nftImageView.backgroundColor = .clear
-        nftImageView.layer.cornerRadius = ConstMyNFTCell.imageCornerRadius
-        nftImageView.layer.masksToBounds = true
-        nftImageView.isUserInteractionEnabled = true
-        NSLayoutConstraint.activate([
+            horisontalStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
             nftImageView.heightAnchor.constraint(equalToConstant: 108),
-            nftImageView.widthAnchor.constraint(equalToConstant: 108)
-        ])
-    }
-    
-    private func setupLikeButton() {
-        nftImageView.addSubview(likeButton)
-        likeButton.translatesAutoresizingMaskIntoConstraints = false
-        likeButton.backgroundColor = .clear
-        likeButton.isUserInteractionEnabled = true
-        let image = UIImage(
-            named: ConstMyNFTCell.favouritesIcons.rawValue)?.withRenderingMode(.alwaysTemplate)
-        likeButton.setImage(image, for: .normal)
-        likeButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        likeButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
-        likeButton.addTarget(self, action: #selector(didLike), for: .touchUpInside)
-        
-        NSLayoutConstraint.activate([
+            nftImageView.widthAnchor.constraint(equalToConstant: 108),
             likeButton.trailingAnchor.constraint(equalTo: nftImageView.trailingAnchor),
-            likeButton.topAnchor.constraint(equalTo: nftImageView.topAnchor)
-        ])
-    }
-    
-    private func setupnameNFTView() {
-        nameNFTView.translatesAutoresizingMaskIntoConstraints = false
-        nameNFTView.backgroundColor = .clear
-        nameNFTView.heightAnchor.constraint(equalToConstant: 62).isActive = true
-    }
-    
-    private func setupNameNFTLabel() {
-        nameNFTView.addSubview(nameNFTLabel)
-        nameNFTLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameNFTLabel.backgroundColor = .clear
-        nameNFTLabel.font = .headline5
-        nameNFTLabel.textColor = .blackUniversal
-        
-        NSLayoutConstraint.activate([
-            nameNFTLabel.topAnchor.constraint(equalTo: nameNFTView.topAnchor),
-            nameNFTLabel.leadingAnchor.constraint(equalTo: nameNFTView.leadingAnchor),
-            nameNFTLabel.trailingAnchor.constraint(equalTo: nameNFTView.trailingAnchor)
-        ])
-    }
-    
-    private func setupRatingView() {
-        nameNFTView.addSubview(starRatingView)
-        starRatingView.translatesAutoresizingMaskIntoConstraints = false
-        starRatingView.backgroundColor = .clear
-        starRatingView.rating = 0
-        starRatingView.settings.starSize = 16
-        starRatingView.settings.filledColor = .yellowUniversal
-        starRatingView.settings.starMargin = 1
-        starRatingView.settings.emptyColor = .lightGreyUniversal
-        starRatingView.settings.emptyBorderColor = .clear
-        starRatingView.settings.filledBorderColor = .clear
-        
-        NSLayoutConstraint.activate([
-            starRatingView.leadingAnchor.constraint(equalTo: nameNFTView.leadingAnchor),
-            starRatingView.centerYAnchor.constraint(equalTo: nameNFTView.centerYAnchor),
+            likeButton.topAnchor.constraint(equalTo: nftImageView.topAnchor),
+            likeButton.widthAnchor.constraint(equalToConstant: 44),
+            likeButton.heightAnchor.constraint(equalToConstant: 44),
+            nameNFStackTView.heightAnchor.constraint(equalToConstant: 62),
+            nameNFTLabel.topAnchor.constraint(equalTo: nameNFStackTView.topAnchor),
+            nameNFTLabel.leadingAnchor.constraint(equalTo: nameNFStackTView.leadingAnchor),
+            nameNFTLabel.trailingAnchor.constraint(equalTo: nameNFStackTView.trailingAnchor),
+            horisontaNameStack.leadingAnchor.constraint(equalTo: nameNFStackTView.leadingAnchor),
+            horisontaNameStack.trailingAnchor.constraint(equalTo: nameNFStackTView.trailingAnchor),
+            horisontaNameStack.bottomAnchor.constraint(equalTo: nameNFStackTView.bottomAnchor),
+            fromLabel.widthAnchor.constraint(equalToConstant: width ?? 20),
+            priceView.heightAnchor.constraint(equalToConstant: 42),
+            priceView.widthAnchor.constraint(equalToConstant: 100),
+            priceLabel.topAnchor.constraint(equalTo: priceView.topAnchor),
+            priceLabel.leadingAnchor.constraint(equalTo: priceView.leadingAnchor),
+            priceValueLabel.bottomAnchor.constraint(equalTo: priceView.bottomAnchor),
+            priceValueLabel.leadingAnchor.constraint(equalTo: priceView.leadingAnchor),
+            priceValueLabel.trailingAnchor.constraint(equalTo: priceView.trailingAnchor),
+            starRatingView.leadingAnchor.constraint(equalTo: nameNFStackTView.leadingAnchor),
+            starRatingView.centerYAnchor.constraint(equalTo: nameNFStackTView.centerYAnchor),
             starRatingView.heightAnchor.constraint(equalToConstant: 16)
         ])
     }
     
-    private func setupHorisontaNameStack() {
-        nameNFTView.addSubview(horisontaNameStack)
+    private func addSubviews() {
+        contentView.addSubview(horisontalStackView)
+        nftImageView.addSubview(likeButton)
         [fromLabel, nameAuthorLabel].forEach {
             horisontaNameStack.addArrangedSubview($0)
         }
-        horisontaNameStack.spacing = 4
-        horisontaNameStack.translatesAutoresizingMaskIntoConstraints = false
-        horisontaNameStack.backgroundColor = .clear
-        
-        NSLayoutConstraint.activate([
-            horisontaNameStack.leadingAnchor.constraint(equalTo: nameNFTView.leadingAnchor),
-            horisontaNameStack.trailingAnchor.constraint(equalTo: nameNFTView.trailingAnchor),
-            horisontaNameStack.bottomAnchor.constraint(equalTo: nameNFTView.bottomAnchor)
-        ])
+        [nameNFTLabel, starRatingView, horisontaNameStack].forEach {
+            nameNFStackTView.addArrangedSubview($0)
+        }
+        [priceLabel, priceValueLabel].forEach {
+            priceView.addSubview($0)
+        }
     }
     
-    private func setupFromLabel() {
-        fromLabel.translatesAutoresizingMaskIntoConstraints = false
-        fromLabel.backgroundColor = .clear
-        fromLabel.font = .caption1
-        fromLabel.text = ConstLocalizable.myNFTCellFrom
-        fromLabel.textColor = .blackUniversal
-        fromLabel.textAlignment = .left
-        let width = fromLabel.text?.width(withConstrainedHeight: 20, font: .caption1)
-        fromLabel.widthAnchor.constraint(equalToConstant: width ?? 20).isActive = true
-    }
-    
-    private func setupNameUserLabel() {
-        nameAuthorLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameAuthorLabel.font = .caption2
-        nameAuthorLabel.backgroundColor = .clear
-        nameAuthorLabel.textColor = .blackUniversal
-        nameAuthorLabel.textAlignment = .left
-    }
-    
-    private func setupPriceView() {
-        priceView.translatesAutoresizingMaskIntoConstraints = false
-        priceView.backgroundColor = .clear
-        
-        NSLayoutConstraint.activate([
-            priceView.heightAnchor.constraint(equalToConstant: 42),
-            priceView.widthAnchor.constraint(equalToConstant: 100)
-        ])
-    }
-    
-    private func setupPriceLabel() {
-        priceView.addSubview(priceLabel)
-        priceLabel.translatesAutoresizingMaskIntoConstraints = false
-        priceLabel.backgroundColor = .clear
-        priceLabel.text = ConstLocalizable.myNFTCellPrice
-        priceLabel.textColor = .blackUniversal
-        priceLabel.font = .caption2
-        
-        NSLayoutConstraint.activate([
-            priceLabel.topAnchor.constraint(equalTo: priceView.topAnchor),
-            priceLabel.leadingAnchor.constraint(equalTo: priceView.leadingAnchor)
-        ])
-    }
-    
-    private func setupPriceValueLabel() {
-        priceView.addSubview(priceValueLabel)
-        priceValueLabel.translatesAutoresizingMaskIntoConstraints = false
-        priceValueLabel.textAlignment = .center
-        priceValueLabel.textColor = .blackUniversal
-        priceValueLabel.font = .bodyBold
-        
-        NSLayoutConstraint.activate([
-            priceValueLabel.bottomAnchor.constraint(equalTo: priceView.bottomAnchor),
-            priceValueLabel.leadingAnchor.constraint(equalTo: priceView.leadingAnchor),
-            priceValueLabel.trailingAnchor.constraint(equalTo: priceView.trailingAnchor)
-        ])
+    private func setupHorisontalStack() {
+        [nftImageView, nameNFStackTView, priceView].forEach {
+            horisontalStackView.addArrangedSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.backgroundColor = .clear
+        }
     }
     
     func like(flag: Bool) {

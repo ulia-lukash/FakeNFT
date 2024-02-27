@@ -17,7 +17,7 @@ protocol ProfileVCMyNftDelegate: AnyObject {
 }
 
 // MARK: - ProfileViewController
-final class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController, ErrorView, LoadingView {
     private enum ConstantsProfileVC: String {
         static let assertionMEssage = "can't move to initial state"
         static let horisontalStackSpacing = CGFloat(20)
@@ -34,7 +34,6 @@ final class ProfileViewController: UIViewController {
     weak var editDelegate: ProfileVCEditDelegate?
     weak var myNftDelegate: ProfileVCMyNftDelegate?
     private var textHeightConstraint: NSLayoutConstraint?
-    internal lazy var activityIndicator = UIActivityIndicatorView()
     private let viewModel: ProfileViewModelProtocol
     
     private lazy var editProfileButton: UIButton = {
@@ -113,6 +112,13 @@ final class ProfileViewController: UIViewController {
         return nftTableView
     }()
     
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView()
+        activityIndicator.color = .blackUniversal
+        
+        return activityIndicator
+    }()
+    
     // MARK: - Init
     init(viewModel: ProfileViewModelProtocol) {
         self.viewModel = viewModel
@@ -129,7 +135,6 @@ final class ProfileViewController: UIViewController {
         view.backgroundColor = .whiteUniversal
         bind()
         setupUIItem()
-        setupHeightTextView()
         viewModel.setStateLoading()
     }
 }
@@ -203,7 +208,7 @@ private extension ProfileViewController {
             descriptionTextView.isScrollEnabled = false
             textHeightConstraint?.constant = newSize.height
         }
-        self.view.layoutIfNeeded()
+        view.layoutIfNeeded()
     }
     
     func displayMyNft() {
@@ -222,52 +227,18 @@ private extension ProfileViewController {
     
     //MARK: - setupUI function
     func setupUIItem() {
-        setupEditProfileImageView()
-        setupHorisontalStack()
-        setupVerticalStackView()
-        setupActivitiIndicator()
-        setupTableView()
+        addSubViewsAndBackColor()
+        setupConstraint()
     }
     
-    func setupActivitiIndicator() {
-        activityIndicator.color = .blackUniversal
-        view.addSubview(activityIndicator)
-        activityIndicator.constraintCenters(to: view)
-    }
-    
-    func setupEditProfileImageView() {
-        view.addSubview(editProfileButton)
-        editProfileButton.translatesAutoresizingMaskIntoConstraints = false
-        editProfileButton.backgroundColor = .clear
-        
+    func setupConstraint() {
+        verticalStackView.setCustomSpacing(20, after: horisontalStackView)
         NSLayoutConstraint.activate([
+            editProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9),
             editProfileButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            editProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9)
-        ])
-    }
-    
-    func setupHorisontalStack() {
-        [userImageView, fullNameLabelView].forEach {
-            horisontalStackView.addArrangedSubview($0)
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.backgroundColor = .clear
-        }
-        NSLayoutConstraint.activate([
             userImageView.leadingAnchor.constraint(equalTo: horisontalStackView.leadingAnchor),
             userImageView.widthAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize),
-            userImageView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize)
-        ])
-    }
-    
-    func setupVerticalStackView() {
-        view.addSubview(verticalStackView)
-        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
-        [horisontalStackView, descriptionTextView, linkLabelView].forEach {
-            verticalStackView.addArrangedSubview($0)
-            $0.backgroundColor = .clear
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-        NSLayoutConstraint.activate([
+            userImageView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize),
             verticalStackView.topAnchor.constraint(equalTo: editProfileButton.bottomAnchor,
                                                    constant: 20),
             verticalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
@@ -277,27 +248,36 @@ private extension ProfileViewController {
             descriptionTextView.bottomAnchor.constraint(equalTo: linkLabelView.topAnchor),
             descriptionTextView.heightAnchor.constraint(equalToConstant: 72),
             descriptionTextView.leadingAnchor.constraint(equalTo: verticalStackView.leadingAnchor),
-            linkLabelView.heightAnchor.constraint(equalToConstant: 38)
-        ])
-        verticalStackView.setCustomSpacing(20, after: horisontalStackView)
-    }
-    
-    func setupTableView() {
-        view.addSubview(nftTableView)
-        NSLayoutConstraint.activate([
+            linkLabelView.heightAnchor.constraint(equalToConstant: 38),
             nftTableView.topAnchor.constraint(equalTo: verticalStackView.bottomAnchor, constant: 40),
             nftTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             nftTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             nftTableView.heightAnchor.constraint(equalToConstant: CGFloat(ConstantsProfileVC.countCellTableView)
-                                                 * ConstantsProfileVC.heigtTableCell)
+                                                 * ConstantsProfileVC.heigtTableCell),
+            descriptionTextView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.maxHeightTextView)
         ])
+        activityIndicator.constraintCenters(to: view)
     }
     
-    func setupHeightTextView() {
-        self.textHeightConstraint = descriptionTextView.heightAnchor.constraint(
-            equalToConstant: ConstantsProfileVC.maxHeightTextView
-        )
-        self.textHeightConstraint?.isActive = true
+    func addSubViewsAndBackColor() {
+        [userImageView, fullNameLabelView].forEach {
+            horisontalStackView.addArrangedSubview($0)
+            $0.backgroundColor = .clear
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        [horisontalStackView,
+         descriptionTextView,
+         linkLabelView].forEach {
+            verticalStackView.addArrangedSubview($0)
+            $0.backgroundColor = .clear
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        [activityIndicator, nftTableView,
+         verticalStackView, editProfileButton].forEach {
+            view.addSubview($0)
+            $0.backgroundColor = .clear
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
 }
 
@@ -316,10 +296,10 @@ extension ProfileViewController: UITableViewDelegate {
         if indexPath.row == CountProfileCell.one.rawValue {
             displayMyNft()
         }
-        if indexPath.row == CountProfileCell.one.rawValue {
+        if indexPath.row == CountProfileCell.two.rawValue {
             //TODO: - epic 3-3 show webView
         }
-        if indexPath.row == CountProfileCell.one.rawValue {
+        if indexPath.row == CountProfileCell.three.rawValue {
             //TODO: - epic 3-3 show webView
         }
     }
@@ -360,11 +340,6 @@ extension ProfileViewController: UITableViewDataSource {
         }
         return cell
     }
-}
-
-// MARK: - ErrorView, LoadingView
-extension ProfileViewController: ErrorView, LoadingView {
-    //TODO: - Next
 }
 
 // MARK: - EditProfileVCDelegate

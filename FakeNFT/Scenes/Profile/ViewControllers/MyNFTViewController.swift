@@ -20,20 +20,31 @@ final class MyNFTViewController: UIViewController, ErrorView, LoadingView  {
     }
     
     weak var delegate: MyNFTViewControllerDlegate?
-    internal lazy var activityIndicator = UIActivityIndicatorView()
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView()
+        activityIndicator.color = .blackUniversal
+        
+        return activityIndicator
+    }()
+    
     private let viewModel: MyNftViewModelProtocol
     
     private lazy var myNFTTable: UITableView = {
         let myNFTTable = UITableView()
+        myNFTTable.dataSource = self
+        myNFTTable.delegate = self
+        myNFTTable.translatesAutoresizingMaskIntoConstraints = false
+        myNFTTable.backgroundColor = .clear
+        myNFTTable.separatorColor = .clear
+        myNFTTable.allowsMultipleSelection = false
+        myNFTTable.isUserInteractionEnabled = true
+        myNFTTable.register(MyNFTTableCell.self,
+                            forCellReuseIdentifier: "\(MyNFTTableCell.self)")
         
         return myNFTTable
     }()
     
-    private lazy var empryNftLabel: UILabel = {
-        let empryNftLabel = UILabel()
-        
-        return empryNftLabel
-    }()
+    private lazy var empryNftLabel = UILabel()
     
     init(viewModel: MyNftViewModelProtocol) {
         self.viewModel = viewModel
@@ -68,10 +79,7 @@ private extension MyNFTViewController {
             switch state {
             case .initial:
                 assertionFailure("can't move to initial state")
-            case .loading:
-                view.isUserInteractionEnabled = false
-                self.showLoading()
-            case .update:
+            case .loading, .update:
                 view.isUserInteractionEnabled = false
                 self.showLoading()
             case .failed(let error):
@@ -95,15 +103,14 @@ private extension MyNFTViewController {
     
     func setupUIItem() {
         setupNavigationBar()
-        !viewModel.getListMyNft().isEmpty ? setupEmptyLabel() : setupMyNFTTable()
-        setupActivitiIndicator()
+        addSubViews()
+        !viewModel.getListMyNft().isEmpty ? setupEmptyLabel() : setupConstraint()
     }
     
     func setupNavigationBar() {
         guard let navBar = navigationController?.navigationBar,
               let topItem = navBar.topItem
         else { return }
-        
         topItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: ConstMyNFTVC.sortProfile.rawValue),
                                                      style: .plain, target: self,
                                                      action: #selector(rightBarButtonItemTap))
@@ -138,19 +145,17 @@ private extension MyNFTViewController {
         let actionSortByPrice = UIAlertAction(title: ConstLocalizable.myNFTVCByPrice,
                                               style: .default) { [weak self] _ in
             guard let self else { return }
-            actionAlert(state: .price)
+            self.actionAlert(state: .price)
         }
         let actionSortByRating = UIAlertAction(title: ConstLocalizable.myNFTVCByRating,
                                                style: .default) { [weak self] _ in
             guard let self else { return }
-            actionAlert(state: .rating)
-            
+            self.actionAlert(state: .rating)
         }
         let actionSortByName = UIAlertAction(title: ConstLocalizable.myNFTVCByName,
                                              style: .default) { [weak self] _ in
             guard let self else { return }
-            actionAlert(state: .name)
-            
+            self.actionAlert(state: .name)
         }
         let actionClose = UIAlertAction(title: ConstLocalizable.myNFTVCClose,
                                         style: .cancel)
@@ -160,7 +165,6 @@ private extension MyNFTViewController {
          actionClose].forEach {
             alertController.addAction($0)
         }
-        
         return alertController
     }
     
@@ -171,42 +175,33 @@ private extension MyNFTViewController {
         viewModel.loadMyNFT()
     }
     
-    func setupMyNFTTable() {
-        view.addSubview(myNFTTable)
-        myNFTTable.dataSource = self
-        myNFTTable.delegate = self
-        myNFTTable.translatesAutoresizingMaskIntoConstraints = false
-        myNFTTable.backgroundColor = .clear
-        myNFTTable.separatorColor = .clear
-        myNFTTable.allowsMultipleSelection = false
-        myNFTTable.isUserInteractionEnabled = true
-        myNFTTable.register(MyNFTTableCell.self,
-                            forCellReuseIdentifier: "\(MyNFTTableCell.self)")
+    func setupConstraint() {
+        activityIndicator.constraintCenters(to: view)
         NSLayoutConstraint.activate([
             myNFTTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             myNFTTable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             myNFTTable.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            myNFTTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            myNFTTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            empryNftLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            empryNftLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
-    func setupEmptyLabel() {
+    func addSubViews() {
         view.addSubview(empryNftLabel)
+        view.addSubview(myNFTTable)
+        view.addSubview(activityIndicator)
+    }
+    
+    func setupEmptyLabel() {
         empryNftLabel.translatesAutoresizingMaskIntoConstraints = false
         empryNftLabel.backgroundColor = .clear
         empryNftLabel.font = .bodyBold
         empryNftLabel.text = ConstLocalizable.myNftVCEmpty
-        empryNftLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        empryNftLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-    }
-    
-    func setupActivitiIndicator() {
-        activityIndicator.color = .blackUniversal
-        view.addSubview(activityIndicator)
-        activityIndicator.constraintCenters(to: view)
     }
 }
 
+//MARK: - UITableViewDataSource
 extension MyNFTViewController: UITableViewDelegate {}
 
 //MARK: - UITableViewDataSource
