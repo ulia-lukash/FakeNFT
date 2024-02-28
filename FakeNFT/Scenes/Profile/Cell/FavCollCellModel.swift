@@ -12,4 +12,5 @@ struct FavCollCellModel {
     let nameNFT: String
     let rating: Double
     let priceETN: Float
+    let id: String
 }

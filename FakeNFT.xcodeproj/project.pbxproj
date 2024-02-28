@@ -41,6 +41,7 @@
 		1A37DBD12B8E2E310044071C /* HelperMyNftProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A37DBD02B8E2E310044071C /* HelperMyNftProtocol.swift */; };
 		1A37DBD32B8E2F070044071C /* FavoriteNftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A37DBD22B8E2F070044071C /* FavoriteNftService.swift */; };
 		1A37DBD52B8E2F2A0044071C /* LoadMyNftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A37DBD42B8E2F2A0044071C /* LoadMyNftService.swift */; };
+		1A4494672B8F1B780025D86C /* FovoriteError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4494662B8F1B780025D86C /* FovoriteError.swift */; };
 		1A47CCF12B821E7100BE9A3D /* Cosmos in Frameworks */ = {isa = PBXBuildFile; productRef = 1A47CCF02B821E7100BE9A3D /* Cosmos */; };
 		1A54BFEA2B84A5D5009C956C /* MyNFTService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A54BFE92B84A5D5009C956C /* MyNFTService.swift */; };
 		1A54BFEC2B84A7A9009C956C /* MyNFTStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A54BFEB2B84A7A9009C956C /* MyNFTStorage.swift */; };
@@ -146,6 +147,7 @@
 		1A37DBD02B8E2E310044071C /* HelperMyNftProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperMyNftProtocol.swift; sourceTree = "<group>"; };
 		1A37DBD22B8E2F070044071C /* FavoriteNftService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteNftService.swift; sourceTree = "<group>"; };
 		1A37DBD42B8E2F2A0044071C /* LoadMyNftService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMyNftService.swift; sourceTree = "<group>"; };
+		1A4494662B8F1B780025D86C /* FovoriteError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FovoriteError.swift; sourceTree = "<group>"; };
 		1A54BFE92B84A5D5009C956C /* MyNFTService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNFTService.swift; sourceTree = "<group>"; };
 		1A54BFEB2B84A7A9009C956C /* MyNFTStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNFTStorage.swift; sourceTree = "<group>"; };
 		1A54BFED2B84AFB5009C956C /* MyNftRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNftRequest.swift; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 				1AD543A52B83CEF6009CD133 /* JsonKey.swift */,
 				1A7304CA2B83E42B000BABDB /* MyNftState.swift */,
 				1ABFCAF12B86039E00FD3816 /* SortState.swift */,
+				1A4494662B8F1B780025D86C /* FovoriteError.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -313,10 +316,10 @@
 			children = (
 				1A3634762B778CFE00C64F92 /* ProfileTableViewCell.swift */,
 				1A7304C62B83DD6D000BABDB /* MyNFTTableCell.swift */,
+				1A37DBCB2B8E2DD80044071C /* FavoriteCollectionCell.swift */,
 				1A7C3EB52B7CB28A005D2A35 /* ProfileCellModel.swift */,
 				1A7304C82B83DD89000BABDB /* MyNFTCellModel.swift */,
 				1AF8C6262B852A51006EA447 /* CountProfileCell.swift */,
-				1A37DBCB2B8E2DD80044071C /* FavoriteCollectionCell.swift */,
 				1A37DBCD2B8E2DF00044071C /* FavCollCellModel.swift */,
 			);
 			path = Cell;
@@ -337,13 +340,13 @@
 		1AABF3902B76598E003C71C3 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				1A37DBCF2B8E2E060044071C /* Helpers */,
 				1A2FB1592B7AA51400A4C11C /* ViewModel */,
 				1AE6EE8A2B77E62E003E0E3C /* Views */,
 				1A7A90852B77BECB000E3EA6 /* ViewControllers */,
 				1A7A90822B77BD7E000E3EA6 /* Cell */,
 				1A7C3EB12B7C9F2F005D2A35 /* ProfileUIModel.swift */,
 				1A7C3EB32B7CA1C3005D2A35 /* TableCellModel.swift */,
+				1A37DBCF2B8E2E060044071C /* Helpers */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -720,6 +723,7 @@
 				3F478ECF29DB474E00F6D39E /* Colors.swift in Sources */,
 				0C79EE662A76DDFF00EE90EA /* NftDetailViewController.swift in Sources */,
 				E1A1B9DA2AA01CE400C3AFBC /* TabBarController.swift in Sources */,
+				1A4494672B8F1B780025D86C /* FovoriteError.swift in Sources */,
 				1A7C3EB42B7CA1C3005D2A35 /* TableCellModel.swift in Sources */,
 				1A7C3EB22B7C9F2F005D2A35 /* ProfileUIModel.swift in Sources */,
 				3F478ED129DB476500F6D39E /* Fonts.swift in Sources */,

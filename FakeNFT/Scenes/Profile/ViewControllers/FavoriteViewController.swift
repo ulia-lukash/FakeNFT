@@ -11,22 +11,24 @@ protocol FavoriteViewControllerDelegate: AnyObject {
     func updateProfileForLikes(vc: UIViewController)
 }
 
+//MARK: - FavoriteViewController
 final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
     private enum ConstansFavorite: String {
         static let cellCount: Int = 2
-        static let cellSpacing = CGFloat(12)
-        static let heightCell = CGFloat(80)
+        static let cellSpacing = CGFloat(7)
+        static let heightCell = CGFloat(90)
+        static let cellWidth = CGFloat(168)
         case backwardProfile
     }
     
     weak var delegate: FavoriteViewControllerDelegate?
-    
     private let viewModel: FavoriteViewModelProtocol
     
     private lazy var nftCollectionView: FavoritesCollectionView = {
         let nftCollectionView = сreateTrackerCollectionView()
         nftCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        nftCollectionView.backgroundColor = .segmentActive
+        nftCollectionView.alwaysBounceVertical = false
+        nftCollectionView.backgroundColor = .clear
         nftCollectionView.register(FavoriteCollectionCell.self,
                                    forCellWithReuseIdentifier: "\(FavoriteCollectionCell.self)")
         nftCollectionView.delegate = self
@@ -42,6 +44,17 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
         return activityIndicator
     }()
     
+    private lazy var emptyNftLabel: UILabel = {
+        let emptyNftLabel = UILabel()
+        emptyNftLabel.translatesAutoresizingMaskIntoConstraints = false
+        emptyNftLabel.backgroundColor = .clear
+        emptyNftLabel.font = .bodyBold
+        emptyNftLabel.text = ConstLocalizable.favoriteVcEmpty
+        
+        return emptyNftLabel
+    }()
+ 
+    
     init(viewModel: FavoriteViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -53,9 +66,9 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .segmentActive
-        setupCollectionView()
-        setupActivityIndicator()
+        view.backgroundColor = .white
+        setupUIItem()
+        bind()
         viewModel.loadNftLikes()
     }
     
@@ -81,30 +94,44 @@ private extension FavoriteViewController {
             case .initial:
                 assertionFailure("can't move to initial state")
             case .loading, .update:
-                self.view.isUserInteractionEnabled = false
-                self.showLoading()
-            case .failed(let _):
-                break
-                //TODO: - viewModel
+                isUserInterecrion(flag: false)
+            case .failed(let error):
+                let errorModel = viewModel.makeErrorModel(error: error)
+                self.showError(errorModel)
             case .data:
-                guard let indexPath = viewModel.likeIndexPath else { return }
-                nftCollectionView.reloadItems(at: [indexPath])
-                    self.hideLoading()
-                    view.isUserInteractionEnabled = true
+                if viewModel.likesNft.isEmpty { showStabLabel() }
+                guard let indexPath = viewModel.likeIndexPath else {
+                    nftCollectionView.reloadData()
+                    isUserInterecrion(flag: true)
                     return
+                }
+                nftCollectionView.performBatchUpdates {
+                    self.nftCollectionView.deleteItems(at: [indexPath])
+                }
+                isUserInterecrion(flag: true)
             }
         }
     }
     
+    func isUserInterecrion(flag: Bool) {
+        flag ? self.hideLoading() : self.showLoading()
+        view.isUserInteractionEnabled = flag
+    }
+    
+    func showStabLabel() {
+        setupEmptyLabel()
+        view.layoutIfNeeded()
+    }
+    
     func сreateTrackerCollectionView() -> FavoritesCollectionView {
         let params = GeometricParams(cellCount: ConstansFavorite.cellCount,
-                                     leftInset: .zero,
-                                     rightInset: .zero,
-                                     cellSpacing: ConstansFavorite.cellSpacing)
+                                     leftInset: 16,
+                                     rightInset: 16,
+                                     cellSpacing: 8)
         let layout = UICollectionViewFlowLayout()
         let trackerCollectionView = FavoritesCollectionView(frame: .zero,
-                                                          collectionViewLayout: layout,
-                                                          params: params)
+                                                            collectionViewLayout: layout,
+                                                            params: params)
         return trackerCollectionView
     }
     
@@ -114,16 +141,28 @@ private extension FavoriteViewController {
         else { return }
         topItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(named: ConstansFavorite.backwardProfile.rawValue),
-                                                    style: .plain, target: self,
-                                                    action: #selector(leftBarButtonItemTap))
+            style: .plain, target: self,
+            action: #selector(leftBarButtonItemTap))
         topItem.leftBarButtonItem?.tintColor = .blackUniversal
         topItem.rightBarButtonItem?.tintColor = .blackUniversal
         navBar.backgroundColor = .clear
         navigationItem.titleView?.tintColor = .blackUniversal
-        navigationItem.title = ConstLocalizable.myNFTProfile
-        self.navigationController?.navigationBar.barTintColor = .white
+        navigationItem.title = ConstLocalizable.favoriteHeader
+        navigationController?.navigationBar.barTintColor = .white
         let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.blackUniversal]
         navigationController?.navigationBar.titleTextAttributes = textAttributes
+    }
+    
+    func setupUIItem() {
+        guard let viewModel = viewModel as? FavoriteViewModel else { return }
+        setupCollectionView()
+        setupNavigationBar()
+        if !viewModel.likesId.isEmpty {
+            setupCollectionView()
+            setupActivityIndicator()
+            return
+        }
+        setupEmptyLabel()
     }
     
     func setupCollectionView() {
@@ -131,7 +170,7 @@ private extension FavoriteViewController {
         NSLayoutConstraint.activate([
             nftCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             nftCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            nftCollectionView.trailingAnchor.constraint(equalTo: view.leadingAnchor),
+            nftCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             nftCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
@@ -140,6 +179,14 @@ private extension FavoriteViewController {
         view.addSubview(activityIndicator)
         activityIndicator.constraintCenters(to: view)
     }
+    
+    func setupEmptyLabel() {
+        view.addSubview(emptyNftLabel)
+        NSLayoutConstraint.activate([
+            emptyNftLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyNftLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
 }
 
 //MARK: - UICollectionViewDataSource
@@ -147,6 +194,7 @@ extension FavoriteViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         guard let viewModel = viewModel as? FavoriteViewModel else { return .zero }
+        
         return Int(viewModel.likesNft.count)
     }
     
@@ -168,17 +216,20 @@ extension FavoriteViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let availableWidth = collectionView.frame.width - nftCollectionView.params.paddingWidth
-        let cellWidth = availableWidth / CGFloat(nftCollectionView.params.cellCount)
-        let sizeCell = CGSize(width: cellWidth, height: ConstansFavorite.heightCell)
-        
+        let sizeCell = CGSize(width: ConstansFavorite.cellWidth,
+                              height: ConstansFavorite.heightCell)
         return sizeCell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        UIEdgeInsets(top: 0, left: nftCollectionView.params.leftInset,
+                     bottom: 0, right: nftCollectionView.params.rightInset)
     }
 }
 //MARK: - UICollectionViewDelegate
-extension FavoriteViewController: UICollectionViewDelegate {
-    
-}
+extension FavoriteViewController: UICollectionViewDelegate {}
 
 //MARK: - ProfileVCFavoriteDelegate
 extension FavoriteViewController: ProfileVCFavoriteDelegate {
@@ -187,8 +238,14 @@ extension FavoriteViewController: ProfileVCFavoriteDelegate {
     }
 }
 
+//MARK: - FavoriteCollectionCellDelegate
 extension FavoriteViewController: FavoriteCollectionCellDelegate {
     func likeTap(_ cell: UICollectionViewCell) {
-        //TODO: - viewModel
+        guard let cell = cell as? FavoriteCollectionCell,
+              let indexPath = nftCollectionView.indexPath(for: cell)
+        else { return }
+        viewModel.setLikeIndexPath(indexPath: indexPath)
+        viewModel.setCurrentLikeId(index: indexPath.row)
+        viewModel.likes()
     }
 }

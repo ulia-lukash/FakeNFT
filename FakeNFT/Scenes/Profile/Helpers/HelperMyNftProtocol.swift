@@ -31,7 +31,8 @@ final class HelperMyNft {
         FavCollCellModel(urlNFT: URL(string: model.images.first ?? ""),
                          nameNFT: model.name,
                          rating: Double(model.rating),
-                         priceETN: Float(model.price))
+                         priceETN: Float(model.price),
+                         id: model.id)
     }
     
     private func createListLikesNft(_ listMyNft: [MyListNFT]) -> [FavCollCellModel] {

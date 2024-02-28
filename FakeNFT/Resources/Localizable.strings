@@ -23,4 +23,6 @@
 "MyNFTVC.byName" = "По названию";
 "MyNFTVC.close" = "Закрыть";
 "MyNFTVC.empty" = "У Вас еще нет NFT";
+"Favorite.header" = "Избранные NFT";
+"FavoriteVc.empty" = "У Вас еще нет избранных NFT";
 

@@ -24,28 +24,18 @@ protocol MyNFTServiceProtocol {
 final class MyNFTServiceIml {
     private let networkClient: NetworkClient
     private let storage: MyNftStorageProtocol
+    private let loadMyNftService: LoadMyNftServiceProtocol
     
-    init(networkClient: NetworkClient, storage: MyNftStorageProtocol) {
+    init(networkClient: NetworkClient,
+         storage: MyNftStorageProtocol) {
         self.storage = storage
         self.networkClient = networkClient
+        self.loadMyNftService = LoadMyNftServiceImp(networkClient: networkClient)
     }
 }
 
 private extension MyNFTServiceIml {
     //MARK: - private func
-    func load(request: NetworkRequest,
-              completion: @escaping MyNftCompletion) {
-        networkClient.send(request: request,
-                           type: MyListNFT.self) { result in
-            switch result {
-            case .success(let myNft):
-                completion(.success(myNft))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
     func updateLikeAndNftPut(request: NetworkRequest,
                              completion: @escaping likeNftCompletion) {
         networkClient.sendProfilePUT(request: request, completionQueue: .main) { result in
@@ -57,55 +47,6 @@ private extension MyNFTServiceIml {
             }
         }
     }
-    
-    func searchName(urlStr: String) -> String? {
-        if let host = URL(string: urlStr)?.host {
-            let components = host.components(separatedBy: "_")
-            let combinedString = components.joined(separator: " ")
-            return combinedString.capitalized
-        }
-        return nil
-    }
-    
-    func loadMyNFT(listId: [String], completion: @escaping MyListNftCompletion)  {
-        var returnNft: [MyListNFT] = []
-        let operationQueue = OperationQueue()
-        operationQueue.maxConcurrentOperationCount = 1
-        for id in listId {
-            let operation = BlockOperation {
-                let request = MyNftRequest(id: id)
-                var nft: MyListNFT?
-                let semaphore = DispatchSemaphore(value: 0)
-                self.load(request: request) { result in
-                    switch result {
-                    case .success(let loadedNFT):
-                        nft = loadedNFT
-                    case .failure(let error):
-                        completion(.failure(error))
-                        return
-                    }
-                    semaphore.signal()
-                }
-                _ = semaphore.wait(timeout: .distantFuture)
-                if let nft = nft {
-                    let name = self.searchName(urlStr: nft.author)
-                    let myListNFT = MyListNFT(name: nft.name,
-                                              images: nft.images,
-                                              rating: nft.rating,
-                                              description: nft.description,
-                                              price: nft.price,
-                                              author: name ?? "Grifon",
-                                              id: nft.id)
-                    returnNft.append(myListNFT)
-                    if returnNft.count == listId.count {
-                        self.storage.saveMyNft(returnNft)
-                        completion(.success(returnNft))
-                    }
-                }
-            }
-            operationQueue.addOperation(operation)
-        }
-    }
 }
 
 //MARK: - MyNFTServiceProtocol
@@ -115,7 +56,16 @@ extension MyNFTServiceIml: MyNFTServiceProtocol {
             completion(.success(storage.getNft()))
             return
         }
-        loadMyNFT(listId: listId, completion: completion)
+        loadMyNftService.loadMyNft(listId: listId) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let listNft):
+                self.storage.saveMyNft(listNft)
+                completion(.success(listNft))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
     func loadProfile(completion: @escaping ProfileCompletion) {

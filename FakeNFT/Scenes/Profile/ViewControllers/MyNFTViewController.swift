@@ -80,25 +80,33 @@ private extension MyNFTViewController {
             case .initial:
                 assertionFailure("can't move to initial state")
             case .loading, .update:
-                view.isUserInteractionEnabled = false
-                self.showLoading()
+                isUserInterecrion(flag: false)
             case .failed(let error):
                 let errorModel = viewModel.makeErrorModel(error: error)
                 self.showError(errorModel)
             case .data:
+                if !((viewModel.profile?.nfts.isEmpty) != nil) { showStabLabel() }
                 if viewModel.isUpdate, let indexPath = viewModel.likeIndexPath {
                     myNFTTable.reloadRows(at: [indexPath], with: .automatic)
-                    self.hideLoading()
-                    view.isUserInteractionEnabled = true
+                    isUserInterecrion(flag: true)
                     return
                 }
                 self.myNFTTable.reloadData()
                 myNFTTable.scrollToRow(at: IndexPath(row: .zero, section: .zero),
                                        at: .bottom, animated: true)
-                self.hideLoading()
-                view.isUserInteractionEnabled = true
+                isUserInterecrion(flag: true)
             }
         }
+    }
+    
+    func isUserInterecrion(flag: Bool) {
+        flag ? self.hideLoading() : self.showLoading()
+        view.isUserInteractionEnabled = flag
+    }
+    
+    func showStabLabel() {
+        setupEmptyLabel()
+        view.layoutIfNeeded()
     }
     
     func setupUIItem() {
@@ -139,25 +147,25 @@ private extension MyNFTViewController {
     }
     
     func createAlert() -> UIAlertController {
-        let alertController = UIAlertController(title: ConstLocalizable.myNFTVCSortName,
+        let alertController = UIAlertController(title: ConstLocalizable.myNftVcSortName,
                                                 message: nil,
                                                 preferredStyle: .actionSheet)
-        let actionSortByPrice = UIAlertAction(title: ConstLocalizable.myNFTVCByPrice,
+        let actionSortByPrice = UIAlertAction(title: ConstLocalizable.myNftVcByPrice,
                                               style: .default) { [weak self] _ in
             guard let self else { return }
             self.actionAlert(state: .price)
         }
-        let actionSortByRating = UIAlertAction(title: ConstLocalizable.myNFTVCByRating,
+        let actionSortByRating = UIAlertAction(title: ConstLocalizable.myNftVcByRating,
                                                style: .default) { [weak self] _ in
             guard let self else { return }
             self.actionAlert(state: .rating)
         }
-        let actionSortByName = UIAlertAction(title: ConstLocalizable.myNFTVCByName,
+        let actionSortByName = UIAlertAction(title: ConstLocalizable.myNftVcByName,
                                              style: .default) { [weak self] _ in
             guard let self else { return }
             self.actionAlert(state: .name)
         }
-        let actionClose = UIAlertAction(title: ConstLocalizable.myNFTVCClose,
+        let actionClose = UIAlertAction(title: ConstLocalizable.myNftVcClose,
                                         style: .cancel)
         [actionSortByPrice,
          actionSortByRating,
@@ -181,23 +189,25 @@ private extension MyNFTViewController {
             myNFTTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             myNFTTable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             myNFTTable.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            myNFTTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            empryNftLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            empryNftLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            myNFTTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
     func addSubViews() {
-        view.addSubview(empryNftLabel)
         view.addSubview(myNFTTable)
         view.addSubview(activityIndicator)
     }
     
     func setupEmptyLabel() {
+        view.addSubview(empryNftLabel)
         empryNftLabel.translatesAutoresizingMaskIntoConstraints = false
         empryNftLabel.backgroundColor = .clear
         empryNftLabel.font = .bodyBold
-        empryNftLabel.text = ConstLocalizable.myNftVCEmpty
+        empryNftLabel.text = ConstLocalizable.myNftVcEmpty
+        NSLayoutConstraint.activate([
+            empryNftLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            empryNftLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
 }
 

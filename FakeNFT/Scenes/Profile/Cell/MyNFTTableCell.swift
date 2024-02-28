@@ -62,7 +62,7 @@ final class MyNFTTableCell: UITableViewCell {
     
     private lazy var nameNFTLabel: UILabel = {
         let nameNFTLabel = UILabel()
-        nameNFTLabel.font = .headline5
+        nameNFTLabel.font = .bodyBold
         nameNFTLabel.textColor = .blackUniversal
         
         return nameNFTLabel
@@ -91,7 +91,7 @@ final class MyNFTTableCell: UITableViewCell {
     private lazy var fromLabel: UILabel = {
         let fromLabel = UILabel()
         fromLabel.font = .caption1
-        fromLabel.text = ConstLocalizable.myNFTCellFrom
+        fromLabel.text = ConstLocalizable.myNftCellFrom
         fromLabel.textColor = .blackUniversal
         fromLabel.textAlignment = .left
         
@@ -116,7 +116,7 @@ final class MyNFTTableCell: UITableViewCell {
     private lazy var priceLabel: UILabel = {
         let priceLabel = UILabel()
         priceLabel.text = ConstLocalizable.profileCellMyNFT
-        priceLabel.text = ConstLocalizable.myNFTCellPrice
+        priceLabel.text = ConstLocalizable.myNftCellPrice
         priceLabel.textColor = .blackUniversal
         priceLabel.font = .caption2
         

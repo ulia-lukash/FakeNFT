@@ -24,7 +24,7 @@ final class FavoriteCollectionCell: UICollectionViewCell {
     private lazy var horisontalStackView: UIStackView = {
         let horisontalStackView = UIStackView()
         horisontalStackView.axis = .horizontal
-        horisontalStackView.spacing = 20
+        horisontalStackView.spacing = 8
         horisontalStackView.isUserInteractionEnabled = true
         horisontalStackView.translatesAutoresizingMaskIntoConstraints = false
         horisontalStackView.backgroundColor = .clear
@@ -48,6 +48,7 @@ final class FavoriteCollectionCell: UICollectionViewCell {
         likeButton.backgroundColor = .clear
         likeButton.isUserInteractionEnabled = true
         let image = UIImage(named: ConstantsCell.favouritesIcons.rawValue)
+        likeButton.tintColor = .redUniversal
         likeButton.setImage(image?.withRenderingMode(.alwaysTemplate), for: .normal)
         likeButton.addTarget(self, action: #selector(didLike), for: .touchUpInside)
         
@@ -58,7 +59,7 @@ final class FavoriteCollectionCell: UICollectionViewCell {
     
     private lazy var nameNFTLabel: UILabel = {
         let nameNFTLabel = UILabel()
-        nameNFTLabel.font = .headline5
+        nameNFTLabel.font = .bodyBold
         nameNFTLabel.textColor = .blackUniversal
         
         return nameNFTLabel
@@ -67,7 +68,7 @@ final class FavoriteCollectionCell: UICollectionViewCell {
     private lazy var starRatingView: CosmosView = {
         let starRatingView = CosmosView()
         starRatingView.rating = 0
-        starRatingView.settings.starSize = 16
+        starRatingView.settings.starSize = 15
         starRatingView.settings.filledColor = .yellowUniversal
         starRatingView.settings.starMargin = 1
         starRatingView.settings.emptyColor = .lightGreyUniversal
@@ -81,7 +82,7 @@ final class FavoriteCollectionCell: UICollectionViewCell {
         let priceValueLabel = UILabel()
         priceValueLabel.textAlignment = .center
         priceValueLabel.textColor = .blackUniversal
-        priceValueLabel.font = .bodyBold
+        priceValueLabel.font = .caption1
         
         return priceValueLabel
     }()
@@ -111,25 +112,24 @@ extension FavoriteCollectionCell {
     
     private func setupConstrains() {
         NSLayoutConstraint.activate([
-            horisontalStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            horisontalStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40),
-            horisontalStackView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            horisontalStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+            horisontalStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            horisontalStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            horisontalStackView.topAnchor.constraint(equalTo: topAnchor),
+            horisontalStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
             nftImageView.heightAnchor.constraint(equalToConstant: 80),
             nftImageView.widthAnchor.constraint(equalToConstant: 80),
             likeButton.heightAnchor.constraint(equalToConstant: 44),
             likeButton.widthAnchor.constraint(equalToConstant: 44),
-            likeButton.trailingAnchor.constraint(equalTo: nftImageView.trailingAnchor),
-            likeButton.topAnchor.constraint(equalTo: nftImageView.topAnchor),
+            likeButton.trailingAnchor.constraint(equalTo: nftImageView.trailingAnchor, constant: 8),
+            likeButton.topAnchor.constraint(equalTo: nftImageView.topAnchor, constant: -8),
             nameNFTLabel.topAnchor.constraint(equalTo: nftView.topAnchor),
             nameNFTLabel.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
-            nameNFTLabel.trailingAnchor.constraint(equalTo: nftView.trailingAnchor),
+            nameNFTLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             nftView.heightAnchor.constraint(equalToConstant: 66),
             starRatingView.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
             starRatingView.centerYAnchor.constraint(equalTo: nftView.centerYAnchor),
-            starRatingView.heightAnchor.constraint(equalToConstant: 16),
             priceValueLabel.bottomAnchor.constraint(equalTo: nftView.bottomAnchor),
-            priceValueLabel.leadingAnchor.constraint(equalTo: nftView.leadingAnchor)
+            priceValueLabel.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
         ])
     }
     
@@ -150,7 +150,7 @@ extension FavoriteCollectionCell {
     
     func config(model: FavCollCellModel) {
         nftImageView.kf.setImage(with: model.urlNFT)
-        nameNFTLabel.text = model.nameNFT
+        nameNFTLabel.text = model.nameNFT.components(separatedBy: " ").first
         starRatingView.rating = model.rating >= 5.0 ? 5.0 : model.rating
         priceValueLabel.text = "\(model.priceETN) ETN"
     }
