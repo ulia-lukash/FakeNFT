@@ -24,7 +24,7 @@ final class TabBarController: UITabBarController {
         catalogController.tabBarItem = catalogTabBarItem
 
         let userModel = RatingModel()
-        let ratingViewModel = RatingViewModel(for: userModel)
+        let ratingViewModel = RatingViewModel(for: userModel, servicesAssembly: servicesAssembly)
         let ratingViewController = UINavigationController(
             rootViewController: RatingViewController(
                 viewModel: ratingViewModel

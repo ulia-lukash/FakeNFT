@@ -1,8 +1,10 @@
 import UIKit
 
-final class RatingViewController: UIViewController {
+final class RatingViewController: UIViewController, LoadingView, ErrorView {
     private let viewModel: RatingViewModelProtocol
 
+    internal lazy var activityIndicator = UIActivityIndicatorView()
+    
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -31,6 +33,8 @@ final class RatingViewController: UIViewController {
         setupViewModel()
         setupNavBar()
         setupTableView()
+
+        viewModel.viewDidLoad()
     }
 
     private func setupViewModel() {
@@ -42,6 +46,16 @@ final class RatingViewController: UIViewController {
         }
         viewModel.onUserProfileDidTap = { [weak self] user in
             self?.pushUserInfoViewController(withUser: user)
+        }
+        viewModel.onLoadingState = { [weak self] in
+            self?.showLoading()
+        }
+        viewModel.onDataState = { [weak self] in
+            self?.hideLoading()
+        }
+        viewModel.onErrorState = { [weak self] error in
+            self?.hideLoading()
+            self?.showError(error)
         }
     }
 
@@ -69,14 +83,20 @@ final class RatingViewController: UIViewController {
         tableView.delegate = self
 
         view.addSubview(tableView)
+        tableView.addSubview(activityIndicator)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.leadingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.tableViewHorizontalInset
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                constant: Constants.tableViewHorizontalInset
             ),
             tableView.trailingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.tableViewHorizontalInset)
+                equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                constant: -Constants.tableViewHorizontalInset),
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
 
@@ -130,7 +150,7 @@ extension RatingViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ratingCell", for: indexPath) as? RatingCell
 
         let user = viewModel.allUsers[indexPath.row]
-        cell?.setupCell(userData: user)
+        cell?.setupCell(user: user)
 
         guard let cell = cell else {
             return RatingCell()

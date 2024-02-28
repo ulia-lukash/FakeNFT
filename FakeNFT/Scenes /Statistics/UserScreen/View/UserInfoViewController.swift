@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class UserInfoViewController: UIViewController {
     private let viewModel: UserInfoViewModelProtocol
@@ -24,6 +25,8 @@ final class UserInfoViewController: UIViewController {
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 36
+        imageView.layer.masksToBounds = true
         return imageView
     }()
 
@@ -73,7 +76,7 @@ final class UserInfoViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         usernameLabel.text = user.username
         userDescription.text = user.description
-        avatarImageView.image = user.avatar
+        avatarImageView.kf.setImage(with: user.avatar, placeholder: UIImage(named: "noAvatar"))
     }
 
     required init?(coder: NSCoder) {

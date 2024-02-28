@@ -1,9 +1,9 @@
 import UIKit
 
 struct User {
-    let rating: String
+    let rating: Int
     let username: String
     let nftAmount: String
-    let avatar: UIImage
+    let avatar: URL
     let description: String
 }
