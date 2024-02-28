@@ -13,6 +13,7 @@ protocol FavoriteCollectionCellDelegate: AnyObject {
     func likeTap(_ cell: UICollectionViewCell)
 }
 
+//MARK: - FavoriteCollectionCell
 final class FavoriteCollectionCell: UICollectionViewCell {
     private enum ConstantsCell: String {
         static let imageCornerRadius = CGFloat(12)
@@ -116,18 +117,24 @@ extension FavoriteCollectionCell {
             horisontalStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             horisontalStackView.topAnchor.constraint(equalTo: topAnchor),
             horisontalStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
             nftImageView.heightAnchor.constraint(equalToConstant: 80),
             nftImageView.widthAnchor.constraint(equalToConstant: 80),
+            
             likeButton.heightAnchor.constraint(equalToConstant: 44),
             likeButton.widthAnchor.constraint(equalToConstant: 44),
             likeButton.trailingAnchor.constraint(equalTo: nftImageView.trailingAnchor, constant: 8),
             likeButton.topAnchor.constraint(equalTo: nftImageView.topAnchor, constant: -8),
+            
             nameNFTLabel.topAnchor.constraint(equalTo: nftView.topAnchor),
             nameNFTLabel.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
             nameNFTLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            
             nftView.heightAnchor.constraint(equalToConstant: 66),
+            
             starRatingView.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
             starRatingView.centerYAnchor.constraint(equalTo: nftView.centerYAnchor),
+            
             priceValueLabel.bottomAnchor.constraint(equalTo: nftView.bottomAnchor),
             priceValueLabel.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
         ])

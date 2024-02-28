@@ -24,6 +24,7 @@ final class FavoriteNftServiceImp {
     }
 }
 
+//MARK: - FavoriteNftServiceProtocol
 extension FavoriteNftServiceImp: FavoriteNftServiceProtocol {
     func likes(likes: String, completion: @escaping likesNftCompletion) {
         let request = ProfilePutRequest(dto: likes)

@@ -269,24 +269,30 @@ private extension ProfileViewController {
         NSLayoutConstraint.activate([
             editProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9),
             editProfileButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            
             userImageView.leadingAnchor.constraint(equalTo: horisontalStackView.leadingAnchor),
             userImageView.widthAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize),
             userImageView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize),
+            
             verticalStackView.topAnchor.constraint(equalTo: editProfileButton.bottomAnchor,
                                                    constant: 20),
             verticalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
                                                        constant: 16),
             verticalStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
                                                         constant: -16),
+            
             descriptionTextView.bottomAnchor.constraint(equalTo: linkLabelView.topAnchor),
             descriptionTextView.heightAnchor.constraint(equalToConstant: 72),
             descriptionTextView.leadingAnchor.constraint(equalTo: verticalStackView.leadingAnchor),
+            
             linkLabelView.heightAnchor.constraint(equalToConstant: 38),
+            
             nftTableView.topAnchor.constraint(equalTo: verticalStackView.bottomAnchor, constant: 40),
             nftTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             nftTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             nftTableView.heightAnchor.constraint(equalToConstant: CGFloat(ConstantsProfileVC.countCellTableView)
                                                  * ConstantsProfileVC.heigtTableCell),
+            
             descriptionTextView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.maxHeightTextView)
         ])
         activityIndicator.constraintCenters(to: view)

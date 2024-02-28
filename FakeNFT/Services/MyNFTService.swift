@@ -80,11 +80,11 @@ extension MyNFTServiceIml: MyNFTServiceProtocol {
             }
         }
     }
-        
+    
     func updateNftPut(dto: String,
                       completion: @escaping likeNftCompletion) {
-                let request = ProfilePutRequest(dto: dto)
-                updateLikeAndNftPut(request: request, completion: completion)
+        let request = ProfilePutRequest(dto: dto)
+        updateLikeAndNftPut(request: request, completion: completion)
     }
     
     func updateStorage(nft: [MyListNFT]) {

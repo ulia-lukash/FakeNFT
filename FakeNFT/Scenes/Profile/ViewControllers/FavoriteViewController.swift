@@ -52,7 +52,7 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
         
         return emptyNftLabel
     }()
- 
+    
     
     init(viewModel: FavoriteViewModel) {
         self.viewModel = viewModel

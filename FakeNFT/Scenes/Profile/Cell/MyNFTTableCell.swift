@@ -182,27 +182,36 @@ extension MyNFTTableCell {
             horisontalStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40),
             horisontalStackView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             horisontalStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+            
             nftImageView.heightAnchor.constraint(equalToConstant: 108),
             nftImageView.widthAnchor.constraint(equalToConstant: 108),
+            
             likeButton.trailingAnchor.constraint(equalTo: nftImageView.trailingAnchor),
             likeButton.topAnchor.constraint(equalTo: nftImageView.topAnchor),
             likeButton.widthAnchor.constraint(equalToConstant: 44),
             likeButton.heightAnchor.constraint(equalToConstant: 44),
+            
             nameNFStackTView.heightAnchor.constraint(equalToConstant: 62),
+            
             nameNFTLabel.topAnchor.constraint(equalTo: nameNFStackTView.topAnchor),
             nameNFTLabel.leadingAnchor.constraint(equalTo: nameNFStackTView.leadingAnchor),
             nameNFTLabel.trailingAnchor.constraint(equalTo: nameNFStackTView.trailingAnchor),
+            
             horisontaNameStack.leadingAnchor.constraint(equalTo: nameNFStackTView.leadingAnchor),
             horisontaNameStack.trailingAnchor.constraint(equalTo: nameNFStackTView.trailingAnchor),
             horisontaNameStack.bottomAnchor.constraint(equalTo: nameNFStackTView.bottomAnchor),
+            
             fromLabel.widthAnchor.constraint(equalToConstant: width ?? 20),
+            
             priceView.heightAnchor.constraint(equalToConstant: 42),
             priceView.widthAnchor.constraint(equalToConstant: 100),
             priceLabel.topAnchor.constraint(equalTo: priceView.topAnchor),
             priceLabel.leadingAnchor.constraint(equalTo: priceView.leadingAnchor),
+            
             priceValueLabel.bottomAnchor.constraint(equalTo: priceView.bottomAnchor),
             priceValueLabel.leadingAnchor.constraint(equalTo: priceView.leadingAnchor),
             priceValueLabel.trailingAnchor.constraint(equalTo: priceView.trailingAnchor),
+            
             starRatingView.leadingAnchor.constraint(equalTo: nameNFStackTView.leadingAnchor),
             starRatingView.centerYAnchor.constraint(equalTo: nameNFStackTView.centerYAnchor),
             starRatingView.heightAnchor.constraint(equalToConstant: 16)

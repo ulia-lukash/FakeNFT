@@ -11,6 +11,7 @@ protocol LoadMyNftServiceProtocol {
     func loadMyNft(listId: [String], completion: @escaping MyListNftCompletion)
 }
 
+//MARK: - LoadMyNftServiceImp
 final class LoadMyNftServiceImp {
     private let networkClient: NetworkClient
     
@@ -76,7 +77,6 @@ private extension LoadMyNftServiceImp {
                                               price: nft.price,
                                               author: name ?? "Grifon",
                                               id: nft.id)
-                    
                     returnNft.append(myListNFT)
                     
                     if returnNft.count == listId.count {
@@ -89,6 +89,7 @@ private extension LoadMyNftServiceImp {
     }
 }
 
+//MARK: - LoadMyNftServiceProtocol
 extension LoadMyNftServiceImp: LoadMyNftServiceProtocol {
     func loadMyNft(listId: [String], completion: @escaping MyListNftCompletion) {
         loadNFT(listId: listId, completion: completion)
