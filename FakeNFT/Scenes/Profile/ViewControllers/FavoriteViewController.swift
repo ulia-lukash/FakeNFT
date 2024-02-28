@@ -13,12 +13,11 @@ protocol FavoriteViewControllerDelegate: AnyObject {
 
 //MARK: - FavoriteViewController
 final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
-    private enum ConstansFavorite: String {
+    private enum ConstansFavorite {
         static let cellCount: Int = 2
         static let cellSpacing = CGFloat(7)
         static let heightCell = CGFloat(90)
         static let cellWidth = CGFloat(168)
-        case backwardProfile
     }
     
     weak var delegate: FavoriteViewControllerDelegate?
@@ -66,7 +65,7 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteUniversal
         setupUIItem()
         bind()
         viewModel.loadNftLikes()
@@ -140,11 +139,10 @@ private extension FavoriteViewController {
               let topItem = navBar.topItem
         else { return }
         topItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: ConstansFavorite.backwardProfile.rawValue),
+            image: UIImage(named: ImagesName.backwardProfile.rawValue),
             style: .plain, target: self,
             action: #selector(leftBarButtonItemTap))
         topItem.leftBarButtonItem?.tintColor = .blackUniversal
-        topItem.rightBarButtonItem?.tintColor = .blackUniversal
         navBar.backgroundColor = .clear
         navigationItem.titleView?.tintColor = .blackUniversal
         navigationItem.title = ConstLocalizable.favoriteHeader

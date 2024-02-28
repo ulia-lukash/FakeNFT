@@ -21,6 +21,7 @@ protocol ProfileViewModelProtocol {
     func getProfile() -> Profile?
     func setStateLoading()
     func stringClear(str: String) -> String
+    func createRequest(_ urlString: String) -> URLRequest?
 }
 
 //MARK: - ProfileViewModel
@@ -164,5 +165,13 @@ extension ProfileViewModel: ProfileViewModelProtocol {
     
     func stringClear(str: String) -> String {
         str.replacingOccurrences(of: "\\s+$", with: "", options: .regularExpression)
+    }
+    
+    func createRequest(_ urlString: String) -> URLRequest? {
+        guard let url = URL(string: urlString)
+        else { return nil }
+        let request = URLRequest(url: url)
+        
+        return request
     }
 }

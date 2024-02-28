@@ -202,6 +202,20 @@ private extension ProfileViewController {
         linkLabelView.text = viewModel.stringClear(str: model.link)
     }
     
+    func displayMyNft() {
+        let service = MyNFTServiceIml(networkClient: DefaultNetworkClient(),
+                                      storage: MyNftStorageImpl())
+        let viewModel = MyNftViewModel(service: service)
+        let myNFTController = MyNFTViewController(viewModel: viewModel)
+        myNftDelegate = myNFTController
+        myNFTController.delegate = self
+        let navController = UINavigationController(rootViewController: myNFTController)
+        navController.modalPresentationStyle = .fullScreen
+        self.myNftDelegate?.setProfile(model: self.viewModel.getProfile(), vc: self)
+        viewModel.loadMyNFT()
+        present(navController, animated: true)
+    }
+    
     func displayFavoriteNft() {
         let favoriteAssembly = FavoriteAssembly(
             service: FavoriteNftServiceImp(networkClient: DefaultNetworkClient()))
@@ -213,6 +227,20 @@ private extension ProfileViewController {
         favoriteDelegate?.setLikesId(model: profile, vc: self)
         let navController = UINavigationController(rootViewController: favoriteVc)
         navController.modalPresentationStyle = .fullScreen
+        present(navController, animated: true)
+    }
+    
+    func displayWebView() {
+        //url, который приходит с сервера не открываеться в webView,
+        let url = viewModel.getProfile()?.website //не работает
+        //поэтому пользуюсь той, которая в макете Figma
+        guard let request = viewModel.createRequest(
+            WebViewConfiguration.baseUrlSring) else { return }
+        let webViewController = ProfileWebViewController()
+        webViewController.load(request: request)
+        let navController = UINavigationController(rootViewController: webViewController)
+        navController.modalPresentationStyle = .fullScreen
+        webViewController.showIndicator()
         present(navController, animated: true)
     }
     
@@ -228,20 +256,6 @@ private extension ProfileViewController {
             textHeightConstraint?.constant = newSize.height
         }
         view.layoutIfNeeded()
-    }
-    
-    func displayMyNft() {
-        let service = MyNFTServiceIml(networkClient: DefaultNetworkClient(),
-                                      storage: MyNftStorageImpl())
-        let viewModel = MyNftViewModel(service: service)
-        let myNFTController = MyNFTViewController(viewModel: viewModel)
-        myNftDelegate = myNFTController
-        myNFTController.delegate = self
-        let navController = UINavigationController(rootViewController: myNFTController)
-        navController.modalPresentationStyle = .fullScreen
-        self.myNftDelegate?.setProfile(model: self.viewModel.getProfile(), vc: self)
-        viewModel.loadMyNFT()
-        present(navController, animated: true)
     }
     
     //MARK: - setupUI function
@@ -319,7 +333,7 @@ extension ProfileViewController: UITableViewDelegate {
             displayFavoriteNft()
         }
         if indexPath.row == CountProfileCell.three.rawValue {
-            //TODO: - epic 3-3 show webView
+            displayWebView()
         }
     }
 }

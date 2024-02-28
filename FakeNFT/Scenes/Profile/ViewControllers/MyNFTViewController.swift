@@ -13,10 +13,8 @@ protocol MyNFTViewControllerDlegate: AnyObject {
 
 //MARK: - MyNFTViewController
 final class MyNFTViewController: UIViewController, ErrorView, LoadingView  {
-    private enum ConstMyNFTVC: String {
+    private enum ConstMyNFTVC {
         static let heightCell = CGFloat(140)
-        case backwardProfile
-        case sortProfile
     }
     
     weak var delegate: MyNFTViewControllerDlegate?
@@ -59,7 +57,7 @@ final class MyNFTViewController: UIViewController, ErrorView, LoadingView  {
         super.viewDidLoad()
         bind()
         viewModel.setState(state: .loading)
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteUniversal
         setupUIItem()
     }
     
@@ -119,10 +117,10 @@ private extension MyNFTViewController {
         guard let navBar = navigationController?.navigationBar,
               let topItem = navBar.topItem
         else { return }
-        topItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: ConstMyNFTVC.sortProfile.rawValue),
+        topItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: ImagesName.sortProfile.rawValue),
                                                      style: .plain, target: self,
                                                      action: #selector(rightBarButtonItemTap))
-        topItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: ConstMyNFTVC.backwardProfile.rawValue),
+        topItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: ImagesName.backwardProfile.rawValue),
                                                     style: .plain, target: self,
                                                     action: #selector(leftBarButtonItemTap))
         topItem.leftBarButtonItem?.tintColor = .blackUniversal
