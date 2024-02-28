@@ -62,16 +62,16 @@
 
 #### Экран "Избранные NFT"
 
-- CollectionView (est: 2 h; fact: x min).
-- CollectionCell (est: 2 h; fact: x min).
-- Label Stub (est: 30 min; fact: x min).                
+- CollectionView (est: 2 h; fact:  2h).
+- CollectionCell (est: 2 h; fact: 3h).
+- Label Stub (est: 30 min; fact: 30min).                
                                                    
 #### Составление запросов
-- Запрос на получение избранных NFT (est: 4 h; fact: x min).
-- Запрос на лайки NFT (est: 4 h; fact: x min).
+- Запрос на получение избранных NFT (est: 4 h; fact: 40m) написан в предыдущем эпике.
+- Запрос на лайки NFT (est: 4 h; fact: 40 min) написан в предыдущем эпике.
 
 #### Верстка WebView
-- Верстка (est: 60 min; fact: x min).
+- Верстка (est: 60 min; fact: 60 min).
 
-`Total:` est: 9h 30 min; fact: x min.
+`Total:` est: 9h 30 min; fact: 7h 50 min.
 
