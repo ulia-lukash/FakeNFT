@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import ProgressHUD
+import SafariServices
 
 final class NftViewController: UIViewController {
     let viewModel: NftViewModelProtocol
@@ -29,8 +30,11 @@ final class NftViewController: UIViewController {
         collectionView.register(NftImageCollectionViewCell.self)
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.isUserInteractionEnabled = true
+        collectionView.allowsSelection = true
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.isPagingEnabled = true
+        collectionView.backgroundColor = .clear
         return collectionView
     }()
     
@@ -77,6 +81,7 @@ final class NftViewController: UIViewController {
         tableView.separatorColor = .clear
         tableView.layer.masksToBounds = true
         tableView.layer.cornerRadius = 12
+        tableView.rowHeight = 72
         tableView.backgroundColor = .segmentInactive
         tableView.dataSource = self
         return tableView
@@ -88,11 +93,12 @@ final class NftViewController: UIViewController {
         button.layer.cornerRadius = 16
         button.layer.borderWidth = 1
         button.backgroundColor = .clear
-        button.tintColor = .segmentActive
         button.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
         let title = NSLocalizedString("Go to seller's website", comment: "")
         button.setTitle(title, for: .normal)
         button.setTitleColor(.segmentActive, for: .normal)
+        button.layer.borderColor = UIColor.segmentActive.cgColor
+        button.addTarget(self, action: #selector(goToSellerWebsite), for: .touchUpInside)
         return button
     }()
     
@@ -107,6 +113,7 @@ final class NftViewController: UIViewController {
         collectionView.delegate = self
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.isPagingEnabled = true
+        collectionView.backgroundColor = .clear
         return collectionView
     }()
     
@@ -153,10 +160,10 @@ final class NftViewController: UIViewController {
         
         nameLabel.text = nft.name
         ratingView.setRating(with: nft.rating)
-/* Нет в nft указателя на его коллекцию.
-Подтаскивать все коллекции и искать, откуда
-эта конкретная штука - нецелесообразно.
-Ждем когда доведут до ума бэк */
+        /* Нет в nft указателя на его коллекцию.
+         Подтаскивать все коллекции и искать, откуда
+         эта конкретная штука - нецелесообразно.
+         Ждем когда доведут до ума бэк */
         collectionNameLabel.text = "Peach"
         
         priceLabel.text = "\(nft.price) ETH"
@@ -271,7 +278,13 @@ final class NftViewController: UIViewController {
     }
     
     @objc private func goToCart() {
-//        TODO: make segue to cart page
+        //        TODO: make segue to cart page
+    }
+    
+    @objc private func goToSellerWebsite() {
+        guard let url = viewModel.nft?.author else { return }
+        let viewController = SFSafariViewController(url: url)
+        present(viewController, animated: true)
     }
 }
 
@@ -289,13 +302,15 @@ extension NftViewController: UICollectionViewDataSource {
             let cell = collectionView.dequeueReusableCell(indexPath: indexPath) as NftImageCollectionViewCell
             guard let urls = viewModel.nft?.images else { return UICollectionViewCell() }
             let url = urls[indexPath.row]
-            cell.configure(with: url)
+            cell.configure(with: url, shouldRoundCorners: true)
+            
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(indexPath: indexPath) as NftCollectionCell
             guard let nft = viewModel.nfts?[indexPath.row] else { return UICollectionViewCell() }
             let isLiked = viewModel.isLiked(nft: nftId)
             let isInCart = viewModel.isInCart(nft: nftId)
+            cell.delegate = self
             cell.configure(nft: nft, isLiked: isLiked, isInCart: isInCart)
             return cell
         }
@@ -310,16 +325,20 @@ extension NftViewController: UICollectionViewDelegate {
             if indexPath.row + 1 == nfts.count {
                 viewModel.fetchMoreNfts()
             }
+        } else {
+            pageControl.selectedItem = indexPath.row
         }
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let nft = viewModel.nfts?[indexPath.row] else { return }
+        
         if collectionView == nftsCollection {
+            guard let nft = viewModel.nfts?[indexPath.row] else { return }
             let viewController = NftViewController(viewModel: NftViewModel(), nftId: nft.id)
             self.navigationController?.pushViewController(viewController, animated: true)
-        } else {
+        } else if collectionView == imagesCollection {
+            guard let nft = viewModel.nft else { return }
             let viewController = NftDetailViewController(urls: nft.images)
-            self.navigationController?.pushViewController(viewController, animated: true)
+            self.present(viewController, animated: true)
         }
     }
 }
@@ -331,11 +350,6 @@ extension NftViewController: UICollectionViewDelegateFlowLayout {
         } else {
             return CGSize(width: 108, height: 192)
         }
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        let selectedItem = Int(scrollView.contentOffset.x / scrollView.frame.size.width)
-        pageControl.selectedItem = selectedItem
     }
 }
 

@@ -99,7 +99,7 @@ extension NftDetailViewController: UICollectionViewDataSource {
         let cell: NftImageCollectionViewCell = collectionView.dequeueReusableCell(indexPath: indexPath)
 
         let url = urls[indexPath.row]
-        cell.configure(with: url)
+        cell.configure(with: url, shouldRoundCorners: false)
 
         return cell
     }

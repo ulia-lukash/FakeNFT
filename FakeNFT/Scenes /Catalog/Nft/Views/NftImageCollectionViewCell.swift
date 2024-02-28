@@ -24,8 +24,6 @@ final class NftImageCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 40
-        imageView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         return imageView
     }()
 
@@ -49,8 +47,13 @@ final class NftImageCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
 
     // MARK: - Functions
 
-    func configure(with url: URL) {
+    func configure(with url: URL, shouldRoundCorners: Bool) {
         imageView.kf.setImage(with: url)
+        if shouldRoundCorners {
+            imageView.layer.cornerRadius = 40
+            imageView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            scrollView.isUserInteractionEnabled = false
+        }
     }
 }
 

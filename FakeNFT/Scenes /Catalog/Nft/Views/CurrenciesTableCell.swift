@@ -64,7 +64,6 @@ final class CurrenciesTableCell: UITableViewCell, ReuseIdentifying {
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            contentView.heightAnchor.constraint(equalToConstant: 72),
             coverImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             coverImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
             coverImageView.widthAnchor.constraint(equalToConstant: 32),

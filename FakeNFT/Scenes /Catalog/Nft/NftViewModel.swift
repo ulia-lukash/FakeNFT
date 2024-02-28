@@ -62,7 +62,6 @@ final class NftViewModel: NftViewModelProtocol {
                     self.getCurrencies()
                     self.getProfile()
                     self.getOrder()
-                    self.fetchMoreNfts()
                 }
         let id = id.uuidString.lowercased()
         nftService.fetchNft(withId: id)
@@ -105,6 +104,7 @@ final class NftViewModel: NftViewModelProtocol {
                 queue: .main) { [weak self] _ in
                     guard let self = self else { return }
                     self.currencies = currencyService.currencies
+                    self.fetchMoreNfts()
                 }
         currencyService.fetchCurrencies()
     }
