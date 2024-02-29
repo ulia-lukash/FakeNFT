@@ -69,9 +69,10 @@ final class FavoriteCollectionCell: UICollectionViewCell {
     private lazy var starRatingView: CosmosView = {
         let starRatingView = CosmosView()
         starRatingView.rating = 0
-        starRatingView.settings.starSize = 15
+        starRatingView.settings.starSize = 12
+        starRatingView.settings.filledImage = UIImage(named: ImagesName.starsCell.rawValue)
         starRatingView.settings.filledColor = .yellowUniversal
-        starRatingView.settings.starMargin = 1
+        starRatingView.settings.starMargin = 2
         starRatingView.settings.emptyColor = .lightGreyUniversal
         starRatingView.settings.emptyBorderColor = .clear
         starRatingView.settings.filledBorderColor = .clear
@@ -134,7 +135,6 @@ extension FavoriteCollectionCell {
             
             starRatingView.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
             starRatingView.centerYAnchor.constraint(equalTo: nftView.centerYAnchor),
-            
             priceValueLabel.bottomAnchor.constraint(equalTo: nftView.bottomAnchor),
             priceValueLabel.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
         ])

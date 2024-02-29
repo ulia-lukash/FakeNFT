@@ -10,4 +10,5 @@ import Foundation
 enum ImagesName: String {
     case backwardProfile
     case sortProfile
+    case starsCell
 }
