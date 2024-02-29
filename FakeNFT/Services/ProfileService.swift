@@ -48,11 +48,12 @@ extension ProfileServiceImpl: ProfileService {
     
     func updateProfile(dto: String, id: String, completion: @escaping ProfileCompletion) {
         let request = ProfilePutRequest(dto: dto)
-        networkClient.sendProfilePUT(request: request, completionQueue: .main) { [weak self, storage] result in
+        networkClient.send(request: request,
+                           type: Profile.self) { [weak self, storage] result in
             guard let self else { return }
             storage.removeProfile(with: id)
             switch result {
-            case .success():
+            case .success(_):
                 self.loadProfile(id: id) { result in
                     switch result {
                     case .success(let profile):

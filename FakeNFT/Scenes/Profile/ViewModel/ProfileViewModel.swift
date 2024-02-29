@@ -21,6 +21,7 @@ protocol ProfileViewModelProtocol {
     func getProfile() -> Profile?
     func setStateLoading()
     func stringClear(str: String) -> String
+    func createRequest(_ urlString: String) -> URLRequest?
 }
 
 //MARK: - ProfileViewModel
@@ -29,7 +30,6 @@ final class ProfileViewModel {
     private(set) var cellModel: TableCellModel = TableCellModel(countNFT: "\(0)",
                                                                 countFavoritesNFT: "\(0)")
     @Observable<ProfileState> private(set) var state: ProfileState = .initial
-    
     private(set) var profileUIModel: ProfileUIModel?
     private(set) var profile: Profile?
     private(set) var profileID: String?
@@ -164,5 +164,13 @@ extension ProfileViewModel: ProfileViewModelProtocol {
     
     func stringClear(str: String) -> String {
         str.replacingOccurrences(of: "\\s+$", with: "", options: .regularExpression)
+    }
+    
+    func createRequest(_ urlString: String) -> URLRequest? {
+        guard let url = URL(string: urlString)
+        else { return nil }
+        let request = URLRequest(url: url)
+        
+        return request
     }
 }

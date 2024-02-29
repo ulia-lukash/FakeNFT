@@ -51,6 +51,7 @@ extension ProfileTableViewCell {
         NSLayoutConstraint.activate([
             myNFTLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             myNFTLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            
             selectImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             selectImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
             selectImageView.heightAnchor.constraint(equalToConstant: 13.86),

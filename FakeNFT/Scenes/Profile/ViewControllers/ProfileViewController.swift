@@ -16,6 +16,10 @@ protocol ProfileVCMyNftDelegate: AnyObject {
     func setProfile(model: Profile?, vc: UIViewController)
 }
 
+protocol ProfileVCFavoriteDelegate: AnyObject {
+    func setLikesId(model: Profile, vc: UIViewController)
+}
+
 // MARK: - ProfileViewController
 final class ProfileViewController: UIViewController, ErrorView, LoadingView {
     private enum ConstantsProfileVC: String {
@@ -33,6 +37,7 @@ final class ProfileViewController: UIViewController, ErrorView, LoadingView {
     
     weak var editDelegate: ProfileVCEditDelegate?
     weak var myNftDelegate: ProfileVCMyNftDelegate?
+    weak var favoriteDelegate: ProfileVCFavoriteDelegate?
     private var textHeightConstraint: NSLayoutConstraint?
     private let viewModel: ProfileViewModelProtocol
     
@@ -149,33 +154,34 @@ private extension ProfileViewController {
             case .initial:
                 assertionFailure(ConstantsProfileVC.assertionMEssage)
             case .loading:
-                self.showLoading()
-                view.isUserInteractionEnabled = false
+                self.isUserInterecrion(flag: false)
                 viewModel.loadProfile(id: "1")
             case .update:
-                self.showLoading()
-                view.isUserInteractionEnabled = false
+                self.isUserInterecrion(flag: false)
             case .failed(let error):
                 self.hideLoading()
                 let errorModel = viewModel.makeErrorModel(error: error)
                 self.showError(errorModel)
             case .data(let profile):
-                view.isUserInteractionEnabled = true
                 let profileUIModel = viewModel.makeProfileUIModel(networkModel: profile)
                 viewModel.setProfileUIModel(model: profileUIModel)
                 viewModel.setProfileID(id: profile.id)
                 let cellModel = viewModel.makeTableCellModel(networkModel: profile)
                 viewModel.setCellModel(cellModel: cellModel)
                 self.displayProfile(model: profileUIModel)
-                self.hideLoading()
-                adjustTextViewHeight()
+                self.adjustTextViewHeight()
+                self.isUserInterecrion(flag: true)
             }
         }
-        
         viewModel.$cellModel.bind { [weak self] cellModel in
             guard let self else { return }
-            nftTableView.reloadData()
+            self.nftTableView.reloadData()
         }
+    }
+    
+    func isUserInterecrion(flag: Bool) {
+        flag ? self.hideLoading() : self.showLoading()
+        view.isUserInteractionEnabled = flag
     }
     
     @objc
@@ -186,7 +192,7 @@ private extension ProfileViewController {
         present(editVC, animated: true) { [weak self] in
             guard let self,
                   let model = self.viewModel.getProfileUIModel() else { return }
-            editDelegate?.setDataUI(model: model)
+            self.editDelegate?.setDataUI(model: model)
         }
     }
     
@@ -195,6 +201,48 @@ private extension ProfileViewController {
         fullNameLabelView.text = viewModel.stringClear(str: model.name)
         descriptionTextView.text = viewModel.stringClear(str: model.description)
         linkLabelView.text = viewModel.stringClear(str: model.link)
+    }
+    
+    func displayMyNft() {
+        let service = MyNFTServiceIml(networkClient: DefaultNetworkClient(),
+                                      storage: MyNftStorageImpl())
+        let viewModel = MyNftViewModel(service: service)
+        let myNFTController = MyNFTViewController(viewModel: viewModel)
+        myNftDelegate = myNFTController
+        myNFTController.delegate = self
+        let navController = UINavigationController(rootViewController: myNFTController)
+        navController.modalPresentationStyle = .fullScreen
+        myNftDelegate?.setProfile(model: self.viewModel.getProfile(), vc: self)
+        viewModel.loadMyNFT()
+        present(navController, animated: true)
+    }
+    
+    func displayFavoriteNft() {
+        let favoriteAssembly = FavoriteAssembly(
+            service: FavoriteNftServiceImp(networkClient: DefaultNetworkClient()))
+        guard let favoriteVc = favoriteAssembly.build() as? FavoriteViewController,
+            let profile = viewModel.getProfile()
+        else { return }
+        favoriteDelegate = favoriteVc
+        favoriteVc.delegate = self
+        favoriteDelegate?.setLikesId(model: profile, vc: self)
+        let navController = UINavigationController(rootViewController: favoriteVc)
+        navController.modalPresentationStyle = .fullScreen
+        present(navController, animated: true)
+    }
+    
+    func displayWebView() {
+        //url, который приходит с сервера не открываеться в webView,
+        let url = viewModel.getProfile()?.website //не работает
+        //поэтому пользуюсь тем, который в макете Figma
+        guard let request = viewModel.createRequest(
+            WebViewConfiguration.baseUrlSring) else { return }
+        let webViewController = ProfileWebViewController()
+        webViewController.load(request: request)
+        let navController = UINavigationController(rootViewController: webViewController)
+        navController.modalPresentationStyle = .fullScreen
+        webViewController.showIndicator()
+        present(navController, animated: true)
     }
     
     func adjustTextViewHeight() {
@@ -211,20 +259,6 @@ private extension ProfileViewController {
         view.layoutIfNeeded()
     }
     
-    func displayMyNft() {
-        let service = MyNFTServiceIml(networkClient: DefaultNetworkClient(),
-                                      storage: MyNftStorageImpl())
-        let viewModel = MyNftViewModel(service: service)
-        let myNFTController = MyNFTViewController(viewModel: viewModel)
-        myNftDelegate = myNFTController
-        myNFTController.delegate = self
-        let navController = UINavigationController(rootViewController: myNFTController)
-        navController.modalPresentationStyle = .fullScreen
-        self.myNftDelegate?.setProfile(model: self.viewModel.getProfile(), vc: self)
-        viewModel.loadMyNFT()
-        present(navController, animated: true)
-    }
-    
     //MARK: - setupUI function
     func setupUIItem() {
         addSubViewsAndBackColor()
@@ -236,24 +270,30 @@ private extension ProfileViewController {
         NSLayoutConstraint.activate([
             editProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9),
             editProfileButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            
             userImageView.leadingAnchor.constraint(equalTo: horisontalStackView.leadingAnchor),
             userImageView.widthAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize),
             userImageView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize),
+            
             verticalStackView.topAnchor.constraint(equalTo: editProfileButton.bottomAnchor,
                                                    constant: 20),
             verticalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
                                                        constant: 16),
             verticalStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
                                                         constant: -16),
+            
             descriptionTextView.bottomAnchor.constraint(equalTo: linkLabelView.topAnchor),
             descriptionTextView.heightAnchor.constraint(equalToConstant: 72),
             descriptionTextView.leadingAnchor.constraint(equalTo: verticalStackView.leadingAnchor),
+            
             linkLabelView.heightAnchor.constraint(equalToConstant: 38),
+            
             nftTableView.topAnchor.constraint(equalTo: verticalStackView.bottomAnchor, constant: 40),
             nftTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             nftTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             nftTableView.heightAnchor.constraint(equalToConstant: CGFloat(ConstantsProfileVC.countCellTableView)
                                                  * ConstantsProfileVC.heigtTableCell),
+            
             descriptionTextView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.maxHeightTextView)
         ])
         activityIndicator.constraintCenters(to: view)
@@ -297,10 +337,10 @@ extension ProfileViewController: UITableViewDelegate {
             displayMyNft()
         }
         if indexPath.row == CountProfileCell.two.rawValue {
-            //TODO: - epic 3-3 show webView
+            displayFavoriteNft()
         }
         if indexPath.row == CountProfileCell.three.rawValue {
-            //TODO: - epic 3-3 show webView
+            displayWebView()
         }
     }
 }
@@ -358,7 +398,15 @@ extension ProfileViewController: UITextViewDelegate {
 
 // MARK: - MyNFTViewControllerDlegate
 extension ProfileViewController: MyNFTViewControllerDlegate {
-    func updateProfile(vc: UIViewController) {
+    func updateProfileForMyNft(vc: UIViewController) {
+        viewModel.loadProfile(id: "1")
+        viewModel.setStateLoading()
+    }
+}
+
+// MARK: - FavoriteViewControllerDelegate
+extension ProfileViewController: FavoriteViewControllerDelegate {
+    func updateProfileForLikes(vc: UIViewController) {
         viewModel.loadProfile(id: "1")
         viewModel.setStateLoading()
     }

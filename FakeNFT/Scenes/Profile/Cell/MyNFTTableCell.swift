@@ -62,7 +62,7 @@ final class MyNFTTableCell: UITableViewCell {
     
     private lazy var nameNFTLabel: UILabel = {
         let nameNFTLabel = UILabel()
-        nameNFTLabel.font = .headline5
+        nameNFTLabel.font = .bodyBold
         nameNFTLabel.textColor = .blackUniversal
         
         return nameNFTLabel
@@ -71,9 +71,10 @@ final class MyNFTTableCell: UITableViewCell {
     private lazy var starRatingView: CosmosView = {
         let starRatingView = CosmosView()
         starRatingView.rating = 0
-        starRatingView.settings.starSize = 16
+        starRatingView.settings.starSize = 12
+        starRatingView.settings.filledImage = UIImage(named: ImagesName.starsCell.rawValue)
         starRatingView.settings.filledColor = .yellowUniversal
-        starRatingView.settings.starMargin = 1
+        starRatingView.settings.starMargin = 2
         starRatingView.settings.emptyColor = .lightGreyUniversal
         starRatingView.settings.emptyBorderColor = .clear
         starRatingView.settings.filledBorderColor = .clear
@@ -91,7 +92,7 @@ final class MyNFTTableCell: UITableViewCell {
     private lazy var fromLabel: UILabel = {
         let fromLabel = UILabel()
         fromLabel.font = .caption1
-        fromLabel.text = ConstLocalizable.myNFTCellFrom
+        fromLabel.text = ConstLocalizable.myNftCellFrom
         fromLabel.textColor = .blackUniversal
         fromLabel.textAlignment = .left
         
@@ -116,7 +117,7 @@ final class MyNFTTableCell: UITableViewCell {
     private lazy var priceLabel: UILabel = {
         let priceLabel = UILabel()
         priceLabel.text = ConstLocalizable.profileCellMyNFT
-        priceLabel.text = ConstLocalizable.myNFTCellPrice
+        priceLabel.text = ConstLocalizable.myNftCellPrice
         priceLabel.textColor = .blackUniversal
         priceLabel.font = .caption2
         
@@ -182,27 +183,36 @@ extension MyNFTTableCell {
             horisontalStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40),
             horisontalStackView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             horisontalStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+            
             nftImageView.heightAnchor.constraint(equalToConstant: 108),
             nftImageView.widthAnchor.constraint(equalToConstant: 108),
+            
             likeButton.trailingAnchor.constraint(equalTo: nftImageView.trailingAnchor),
             likeButton.topAnchor.constraint(equalTo: nftImageView.topAnchor),
             likeButton.widthAnchor.constraint(equalToConstant: 44),
             likeButton.heightAnchor.constraint(equalToConstant: 44),
+            
             nameNFStackTView.heightAnchor.constraint(equalToConstant: 62),
+            
             nameNFTLabel.topAnchor.constraint(equalTo: nameNFStackTView.topAnchor),
             nameNFTLabel.leadingAnchor.constraint(equalTo: nameNFStackTView.leadingAnchor),
             nameNFTLabel.trailingAnchor.constraint(equalTo: nameNFStackTView.trailingAnchor),
+            
             horisontaNameStack.leadingAnchor.constraint(equalTo: nameNFStackTView.leadingAnchor),
             horisontaNameStack.trailingAnchor.constraint(equalTo: nameNFStackTView.trailingAnchor),
             horisontaNameStack.bottomAnchor.constraint(equalTo: nameNFStackTView.bottomAnchor),
+            
             fromLabel.widthAnchor.constraint(equalToConstant: width ?? 20),
+            
             priceView.heightAnchor.constraint(equalToConstant: 42),
             priceView.widthAnchor.constraint(equalToConstant: 100),
             priceLabel.topAnchor.constraint(equalTo: priceView.topAnchor),
             priceLabel.leadingAnchor.constraint(equalTo: priceView.leadingAnchor),
+            
             priceValueLabel.bottomAnchor.constraint(equalTo: priceView.bottomAnchor),
             priceValueLabel.leadingAnchor.constraint(equalTo: priceView.leadingAnchor),
             priceValueLabel.trailingAnchor.constraint(equalTo: priceView.trailingAnchor),
+            
             starRatingView.leadingAnchor.constraint(equalTo: nameNFStackTView.leadingAnchor),
             starRatingView.centerYAnchor.constraint(equalTo: nameNFStackTView.centerYAnchor),
             starRatingView.heightAnchor.constraint(equalToConstant: 16)
@@ -232,7 +242,7 @@ extension MyNFTTableCell {
     }
     
     func like(flag: Bool) {
-        likeButton.tintColor = flag ? .white : .redUniversal
+        likeButton.tintColor = flag ? .redUniversal : .white
     }
     
     func config(model: MyNFTCellModel) {
