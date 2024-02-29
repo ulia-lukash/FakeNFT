@@ -319,6 +319,17 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		1A486B9C2B90BC4200A316FB /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				1AFD1D382B7F626500C6E1A2 /* UITextField+Padding.swift */,
+				1A64C8892B7A5E2B00DE3242 /* UITextView+Padding.swift */,
+				0CFCB74A2A780EA80009A829 /* UIView+Constraints.swift */,
+				1AFD1D3A2B7F672900C6E1A2 /* UIViewController+hideKeyboard.swift */,
+			);
+			path = UIKit;
+			sourceTree = "<group>";
+		};
 		1A7A90822B77BD7E000E3EA6 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
@@ -407,6 +418,7 @@
 				E1CD40DA2A96BE9B00BE7FE8 /* Resources */,
 				3F478ECD29DB473000F6D39E /* DesignSystem */,
 				3F6806CE29CBBD1B00B4F915 /* Foundation */,
+				1A486B9C2B90BC4200A316FB /* UIKit */,
 				3F6806C929CBBCAF00B4F915 /* Models */,
 				3F6806C729CBBC5B00B4F915 /* Scenes */,
 				3F6806C629CBBC4E00B4F915 /* Services */,
@@ -483,12 +495,8 @@
 				3F6806CF29CBBDB100B4F915 /* NetworkClient */,
 				3F6806D629CBC50A00B4F915 /* CellsReusingUtils.swift */,
 				1A7304BE2B83DBF0000BABDB /* String+Width.swift */,
-				1A64C8892B7A5E2B00DE3242 /* UITextView+Padding.swift */,
-				1AFD1D3A2B7F672900C6E1A2 /* UIViewController+hideKeyboard.swift */,
-				1AFD1D382B7F626500C6E1A2 /* UITextField+Padding.swift */,
 				1A0F47342B77AF4A00ED5DCC /* ConstLocalizable.swift */,
 				3FC8C39229D246BA0081F015 /* DateFormatters+Presets.swift */,
-				0CFCB74A2A780EA80009A829 /* UIView+Constraints.swift */,
 				1A2FB15E2B7AA6F400A4C11C /* Observable.swift */,
 				1A37DBBF2B8E2BBC0044071C /* GeometricParams.swift */,
 			);

@@ -71,9 +71,10 @@ final class MyNFTTableCell: UITableViewCell {
     private lazy var starRatingView: CosmosView = {
         let starRatingView = CosmosView()
         starRatingView.rating = 0
-        starRatingView.settings.starSize = 16
+        starRatingView.settings.starSize = 12
+        starRatingView.settings.filledImage = UIImage(named: ImagesName.starsCell.rawValue)
         starRatingView.settings.filledColor = .yellowUniversal
-        starRatingView.settings.starMargin = 1
+        starRatingView.settings.starMargin = 2
         starRatingView.settings.emptyColor = .lightGreyUniversal
         starRatingView.settings.emptyBorderColor = .clear
         starRatingView.settings.filledBorderColor = .clear
@@ -241,7 +242,7 @@ extension MyNFTTableCell {
     }
     
     func like(flag: Bool) {
-        likeButton.tintColor = flag ? .white : .redUniversal
+        likeButton.tintColor = flag ? .redUniversal : .white
     }
     
     func config(model: MyNFTCellModel) {

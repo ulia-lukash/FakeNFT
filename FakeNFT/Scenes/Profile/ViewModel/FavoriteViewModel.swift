@@ -76,8 +76,12 @@ extension FavoriteViewModel: FavoriteViewModelProtocol {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let likes):
+                    //Комментарий дляя ревью:
+                   // при последнем тесте перестал удаляться последний id с сервера
                     self.state = self.isRemoveLikeId(
-                        likes.likes) ? .data : .failed(FovoriteError.removeNft)
+                        likes.likes) ?
+                        .data :
+                        .failed(FovoriteError.removeNft)
                     self.likesId = likes.likes
                 case .failure(let error):
                     self.state = .failed(error)
