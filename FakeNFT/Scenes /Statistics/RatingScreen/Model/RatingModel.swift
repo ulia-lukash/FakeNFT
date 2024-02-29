@@ -90,6 +90,8 @@ extension RatingModel {
             username: userData.name,
             nfts: userData.nfts,
             avatar: userData.avatar,
-            description: userData.description)
+            description: userData.description,
+            website: userData.website
+        )
     }
 }

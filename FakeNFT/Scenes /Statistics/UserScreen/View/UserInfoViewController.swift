@@ -2,6 +2,7 @@ import UIKit
 import Kingfisher
 
 final class UserInfoViewController: UIViewController {
+
     private let viewModel: UserInfoViewModelProtocol
 
     private lazy var usernameLabel: UILabel = {
@@ -45,6 +46,11 @@ final class UserInfoViewController: UIViewController {
         button.setTitleColor(UIColor.segmentActive, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         button.backgroundColor = UIColor.whiteModeThemes
+        button.addTarget(
+            self,
+            action: #selector(didTapUserWebsiteButton),
+            for: .touchUpInside
+        )
         return button
     }()
 
@@ -94,9 +100,17 @@ final class UserInfoViewController: UIViewController {
         viewModel.nftCollectionButtonDidTap()
     }
 
+    @objc private func didTapUserWebsiteButton() {
+        viewModel.userWebsiteButtonDidTap()
+    }
+
     private func setupViewModel() {
         viewModel.onNFTCollectionButtonTap = { [weak self] in
             self?.pushNFTColletionViewController()
+        }
+
+        viewModel.onUserWebsiteButtonTap = { [weak self] in
+            self?.showWebViewController()
         }
     }
 
@@ -205,6 +219,12 @@ final class UserInfoViewController: UIViewController {
         navigationController?.pushViewController(
             NFTCollectionViewController(viewModel: viewModel),
             animated: true)
+    }
+
+    private func showWebViewController() {
+        let url = viewModel.currentUser.website
+        let webViewVC = WebViewViewController()
+        present(webViewVC, animated: true, completion: nil)
     }
 }
 
