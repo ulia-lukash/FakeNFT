@@ -4,11 +4,9 @@ protocol RatingViewModelProtocol: AnyObject {
     var onSortButtonTap: (() -> Void)? { get set }
     var onUsersListChange: (() -> Void)? { get set }
     var onUserProfileDidTap: ((User) -> Void)? { get set }
-
     var onLoadingState: (() -> Void)? { get set }
     var onDataState: (() -> Void)? { get set }
     var onErrorState: ((ErrorModel) -> Void)? { get set }
-
     var allUsers: [User] { get }
     func sortButtonDidTap()
     func sortByNameDidTap()

@@ -88,7 +88,7 @@ extension RatingModel {
         return User(
             rating: Int(userData.rating) ?? 0,
             username: userData.name,
-            nftAmount: String(userData.nfts.count),
+            nfts: userData.nfts,
             avatar: userData.avatar,
             description: userData.description)
     }

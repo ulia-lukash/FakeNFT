@@ -51,7 +51,6 @@ final class UserInfoViewController: UIViewController {
     private lazy var nftCollectionButtonLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Коллекция NFT (112)"
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = .segmentActive
         return label
@@ -173,6 +172,7 @@ final class UserInfoViewController: UIViewController {
     }
 
     private func setupNFTCollectionButton() {
+        nftCollectionButtonLabel.text = "Коллекция NFT" + " (" + String(viewModel.currentUser.nfts.count) + ")"
         view.addSubview(nftCollectionButton)
         nftCollectionButton.addSubview(nftCollectionButtonLabel)
         nftCollectionButton.addSubview(nftCollectionButtonImageView)

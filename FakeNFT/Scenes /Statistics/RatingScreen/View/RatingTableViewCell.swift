@@ -125,7 +125,7 @@ final class RatingCell: UITableViewCell {
         ratingPositionLabel.text = String(user.rating)
         avatarImageView.kf.setImage(with: user.avatar, placeholder: UIImage(named: "noAvatar"))
         usernameLabel.text = user.username
-        nftAmoutLabel.text = user.nftAmount
+        nftAmoutLabel.text = String(user.nfts.count)
     }
 }
 

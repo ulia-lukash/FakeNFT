@@ -4,7 +4,7 @@ final class RatingViewController: UIViewController, LoadingView, ErrorView {
     private let viewModel: RatingViewModelProtocol
 
     internal lazy var activityIndicator = UIActivityIndicatorView()
-    
+
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -133,7 +133,7 @@ final class RatingViewController: UIViewController, LoadingView, ErrorView {
     }
 
     private func pushUserInfoViewController(withUser user: User) {
-        let viewModel = UserInfoViewModel()
+        let viewModel = UserInfoViewModel(for: user)
         navigationController?.pushViewController(
             UserInfoViewController(user: user, viewModel: viewModel),
             animated: true)
