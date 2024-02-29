@@ -154,33 +154,34 @@ private extension ProfileViewController {
             case .initial:
                 assertionFailure(ConstantsProfileVC.assertionMEssage)
             case .loading:
-                self.showLoading()
-                view.isUserInteractionEnabled = false
+                self.isUserInterecrion(flag: false)
                 viewModel.loadProfile(id: "1")
             case .update:
-                self.showLoading()
-                view.isUserInteractionEnabled = false
+                self.isUserInterecrion(flag: false)
             case .failed(let error):
                 self.hideLoading()
                 let errorModel = viewModel.makeErrorModel(error: error)
                 self.showError(errorModel)
             case .data(let profile):
-                view.isUserInteractionEnabled = true
                 let profileUIModel = viewModel.makeProfileUIModel(networkModel: profile)
                 viewModel.setProfileUIModel(model: profileUIModel)
                 viewModel.setProfileID(id: profile.id)
                 let cellModel = viewModel.makeTableCellModel(networkModel: profile)
                 viewModel.setCellModel(cellModel: cellModel)
                 self.displayProfile(model: profileUIModel)
-                self.hideLoading()
-                adjustTextViewHeight()
+                self.adjustTextViewHeight()
+                self.isUserInterecrion(flag: true)
             }
         }
-        
         viewModel.$cellModel.bind { [weak self] cellModel in
             guard let self else { return }
-            nftTableView.reloadData()
+            self.nftTableView.reloadData()
         }
+    }
+    
+    func isUserInterecrion(flag: Bool) {
+        flag ? self.hideLoading() : self.showLoading()
+        view.isUserInteractionEnabled = flag
     }
     
     @objc
@@ -191,7 +192,7 @@ private extension ProfileViewController {
         present(editVC, animated: true) { [weak self] in
             guard let self,
                   let model = self.viewModel.getProfileUIModel() else { return }
-            editDelegate?.setDataUI(model: model)
+            self.editDelegate?.setDataUI(model: model)
         }
     }
     
@@ -211,7 +212,7 @@ private extension ProfileViewController {
         myNFTController.delegate = self
         let navController = UINavigationController(rootViewController: myNFTController)
         navController.modalPresentationStyle = .fullScreen
-        self.myNftDelegate?.setProfile(model: self.viewModel.getProfile(), vc: self)
+        myNftDelegate?.setProfile(model: self.viewModel.getProfile(), vc: self)
         viewModel.loadMyNFT()
         present(navController, animated: true)
     }
@@ -233,7 +234,7 @@ private extension ProfileViewController {
     func displayWebView() {
         //url, который приходит с сервера не открываеться в webView,
         let url = viewModel.getProfile()?.website //не работает
-        //поэтому пользуюсь той, которая в макете Figma
+        //поэтому пользуюсь тем, который в макете Figma
         guard let request = viewModel.createRequest(
             WebViewConfiguration.baseUrlSring) else { return }
         let webViewController = ProfileWebViewController()

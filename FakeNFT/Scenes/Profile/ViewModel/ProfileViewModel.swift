@@ -30,7 +30,6 @@ final class ProfileViewModel {
     private(set) var cellModel: TableCellModel = TableCellModel(countNFT: "\(0)",
                                                                 countFavoritesNFT: "\(0)")
     @Observable<ProfileState> private(set) var state: ProfileState = .initial
-    
     private(set) var profileUIModel: ProfileUIModel?
     private(set) var profile: Profile?
     private(set) var profileID: String?

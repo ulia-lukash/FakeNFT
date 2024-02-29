@@ -12,10 +12,10 @@ protocol MyNftViewModelProtocol {
     func loadMyNFT()
     func makeErrorModel(error: Error) -> ErrorModel
     func getListMyNft() -> [MyNFTCellModel]
-    func getLikeIndexPath() -> IndexPath?
+//    func getLikeIndexPath() -> IndexPath?
     func setSortState(state: SortState)
     func setLikeIndexPathAndUpdateId(_ indexPath: IndexPath?)
-    func setUpdateId(id: String)
+    func setUpdateId(index: Int)
     func saveProfile(profile: Profile?)
     func setState(state: MyNftState)
     var isUpdate: Bool { get set }
@@ -26,7 +26,7 @@ final class MyNftViewModel {
     @Observable<MyNftState> private(set) var state: MyNftState = .initial
     @Observable<SortState> private(set) var sortState: SortState = .none
     
-    private var listMyNft: [MyNFTCellModel] = []
+    private(set) var listMyNft: [MyNFTCellModel] = []
     private(set) var profile: Profile?
     private(set) var likeId: String?
     private(set) var likeIndexPath: IndexPath?
@@ -72,8 +72,7 @@ private extension MyNftViewModel {
     
     func networkFormat(likes: [String]) -> String {
         let likesParams = likes.map { "likes=\($0)" }
-        let likesQueryString = likesParams.joined(separator: "&")
-        return likesQueryString
+        return likesParams.joined(separator: "&")
     }
     
     func sortListNft() -> [MyNFTCellModel] {
@@ -198,10 +197,6 @@ extension MyNftViewModel: MyNftViewModelProtocol {
         listMyNft
     }
     
-    func getLikeIndexPath() -> IndexPath? {
-        likeIndexPath
-    }
-    
     func setLikeIndexPathAndUpdateId(_ indexPath: IndexPath?) {
         guard let indexPath else { return }
         likeIndexPath = indexPath
@@ -212,8 +207,8 @@ extension MyNftViewModel: MyNftViewModelProtocol {
         self.sortState = state
     }
     
-    func setUpdateId(id: String) {
-        likeId = id
+    func setUpdateId(index: Int) {
+        likeId = listMyNft[index].id
     }
     
     func setState(state: MyNftState) {
@@ -222,5 +217,10 @@ extension MyNftViewModel: MyNftViewModelProtocol {
     
     func saveProfile(profile: Profile?) {
         self.profile = profile
+    }
+    
+    func nftIsLike(index: Int) -> Bool {
+        guard let profile else { return false }
+        return Set(profile.likes).contains(listMyNft[index].id)
     }
 }

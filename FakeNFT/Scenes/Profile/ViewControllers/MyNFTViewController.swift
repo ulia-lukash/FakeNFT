@@ -224,12 +224,11 @@ extension MyNFTViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "\(MyNFTTableCell.self)") as? MyNFTTableCell,
-              let viewModel = viewModel as? MyNftViewModel,
-              let profile = viewModel.profile
+              let viewModel = viewModel as? MyNftViewModel
         else { return UITableViewCell() }
         cell.delegate = self
         cell.config(model: viewModel.getListMyNft()[indexPath.row])
-        let isLike = profile.likes.filter { $0 == viewModel.getListMyNft()[indexPath.row].id }.isEmpty
+        let isLike = viewModel.nftIsLike(index: indexPath.row)
         cell.like(flag: isLike)
         
         return cell
@@ -241,14 +240,12 @@ extension MyNFTViewController: MyNFTTableCellDelegate {
     func likeTap(_ cell: UITableViewCell) {
         guard let myNftCell = cell as? MyNFTTableCell,
               let viewModel = viewModel as? MyNftViewModel,
-              let profile = viewModel.profile,
               let indexPath = myNFTTable.indexPath(for: myNftCell)
         else { return }
         viewModel.setLikeIndexPathAndUpdateId(indexPath)
-        let id = viewModel.getListMyNft()[indexPath.row].id
-        let flag = profile.likes.filter { $0 == id }.isEmpty
-        viewModel.updateNft(flag: flag)
-        viewModel.setUpdateId(id: id)
+        let isLike = viewModel.nftIsLike(index: indexPath.row)
+        viewModel.updateNft(flag: !isLike)
+        viewModel.setUpdateId(index: indexPath.row)
     }
 }
 
