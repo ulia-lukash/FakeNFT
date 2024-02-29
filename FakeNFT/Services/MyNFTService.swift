@@ -38,9 +38,9 @@ private extension MyNFTServiceIml {
     //MARK: - private func
     func updateLikeAndNftPut(request: NetworkRequest,
                              completion: @escaping likeNftCompletion) {
-        networkClient.sendProfilePUT(request: request, completionQueue: .main) { result in
+        networkClient.send(request: request, completionQueue: .main) { result in
             switch result {
-            case .success():
+            case .success(_):
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
