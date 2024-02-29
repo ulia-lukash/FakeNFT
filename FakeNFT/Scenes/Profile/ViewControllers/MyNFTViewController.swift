@@ -83,7 +83,9 @@ private extension MyNFTViewController {
                 let errorModel = viewModel.makeErrorModel(error: error)
                 self.showError(errorModel)
             case .data:
-                if !((viewModel.profile?.nfts.isEmpty) != nil) { showStabLabel() }
+                if let isEmptyViewModel = viewModel.profile?.nfts.isEmpty, !isEmptyViewModel {
+                    showStabLabel()
+                }
                 if viewModel.isUpdate, let indexPath = viewModel.likeIndexPath {
                     myNFTTable.reloadRows(at: [indexPath], with: .automatic)
                     isUserInterecrion(flag: true)
