@@ -2,7 +2,6 @@ import UIKit
 import Kingfisher
 
 final class UserInfoViewController: UIViewController {
-
     private let viewModel: UserInfoViewModelProtocol
 
     private lazy var usernameLabel: UILabel = {
@@ -215,14 +214,17 @@ final class UserInfoViewController: UIViewController {
     }
 
     private func pushNFTColletionViewController() {
-        let viewModel = NFTCollectionViewModel(for: NFTModel())
+        let viewModel = NFTCollectionViewModel(
+            for: NFTModel(),
+            user: viewModel.currentUser,
+            servicesAssembly: viewModel.servicesAssembly
+        )
         navigationController?.pushViewController(
             NFTCollectionViewController(viewModel: viewModel),
             animated: true)
     }
 
     private func showWebViewController() {
-        let url = viewModel.currentUser.website
         let webViewVC = WebViewViewController()
         present(webViewVC, animated: true, completion: nil)
     }

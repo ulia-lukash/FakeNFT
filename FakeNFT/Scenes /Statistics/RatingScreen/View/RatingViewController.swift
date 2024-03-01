@@ -133,7 +133,7 @@ final class RatingViewController: UIViewController, LoadingView, ErrorView {
     }
 
     private func pushUserInfoViewController(withUser user: User) {
-        let viewModel = UserInfoViewModel(for: user)
+        let viewModel = UserInfoViewModel(for: user, servicesAssemly: viewModel.servicesAssembly)
         navigationController?.pushViewController(
             UserInfoViewController(user: user, viewModel: viewModel),
             animated: true)

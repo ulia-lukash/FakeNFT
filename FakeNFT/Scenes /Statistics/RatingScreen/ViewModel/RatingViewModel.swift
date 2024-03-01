@@ -8,6 +8,7 @@ protocol RatingViewModelProtocol: AnyObject {
     var onDataState: (() -> Void)? { get set }
     var onErrorState: ((ErrorModel) -> Void)? { get set }
     var allUsers: [User] { get }
+    var servicesAssembly: ServicesAssembly { get }
     func sortButtonDidTap()
     func sortByNameDidTap()
     func sortByRatingDidTap()

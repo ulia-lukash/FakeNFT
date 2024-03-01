@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class NFTCell: UICollectionViewCell {
     private lazy var nftImageView: UIImageView = {
@@ -82,7 +83,7 @@ final class NFTCell: UICollectionViewCell {
 
     func setupCell(using nft: NFT) {
         nftRating = nft.rating
-        nftImageView.image = nft.icon
+        nftImageView.kf.setImage(with: nft.image.first)
         nftPriceLabel.text = nft.price + " ETH"
         nftNameLabel.text = nft.name
     }
