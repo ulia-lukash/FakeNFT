@@ -54,7 +54,7 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
     }()
     
     
-    init(viewModel: FavoriteViewModel) {
+    init(viewModel: FavoriteViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

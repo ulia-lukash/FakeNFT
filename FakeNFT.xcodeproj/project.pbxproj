@@ -66,6 +66,8 @@
 		1ABFCAF22B86039E00FD3816 /* SortState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABFCAF12B86039E00FD3816 /* SortState.swift */; };
 		1AD543A42B83CE82009CD133 /* ProfileState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD543A32B83CE82009CD133 /* ProfileState.swift */; };
 		1AD543A62B83CEF6009CD133 /* JsonKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD543A52B83CEF6009CD133 /* JsonKey.swift */; };
+		1AE391AD2B91F834007F4CC1 /* BaseRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE391AC2B91F834007F4CC1 /* BaseRouter.swift */; };
+		1AE391B02B91F900007F4CC1 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE391AF2B91F900007F4CC1 /* Router.swift */; };
 		1AE6EE872B77DD7F003E0E3C /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE6EE862B77DD7F003E0E3C /* EditProfileViewController.swift */; };
 		1AE6EE8C2B77E657003E0E3C /* UserImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE6EE8B2B77E657003E0E3C /* UserImageView.swift */; };
 		1AE6EE8E2B77EDE3003E0E3C /* UserImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE6EE8D2B77EDE3003E0E3C /* UserImageModel.swift */; };
@@ -174,6 +176,8 @@
 		1ABFCAF12B86039E00FD3816 /* SortState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortState.swift; sourceTree = "<group>"; };
 		1AD543A32B83CE82009CD133 /* ProfileState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileState.swift; sourceTree = "<group>"; };
 		1AD543A52B83CEF6009CD133 /* JsonKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonKey.swift; sourceTree = "<group>"; };
+		1AE391AC2B91F834007F4CC1 /* BaseRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRouter.swift; sourceTree = "<group>"; };
+		1AE391AF2B91F900007F4CC1 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		1AE6EE862B77DD7F003E0E3C /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		1AE6EE8B2B77E657003E0E3C /* UserImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserImageView.swift; sourceTree = "<group>"; };
 		1AE6EE8D2B77EDE3003E0E3C /* UserImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserImageModel.swift; sourceTree = "<group>"; };
@@ -366,9 +370,19 @@
 				1A7A90822B77BD7E000E3EA6 /* Cell */,
 				1A7C3EB12B7C9F2F005D2A35 /* ProfileUIModel.swift */,
 				1A7C3EB32B7CA1C3005D2A35 /* TableCellModel.swift */,
+				1AE391AE2B91F868007F4CC1 /* Routing */,
 				1A37DBCF2B8E2E060044071C /* Helpers */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		1AE391AE2B91F868007F4CC1 /* Routing */ = {
+			isa = PBXGroup;
+			children = (
+				1AE391AC2B91F834007F4CC1 /* BaseRouter.swift */,
+				1AE391AF2B91F900007F4CC1 /* Router.swift */,
+			);
+			path = Routing;
 			sourceTree = "<group>";
 		};
 		1AE6EE8A2B77E62E003E0E3C /* Views */ = {
@@ -762,6 +776,7 @@
 				1AD543A42B83CE82009CD133 /* ProfileState.swift in Sources */,
 				1A7304C12B83DC6A000BABDB /* MyListNFT.swift in Sources */,
 				1A37DBC82B8E2D900044071C /* FavoriteViewController.swift in Sources */,
+				1AE391AD2B91F834007F4CC1 /* BaseRouter.swift in Sources */,
 				1A54BFEC2B84A7A9009C956C /* MyNFTStorage.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,
 				0CFCB7402A78002A0009A829 /* NftService.swift in Sources */,
@@ -781,6 +796,7 @@
 				3F68069929CBBAF100B4F915 /* SceneDelegate.swift in Sources */,
 				1A7C3EB62B7CB28A005D2A35 /* ProfileCellModel.swift in Sources */,
 				0C79EE6C2A76DE2E00EE90EA /* ServicesAssemly.swift in Sources */,
+				1AE391B02B91F900007F4CC1 /* Router.swift in Sources */,
 				1A2FB15B2B7AA54900A4C11C /* ProfileViewModel.swift in Sources */,
 				1A37DBCA2B8E2DBA0044071C /* FavoriteAssembly.swift in Sources */,
 				1A37DBC62B8E2CBA0044071C /* FavoritesCollectionView.swift in Sources */,

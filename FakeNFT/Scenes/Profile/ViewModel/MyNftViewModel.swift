@@ -12,7 +12,6 @@ protocol MyNftViewModelProtocol {
     func loadMyNFT()
     func makeErrorModel(error: Error) -> ErrorModel
     func getListMyNft() -> [MyNFTCellModel]
-//    func getLikeIndexPath() -> IndexPath?
     func setSortState(state: SortState)
     func setLikeIndexPathAndUpdateId(_ indexPath: IndexPath?)
     func setUpdateId(index: Int)

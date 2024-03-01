@@ -35,6 +35,7 @@ final class ProfileViewController: UIViewController, ErrorView, LoadingView {
         case editProfile
     }
     
+    private var router: Router?
     weak var editDelegate: ProfileVCEditDelegate?
     weak var myNftDelegate: ProfileVCMyNftDelegate?
     weak var favoriteDelegate: ProfileVCFavoriteDelegate?
@@ -137,6 +138,7 @@ final class ProfileViewController: UIViewController, ErrorView, LoadingView {
     // MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
+        router = Router(sourceViewController: self)
         view.backgroundColor = .whiteUniversal
         bind()
         setupUIItem()
@@ -204,45 +206,25 @@ private extension ProfileViewController {
     }
     
     func displayMyNft() {
-        let service = MyNFTServiceIml(networkClient: DefaultNetworkClient(),
-                                      storage: MyNftStorageImpl())
-        let viewModel = MyNftViewModel(service: service)
-        let myNFTController = MyNFTViewController(viewModel: viewModel)
-        myNftDelegate = myNFTController
-        myNFTController.delegate = self
-        let navController = UINavigationController(rootViewController: myNFTController)
-        navController.modalPresentationStyle = .fullScreen
-        myNftDelegate?.setProfile(model: self.viewModel.getProfile(), vc: self)
-        viewModel.loadMyNFT()
-        present(navController, animated: true)
+        guard let router else { return }
+        router.showMyNft()
+        myNftDelegate?.setProfile(model: viewModel.getProfile(), vc: self)
     }
     
     func displayFavoriteNft() {
-        let favoriteAssembly = FavoriteAssembly(
-            service: FavoriteNftServiceImp(networkClient: DefaultNetworkClient()))
-        guard let favoriteVc = favoriteAssembly.build() as? FavoriteViewController,
-            let profile = viewModel.getProfile()
+        guard let profile = viewModel.getProfile(),
+              let router
         else { return }
-        favoriteDelegate = favoriteVc
-        favoriteVc.delegate = self
+        router.showFavarite()
         favoriteDelegate?.setLikesId(model: profile, vc: self)
-        let navController = UINavigationController(rootViewController: favoriteVc)
-        navController.modalPresentationStyle = .fullScreen
-        present(navController, animated: true)
     }
     
     func displayWebView() {
-        //url, который приходит с сервера не открываеться в webView,
-        let url = viewModel.getProfile()?.website //не работает
-        //поэтому пользуюсь тем, который в макете Figma
         guard let request = viewModel.createRequest(
-            WebViewConfiguration.baseUrlSring) else { return }
-        let webViewController = ProfileWebViewController()
-        webViewController.load(request: request)
-        let navController = UINavigationController(rootViewController: webViewController)
-        navController.modalPresentationStyle = .fullScreen
-        webViewController.showIndicator()
-        present(navController, animated: true)
+            WebViewConfiguration.baseUrlSring),
+            let router
+        else { return }
+        router.showWebView(request: request)
     }
     
     func adjustTextViewHeight() {
