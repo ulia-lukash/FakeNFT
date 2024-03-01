@@ -155,6 +155,7 @@ extension MyNFTTableCell {
     @objc
     private func didLike() {
         guard let delegate else { return }
+        likeButttonPulse(flag: true)
         delegate.likeTap(self)
     }
     
@@ -251,5 +252,25 @@ extension MyNFTTableCell {
         starRatingView.rating = model.rating >= 5.0 ? 5.0 : model.rating
         nameAuthorLabel.text = model.nameAuthor
         priceValueLabel.text = "\(model.priceETN) ETN"
+    }
+    
+    func likeButttonPulse(flag: Bool) {
+        let pulse1 = CASpringAnimation(keyPath: "transform.scale")
+        pulse1.duration = 0.8
+        pulse1.fromValue = 0.8
+        pulse1.toValue = 1.2
+        pulse1.autoreverses = true
+        pulse1.repeatCount = 1
+        pulse1.initialVelocity = 0.5
+        pulse1.damping = 0.8
+
+        let animationGroup = CAAnimationGroup()
+        animationGroup.duration = 2.5
+        animationGroup.repeatCount = 1000
+        animationGroup.animations = [pulse1]
+
+        flag ?
+        likeButton.layer.add(animationGroup, forKey: "pulse")
+        : likeButton.layer.removeAnimation(forKey: "pulse")
     }
 }
