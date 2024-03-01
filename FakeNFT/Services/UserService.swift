@@ -1,9 +1,9 @@
 import Foundation
 
-typealias UsersCompletion = (Result<[UserData], Error>) -> Void
+typealias AllUsersCompletion = (Result<[UserData], Error>) -> Void
 
 protocol UserService {
-    func loadUsers(completion: @escaping UsersCompletion)
+    func loadUsers(completion: @escaping AllUsersCompletion)
 }
 
 final class UserServiceImpl: UserService {
@@ -13,7 +13,7 @@ final class UserServiceImpl: UserService {
         self.networkClient = networkClient
     }
 
-    func loadUsers(completion: @escaping UsersCompletion) {
+    func loadUsers(completion: @escaping AllUsersCompletion) {
         let request = UsersRequest()
         networkClient.send(request: request, type: [UserData].self) { result in
             switch result {

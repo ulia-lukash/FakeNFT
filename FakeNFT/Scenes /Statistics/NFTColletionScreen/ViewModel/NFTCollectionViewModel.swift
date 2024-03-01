@@ -30,6 +30,8 @@ final class NFTCollectionViewModel: NFTCollectionViewModelProtocol {
 
     private(set) var currentUser: User
 
+    private var currentProfile: ProfileData?
+
     private let NFTModel: NFTModelProtocol
 
     private var state = NFTCollectionViewModelDetailState.initial {
@@ -41,13 +43,20 @@ final class NFTCollectionViewModel: NFTCollectionViewModelProtocol {
     init(for model: NFTModelProtocol, user: User, servicesAssembly: ServicesAssembly) {
         NFTModel = model
         currentUser = user
-        userNFTCollection = NFTModel.getUserNFTCollection(nftIDs: currentUser.nfts)
         self.servicesAssembly = servicesAssembly
-        state = .loading
     }
 
     func viewDidLoad() {
         state = .loading
+        userNFTCollection = NFTModel.getUserNFTCollection(nftIDs: currentUser.nfts)
+        servicesAssembly.profileService.loadProfile(id: "1") { [weak self] result in
+            switch result {
+            case .success(let profile):
+                self?.currentProfile = profile
+            case .failure(let error):
+                self?.state = .failed(error)
+            }
+        }
     }
 
     private func stateDidChanged() {
