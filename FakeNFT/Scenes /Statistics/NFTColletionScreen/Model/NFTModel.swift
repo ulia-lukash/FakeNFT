@@ -6,62 +6,81 @@ protocol NFTModelProtocol: AnyObject {
     func saveLikesInfo(nftIds: [String])
     func removeFromLiked(nftIds: [String])
     func setLikesInfo(nftIds: [String])
+    func setCurrentOrder(nfts: [String])
+    func saveCurrentOrderInfo(nfts: [String])
+    func removeFromOrder(nft: [String])
     var likedNfts: [String] { get }
+    var orderedNfts: [String] { get }
 }
 
 final class NFTModel: NFTModelProtocol {
-    // swiftlint:disable force_unwrapping
-/*
-    private var mockNFTs: [NFT] = [
-        NFT(id: "some id", image: UIImage(named: "Grace")!, name: "Grace", isLiked: false, rating: 2, price: "1,78")
-//        NFT(image: UIImage(named: "Zoe")!, name: "Zoe", isLiked: false, rating: 2, price: "1,78"),
-//        NFT(image: UIImage(named: "Stella")!, name: "Stella", isLiked: false, rating: 2, price: "1,78"),
-//        NFT(image: UIImage(named: "Toast")!, name: "Toast", isLiked: false, rating: 2, price: "1,78"),
-//        NFT(image: UIImage(named: "Zeus")!, name: "Zeus", isLiked: false, rating: 2, price: "1,78")
-    ]
-*/
-    // swiftlint:enable force_unwrapping
-
     private var nftsDB: [String: NFT] = [:]
+
     private(set) var likedNfts: [String] = []
 
+    private(set) var orderedNfts: [String] = []
+
     func getUserNFTCollection() -> [NFT] {
-        updateNftDB()
+        updateLikesInNftDB()
         let nfts = Array(nftsDB.values).sorted {
             $0.name > $1.name
         }
         return nfts
     }
 
+    func setCurrentOrder(nfts: [String]) {
+        orderedNfts = nfts
+        updateOrdersInNftDB()
+    }
+
+    func saveCurrentOrderInfo(nfts: [String]) {
+        orderedNfts.append(contentsOf: nfts)
+        updateOrdersInNftDB()
+    }
+
+    func removeFromOrder(nft: [String]) {
+        orderedNfts.removeAll {
+            nft.contains($0)
+        }
+        updateOrdersInNftDB()
+    }
+
     func saveNfts(nfts: [NFTData]) {
         nfts.forEach {
             nftsDB[$0.id] = convert(nftData: $0)
         }
-        updateNftDB()
+        updateLikesInNftDB()
     }
 
     func setLikesInfo(nftIds: [String]) {
         likedNfts.removeAll()
         likedNfts = nftIds
-        updateNftDB()
+        updateLikesInNftDB()
     }
 
     func saveLikesInfo(nftIds: [String]) {
         likedNfts.append(contentsOf: nftIds)
-        updateNftDB()
+        updateLikesInNftDB()
     }
 
     func removeFromLiked(nftIds: [String]) {
         likedNfts.removeAll {
             nftIds.contains($0)
         }
-        updateNftDB()
+        updateLikesInNftDB()
     }
 
-    func updateNftDB() {
+    func updateLikesInNftDB() {
         let db: [String: NFT] = nftsDB
         db.forEach { id, _ in
             nftsDB[id]?.isLiked = likedNfts.contains(id)
+        }
+    }
+
+    func updateOrdersInNftDB() {
+        let db: [String: NFT] = nftsDB
+        db.forEach { id, _ in
+            nftsDB[id]?.isOrdered = orderedNfts.contains(id)
         }
     }
 }
@@ -72,8 +91,10 @@ extension NFTModel {
             id: nftData.id,
             image: nftData.images,
             name: String(nftData.name.split(separator: " ")[0]),
-            isLiked: likedNfts.contains(nftData.id),
             rating: nftData.rating,
-            price: String(nftData.price))
+            price: String(nftData.price),
+            isLiked: likedNfts.contains(nftData.id),
+            isOrdered: orderedNfts.contains(nftData.id)
+        )
     }
 }

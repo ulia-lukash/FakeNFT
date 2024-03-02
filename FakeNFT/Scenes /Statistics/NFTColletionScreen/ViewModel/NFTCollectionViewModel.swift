@@ -63,6 +63,7 @@ final class NFTCollectionViewModel: NFTCollectionViewModelProtocol {
         case .loading:
             onLoadingState?()
             loadNFTs()
+            loadOrder()
         case .data(let nftsData):
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else {
@@ -133,12 +134,52 @@ final class NFTCollectionViewModel: NFTCollectionViewModelProtocol {
         }
     }
 
+    private func loadOrder() {
+        servicesAssembly.profileService.loadOrder { [weak self] result in
+            switch result {
+            case .success(let orderData):
+                self?.updateCurrentOrder(orderData: orderData)
+            case .failure(let error):
+                self?.state = .failed(error)
+            }
+        }
+    }
+
+    private func updateOrderInfo() {
+        servicesAssembly.profileService.setOrder(
+            nfts: NFTModel.orderedNfts
+        ) { [weak self] result in
+            switch result {
+            case .success(let orderData):
+                self?.updateCurrentOrder(orderData: orderData)
+            case .failure(let error):
+                self?.state = .failed(error)
+            }
+        }
+    }
+
     private func updateNFTCollection() {
         userNFTCollection = NFTModel.getUserNFTCollection()
+    }
+
+    private func updateCurrentOrder(orderData: OrderData) {
+        DispatchQueue.main.async { [weak self] in
+            self?.NFTModel.setCurrentOrder(nfts: orderData.nfts)
+            self?.updateNFTCollection()
+        }
     }
 }
 
 extension NFTCollectionViewModel: NFTCellProtocol {
+    func basketButtonDidTap(nftId: String, isOrdered: Bool) {
+        if isOrdered {
+            NFTModel.saveCurrentOrderInfo(nfts: [nftId])
+        } else {
+            NFTModel.removeFromOrder(nft: [nftId])
+        }
+        updateOrderInfo()
+    }
+
     func likeButtonDidTap(nftId: String, isLiked: Bool) {
         if isLiked {
             NFTModel.saveLikesInfo(nftIds: [nftId])
