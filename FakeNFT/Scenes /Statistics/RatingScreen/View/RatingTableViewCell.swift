@@ -22,6 +22,8 @@ final class RatingCell: UITableViewCell {
         let image = UIImage(named: "Userpick")
         let imageView = UIImageView(image: image)
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 14
+        imageView.layer.masksToBounds = true
         return imageView
     }()
 
@@ -118,12 +120,12 @@ final class RatingCell: UITableViewCell {
     }
 
     func setupCell(
-        userData: User
+        user: User
     ) {
-        ratingPositionLabel.text = userData.rating
-        avatarImageView.image = userData.avatar
-        usernameLabel.text = userData.username
-        nftAmoutLabel.text = userData.nftAmount
+        ratingPositionLabel.text = String(user.rating)
+        avatarImageView.kf.setImage(with: user.avatar, placeholder: UIImage(named: "noAvatar"))
+        usernameLabel.text = user.username
+        nftAmoutLabel.text = String(user.nfts.count)
     }
 }
 

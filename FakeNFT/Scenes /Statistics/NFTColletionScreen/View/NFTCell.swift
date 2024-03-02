@@ -1,6 +1,14 @@
 import UIKit
+import Kingfisher
+
+protocol NFTCellProtocol: AnyObject {
+    func likeButtonDidTap(nftId: String, isLiked: Bool)
+    func basketButtonDidTap(nftId: String, isOrdered: Bool)
+}
 
 final class NFTCell: UICollectionViewCell {
+    weak var delegate: NFTCellProtocol?
+
     private lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -40,7 +48,7 @@ final class NFTCell: UICollectionViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "noLike"), for: .normal)
         button.setImage(UIImage(named: "like"), for: .selected)
-        button.addTarget(self, action: #selector(toggleLike), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
         return button
     }()
 
@@ -60,13 +68,15 @@ final class NFTCell: UICollectionViewCell {
 
     private var isLiked = false {
         didSet {
-            changeLikeButtonState()
+            updateLikeButtonImage()
         }
     }
 
+    private var nftId: String = ""
+
     private var inBasket = false {
         didSet {
-            changeBasketButtonState()
+            updateBasketButtonImage()
         }
     }
 
@@ -82,9 +92,12 @@ final class NFTCell: UICollectionViewCell {
 
     func setupCell(using nft: NFT) {
         nftRating = nft.rating
-        nftImageView.image = nft.icon
+        nftImageView.kf.setImage(with: nft.image.first)
         nftPriceLabel.text = nft.price + " ETH"
         nftNameLabel.text = nft.name
+        isLiked = nft.isLiked
+        nftId = nft.id
+        inBasket = nft.isOrdered
     }
 
     private func setupUI() {
@@ -183,22 +196,24 @@ final class NFTCell: UICollectionViewCell {
         }
     }
 
-    private func changeLikeButtonState() {
-        let image = isLiked ? UIImage(named: "like") : UIImage(named: "noLike")
-        likeButton.setImage(image, for: .normal)
-    }
-
-    private func changeBasketButtonState() {
+    private func updateBasketButtonImage() {
         let image = inBasket ? UIImage(named: "basketX") : UIImage(named: "basket")
         basketButton.setImage(image, for: .normal)
     }
 
-    @objc private func toggleLike() {
+    private func updateLikeButtonImage() {
+        let image = isLiked ? UIImage(named: "like") : UIImage(named: "noLike")
+        likeButton.setImage(image, for: .normal)
+    }
+
+    @objc private func didTapLikeButton() {
         isLiked.toggle()
+        delegate?.likeButtonDidTap(nftId: nftId, isLiked: isLiked)
     }
 
     @objc private func didTapBasketButton() {
         inBasket.toggle()
+        delegate?.basketButtonDidTap(nftId: nftId, isOrdered: inBasket)
     }
 }
 

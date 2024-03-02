@@ -2,7 +2,8 @@ import UIKit
 
 final class RatingModel {
     // swiftlint:disable all
-    private var mockUsersDB = [
+    /*
+    private var usersDB = [
         User(
             rating: "1",
             username: "Alex",
@@ -37,9 +38,19 @@ final class RatingModel {
         User(rating: "7", username: "Eric", nftAmount: "11", avatar: UIImage(named: "UserpickEric")!, description: "Я NFT"),
         User(rating: "8", username: "Somebody", nftAmount: "0", avatar: UIImage(named: "noAvatar")!, description: "Что происходит?")
     ]
+     */
     // swiftlint:enable all
 
+    private var usersDB: [User] = []
+    private var storage: [String: UserData] = [:]
+
     private let defaults = UserDefaults.standard
+
+    func saveUsers(users: [UserData]) {
+        usersDB = users.map {
+            convert(userData: $0)
+        }
+    }
 
     func getUsers() -> [User] {
         if let sortType = defaults.string(forKey: "SortType") {
@@ -49,15 +60,15 @@ final class RatingModel {
             case "byRating":
                 return sortUsersByRating()
             default:
-                return mockUsersDB
+                return usersDB
             }
         }
-        return mockUsersDB
+        return usersDB
     }
 
     func sortUsersByName() -> [User] {
         defaults.set("byName", forKey: "SortType")
-        let sortedUsersList = mockUsersDB.sorted {
+        let sortedUsersList = usersDB.sorted {
             $0.username < $1.username
         }
         return sortedUsersList
@@ -65,9 +76,22 @@ final class RatingModel {
 
     func sortUsersByRating() -> [User] {
         defaults.set("byRating", forKey: "SortType")
-        let sortedUsersList = mockUsersDB.sorted {
+        let sortedUsersList = usersDB.sorted {
             $0.rating < $1.rating
         }
         return sortedUsersList
+    }
+}
+
+extension RatingModel {
+    func convert(userData: UserData) -> User {
+        return User(
+            rating: Int(userData.rating) ?? 0,
+            username: userData.name,
+            nfts: userData.nfts,
+            avatar: userData.avatar,
+            description: userData.description,
+            website: userData.website
+        )
     }
 }

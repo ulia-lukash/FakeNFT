@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class UserInfoViewController: UIViewController {
     private let viewModel: UserInfoViewModelProtocol
@@ -24,6 +25,8 @@ final class UserInfoViewController: UIViewController {
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 36
+        imageView.layer.masksToBounds = true
         return imageView
     }()
 
@@ -42,13 +45,17 @@ final class UserInfoViewController: UIViewController {
         button.setTitleColor(UIColor.segmentActive, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         button.backgroundColor = UIColor.whiteModeThemes
+        button.addTarget(
+            self,
+            action: #selector(didTapUserWebsiteButton),
+            for: .touchUpInside
+        )
         return button
     }()
 
     private lazy var nftCollectionButtonLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Коллекция NFT (112)"
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = .segmentActive
         return label
@@ -73,7 +80,7 @@ final class UserInfoViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         usernameLabel.text = user.username
         userDescription.text = user.description
-        avatarImageView.image = user.avatar
+        avatarImageView.kf.setImage(with: user.avatar, placeholder: UIImage(named: "noAvatar"))
     }
 
     required init?(coder: NSCoder) {
@@ -92,9 +99,17 @@ final class UserInfoViewController: UIViewController {
         viewModel.nftCollectionButtonDidTap()
     }
 
+    @objc private func didTapUserWebsiteButton() {
+        viewModel.userWebsiteButtonDidTap()
+    }
+
     private func setupViewModel() {
         viewModel.onNFTCollectionButtonTap = { [weak self] in
             self?.pushNFTColletionViewController()
+        }
+
+        viewModel.onUserWebsiteButtonTap = { [weak self] in
+            self?.showWebViewController()
         }
     }
 
@@ -170,6 +185,7 @@ final class UserInfoViewController: UIViewController {
     }
 
     private func setupNFTCollectionButton() {
+        nftCollectionButtonLabel.text = "Коллекция NFT" + " (" + String(viewModel.currentUser.nfts.count) + ")"
         view.addSubview(nftCollectionButton)
         nftCollectionButton.addSubview(nftCollectionButtonLabel)
         nftCollectionButton.addSubview(nftCollectionButtonImageView)
@@ -198,10 +214,19 @@ final class UserInfoViewController: UIViewController {
     }
 
     private func pushNFTColletionViewController() {
-        let viewModel = NFTCollectionViewModel(for: NFTModel())
+        let viewModel = NFTCollectionViewModel(
+            for: NFTModel(),
+            user: viewModel.currentUser,
+            servicesAssembly: viewModel.servicesAssembly
+        )
         navigationController?.pushViewController(
             NFTCollectionViewController(viewModel: viewModel),
             animated: true)
+    }
+
+    private func showWebViewController() {
+        let webViewVC = WebViewViewController()
+        present(webViewVC, animated: true, completion: nil)
     }
 }
 
