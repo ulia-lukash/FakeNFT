@@ -153,17 +153,17 @@ final class NftViewController: UIViewController {
     }
     
     private func setLabels() {
-        
-        setCartButtonState()
-        setLikeButtonState()
         guard let nft = viewModel.nft else { return }
         
         nameLabel.text = nft.name
         ratingView.setRating(with: nft.rating)
+        setCartButtonState()
+        setLikeButtonState()
         /* Нет в nft указателя на его коллекцию.
          Подтаскивать все коллекции и искать, откуда
          эта конкретная штука - нецелесообразно.
-         Ждем когда доведут до ума бэк */
+         Да, можно передавать из коллекции, но мы не всегда открываем nft из его коллекции.
+         */
         collectionNameLabel.text = "Peach"
         
         priceLabel.text = "\(nft.price) ETH"
@@ -308,8 +308,8 @@ extension NftViewController: UICollectionViewDataSource {
         } else {
             let cell = collectionView.dequeueReusableCell(indexPath: indexPath) as NftCollectionCell
             guard let nft = viewModel.nfts?[indexPath.row] else { return UICollectionViewCell() }
-            let isLiked = viewModel.isLiked(nft: nftId)
-            let isInCart = viewModel.isInCart(nft: nftId)
+            let isLiked = viewModel.isLiked(nft: nft.id)
+            let isInCart = viewModel.isInCart(nft: nft.id)
             cell.delegate = self
             cell.configure(nft: nft, isLiked: isLiked, isInCart: isInCart)
             return cell

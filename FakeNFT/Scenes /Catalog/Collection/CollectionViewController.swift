@@ -253,7 +253,6 @@ extension CollectionViewController: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
             
             let cell = collectionView.dequeueReusableCell(indexPath: indexPath) as NftCollectionCell
-
             let nft = viewModel.nfts[indexPath.row]
             let nftId = nft.id
             
