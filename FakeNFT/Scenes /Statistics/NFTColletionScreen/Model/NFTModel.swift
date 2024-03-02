@@ -1,8 +1,12 @@
 import UIKit
 
 protocol NFTModelProtocol: AnyObject {
-    func getUserNFTCollection(nftIDs: [String]) -> [NFT]
+    func getUserNFTCollection() -> [NFT]
     func saveNfts(nfts: [NFTData])
+    func saveLikesInfo(nftIds: [String])
+    func removeFromLiked(nftIds: [String])
+    func setLikesInfo(nftIds: [String])
+    var likedNfts: [String] { get }
 }
 
 final class NFTModel: NFTModelProtocol {
@@ -18,15 +22,46 @@ final class NFTModel: NFTModelProtocol {
 */
     // swiftlint:enable force_unwrapping
 
-    private var nftsDB: [NFT] = []
+    private var nftsDB: [String: NFT] = [:]
+    private(set) var likedNfts: [String] = []
 
-    func getUserNFTCollection(nftIDs: [String]) -> [NFT] {
-        nftsDB
+    func getUserNFTCollection() -> [NFT] {
+        updateNftDB()
+        let nfts = Array(nftsDB.values).sorted {
+            $0.name > $1.name
+        }
+        return nfts
     }
 
     func saveNfts(nfts: [NFTData]) {
-        nftsDB = nfts.map {
-            convert(nftData: $0)
+        nfts.forEach {
+            nftsDB[$0.id] = convert(nftData: $0)
+        }
+        updateNftDB()
+    }
+
+    func setLikesInfo(nftIds: [String]) {
+        likedNfts.removeAll()
+        likedNfts = nftIds
+        updateNftDB()
+    }
+
+    func saveLikesInfo(nftIds: [String]) {
+        likedNfts.append(contentsOf: nftIds)
+        updateNftDB()
+    }
+
+    func removeFromLiked(nftIds: [String]) {
+        likedNfts.removeAll {
+            nftIds.contains($0)
+        }
+        updateNftDB()
+    }
+
+    func updateNftDB() {
+        let db: [String: NFT] = nftsDB
+        db.forEach { id, _ in
+            nftsDB[id]?.isLiked = likedNfts.contains(id)
         }
     }
 }
@@ -37,7 +72,7 @@ extension NFTModel {
             id: nftData.id,
             image: nftData.images,
             name: String(nftData.name.split(separator: " ")[0]),
-            isLiked: false,
+            isLiked: likedNfts.contains(nftData.id),
             rating: nftData.rating,
             price: String(nftData.price))
     }

@@ -1,6 +1,6 @@
 import Foundation
 
-protocol NFTCollectionViewModelProtocol: AnyObject {
+protocol NFTCollectionViewModelProtocol: AnyObject, NFTCellProtocol {
     var userNFTCollection: [NFT] { get }
     var onLoadingState: (() -> Void)? { get set }
     var onDataState: (() -> Void)? { get set }
@@ -30,7 +30,11 @@ final class NFTCollectionViewModel: NFTCollectionViewModelProtocol {
 
     private(set) var currentUser: User
 
-    private var currentProfile: ProfileData?
+    private var currentProfile: ProfileData? {
+        didSet {
+            setLikesInfo(nftIds: currentProfile?.likes)
+        }
+    }
 
     private let NFTModel: NFTModelProtocol
 
@@ -48,15 +52,8 @@ final class NFTCollectionViewModel: NFTCollectionViewModelProtocol {
 
     func viewDidLoad() {
         state = .loading
-        userNFTCollection = NFTModel.getUserNFTCollection(nftIDs: currentUser.nfts)
-        servicesAssembly.profileService.loadProfile(id: "1") { [weak self] result in
-            switch result {
-            case .success(let profile):
-                self?.currentProfile = profile
-            case .failure(let error):
-                self?.state = .failed(error)
-            }
-        }
+        updateNFTCollection()
+        loadProfile()
     }
 
     private func stateDidChanged() {
@@ -73,7 +70,7 @@ final class NFTCollectionViewModel: NFTCollectionViewModelProtocol {
                 }
                 self.onDataState?()
                 self.NFTModel.saveNfts(nfts: nftsData)
-                self.userNFTCollection = self.NFTModel.getUserNFTCollection(nftIDs: currentUser.nfts)
+                self.updateNFTCollection()
             }
         case .failed(let error):
             let errorModel = makeErrorModel(error)
@@ -81,8 +78,15 @@ final class NFTCollectionViewModel: NFTCollectionViewModelProtocol {
         }
     }
 
+    private func setLikesInfo(nftIds: [String]?) {
+        if let nftIds = nftIds {
+            NFTModel.setLikesInfo(nftIds: nftIds)
+        }
+        updateNFTCollection()
+    }
+
     private func loadNFTs() {
-        let nfts = NFTModel.getUserNFTCollection(nftIDs: currentUser.nfts)
+        let nfts = NFTModel.getUserNFTCollection()
         if !nfts.isEmpty {
             userNFTCollection = nfts
         }
@@ -100,6 +104,48 @@ final class NFTCollectionViewModel: NFTCollectionViewModelProtocol {
                 self?.state = .failed(error)
             }
         }
+    }
+
+    private func loadProfile() {
+        servicesAssembly.profileService.loadProfile(id: "1") { [weak self] result in
+            switch result {
+            case .success(let profile):
+                self?.currentProfile = profile
+            case .failure(let error):
+                self?.state = .failed(error)
+            }
+        }
+    }
+
+    private func updateLikesInfo() {
+        servicesAssembly.profileService.setLikes(
+            nfts: NFTModel.likedNfts
+        ) { [weak self] result in
+            switch result {
+            case .success(let profile):
+                DispatchQueue.main.async {
+                    self?.currentProfile = profile
+                    self?.updateNFTCollection()
+                }
+            case .failure(let error):
+                self?.state = .failed(error)
+            }
+        }
+    }
+
+    private func updateNFTCollection() {
+        userNFTCollection = NFTModel.getUserNFTCollection()
+    }
+}
+
+extension NFTCollectionViewModel: NFTCellProtocol {
+    func likeButtonDidTap(nftId: String, isLiked: Bool) {
+        if isLiked {
+            NFTModel.saveLikesInfo(nftIds: [nftId])
+        } else {
+            NFTModel.removeFromLiked(nftIds: [nftId])
+        }
+        updateLikesInfo()
     }
 }
 

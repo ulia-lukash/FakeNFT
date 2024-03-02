@@ -109,6 +109,25 @@ struct DefaultNetworkClient: NetworkClient {
 
     // MARK: - Private
 
+//    private func create(request: NetworkRequest) -> URLRequest? {
+//        guard let endpoint = request.endpoint else {
+//            assertionFailure("Empty endpoint")
+//            return nil
+//        }
+//
+//        var urlRequest = URLRequest(url: endpoint)
+//        urlRequest.httpMethod = request.httpMethod.rawValue
+//        urlRequest.setValue(RequestConstants.token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
+//
+//        if let dto = request.dto,
+//           let dtoEncoded = try? encoder.encode(dto) {
+//            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//            urlRequest.httpBody = dtoEncoded
+//        }
+//
+//        return urlRequest
+//    }
+
     private func create(request: NetworkRequest) -> URLRequest? {
         guard let endpoint = request.endpoint else {
             assertionFailure("Empty endpoint")
@@ -119,12 +138,10 @@ struct DefaultNetworkClient: NetworkClient {
         urlRequest.httpMethod = request.httpMethod.rawValue
         urlRequest.setValue(RequestConstants.token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
 
-        if let dto = request.dto,
-           let dtoEncoded = try? encoder.encode(dto) {
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            urlRequest.httpBody = dtoEncoded
+        if let dtoString = request.dto as? String {
+            urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = Data(dtoString.utf8)
         }
-
         return urlRequest
     }
 

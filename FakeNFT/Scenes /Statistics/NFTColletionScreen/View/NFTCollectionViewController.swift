@@ -92,6 +92,7 @@ extension NFTCollectionViewController: UICollectionViewDataSource {
 
         let nft = viewModel.userNFTCollection[indexPath.row]
         cell?.setupCell(using: nft)
+        cell?.delegate = viewModel
 
         guard let cell = cell else {
             return NFTCell()
