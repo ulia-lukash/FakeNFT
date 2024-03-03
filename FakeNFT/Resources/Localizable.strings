@@ -10,6 +10,14 @@
 "Edit.name" = "Имя";
 "Edit.description" = "Описание";
 "Edit.link" = "Ссылка";
+"Edit.editImage" = "Сменить фото";
+"Edit.loadImage" = "Загрузить изображение";
+"Sort.byName" = "По имени";
+"Sort.byRating" = "По рейтингу";
+"SortAlert.title" = "Сортировка";
+"SortAlert.close" = "Закрыть";
+"UserWebsite.button" = "Перейти на сайт пользователя";
+"NFTCollection.screenTitle" = "Коллекция NFT";
 "Catalog.sort" = "Сортировка";
 "Catalog.sort.byName" = "По названию";
 "Catalog.sort.byNftNumber" = "По количеству NFT";
