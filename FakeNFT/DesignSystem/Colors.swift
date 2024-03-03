@@ -30,7 +30,7 @@ extension UIColor {
     private static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
     private static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
     private static let yaWhiteLight = UIColor(hexString: "#FFFFFF")
-    private static let yaWhiteDark = UIColor(hexString: "#2C2C2E")
+    private static let yaWhiteDark = UIColor(hexString: "#1A1B22")
 
     // Background Colors
     static let backgroundUniversal = UIColor(red: 26 / 255, green: 27 / 255, blue: 34 / 255, alpha: 0.5)

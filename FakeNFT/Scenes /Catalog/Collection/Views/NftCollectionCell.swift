@@ -83,7 +83,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
 
     // MARK: Public Methods
 
-    func configure(nft: Nft, isLiked: Bool, isInBasket: Bool) {
+    func configure(nft: Nft, isLiked: Bool, isInCart: Bool) {
         priceLabel.text = "\(nft.price) ETH"
         nameLabel.text = nft.name
         ratingView.setRating(with: nft.rating)
@@ -112,7 +112,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
                 }
         }
         self.isLiked = isLiked
-        self.isInCart = isInBasket
+        self.isInCart = isInCart
         self.nftId = nft.id
         likeButton.tintColor = isLiked ? UIColor.redUniversal : UIColor.whiteUniversal
         cartButton.setImage(UIImage(named: isInCart ? "tabler_trash-x" : "tabler_trash"), for: .normal)

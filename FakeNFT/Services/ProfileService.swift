@@ -19,7 +19,6 @@ final class ProfileService: RequestService {
     private (set) var user: User?
     private (set) var profile: Profile?
     private var task: URLSessionTask?
-    private let urlSession = URLSession.shared
     private let defaults = UserDefaults.standard
 
     // MARK: - Public Methods
@@ -45,34 +44,6 @@ final class ProfileService: RequestService {
             self.task = nil
         }
         self.task = task
-        task.resume()
-    }
-
-    func changeLikesWith(_ likes: [UUID]) {
-        let likes = likes.map {$0.uuidString.lowercased()}
-        let likesString = likes.map { "likes=\($0)" }.joined(separator: "&")
-        let reqData = Data(likesString.utf8)
-
-        guard let request = makePutRequest(
-            path: RequestConstants.profileFetchEndpoint,
-            data: reqData) else { assertionFailure("Failed to make likes put request")
-            return
-        }
-        let task = urlSession.dataTask(with: request) { data, response, error in
-            if let _ = data,
-               let response = response,
-               let statusCode = (response as? HTTPURLResponse)?.statusCode {
-                if 200 ..< 300 ~= statusCode {
-
-                } else {
-                    print(NetworkError.httpStatusCode(statusCode))
-                }
-            } else if let error = error {
-                print(NetworkError.urlRequestError(error))
-            } else {
-                print(NetworkError.urlSessionError)
-            }
-        }
         task.resume()
     }
 }

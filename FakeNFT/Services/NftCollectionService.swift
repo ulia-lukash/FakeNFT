@@ -20,7 +20,6 @@ final class NftCollectionService: RequestService {
     private (set) var collection: NftCollection?
 
     private var task: URLSessionTask?
-    private let urlSession = URLSession.shared
     private let defaults = UserDefaults.standard
 
     // MARK: - Public Methods

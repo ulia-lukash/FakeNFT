@@ -13,7 +13,7 @@ final class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let catalogController = CatalogViewController()
+        let catalogController = UINavigationController(rootViewController: CatalogViewController())
         catalogController.tabBarItem = catalogTabBarItem
 
         viewControllers = [catalogController]

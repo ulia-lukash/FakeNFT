@@ -13,7 +13,7 @@ protocol CollectionViewModelProtocol: AnyObject {
     var collection: NftCollection? { get }
     var nfts: [Nft] { get }
     func isLiked(nft nftId: UUID) -> Bool?
-    func isInBasket(nft nftId: UUID) -> Bool?
+    func isInCart(nft nftId: UUID) -> Bool?
     func didTapLikeFor(nft id: UUID)
     func didTapCartFor(nft id: UUID)
     func getCollectionViewData(collectionId id: UUID)
@@ -31,10 +31,10 @@ final class CollectionViewModel: CollectionViewModelProtocol {
     
     private var nftCollectionServiceObserver: NSObjectProtocol?
     
+    private var likes: [UUID] = []
+    private var cart: [UUID] = []
     private(set) var collection: NftCollection?
-    
     private (set) var profile: Profile?
-    
     private (set) var nfts: [Nft] = []
     
     private(set) var order: Order? {
@@ -44,21 +44,20 @@ final class CollectionViewModel: CollectionViewModelProtocol {
     }
     
     func getCollectionViewData(collectionId id: UUID) {
-                
-        DispatchQueue.main.async {
-            self.nftCollectionServiceObserver = NotificationCenter.default
-                .addObserver(
-                    forName: NftCollectionService.didChangeNotification,
-                    object: nil,
-                    queue: .main) { [weak self] _ in
-                        guard let self = self else { return }
-                        self.collection = collectionService.collection
-                        self.getProfile()
-                    }
-            let id = id.uuidString.lowercased()
-            self.collectionService.fetchCollection(withId: id)
-        }
         
+        self.nftCollectionServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: NftCollectionService.didChangeNotification,
+                object: nil,
+                queue: .main) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.collection = collectionService.collection
+                    self.getProfile()
+                    self.getOrder()
+                    self.fetchNfts()
+                }
+        let id = id.uuidString.lowercased()
+        self.collectionService.fetchCollection(withId: id)
     }
     
     func isLiked(nft nftId: UUID) -> Bool? {
@@ -67,33 +66,28 @@ final class CollectionViewModel: CollectionViewModelProtocol {
         return profile.likes.contains(nftId)
     }
     
-    func isInBasket(nft nftId: UUID) -> Bool? {
+    func isInCart(nft nftId: UUID) -> Bool? {
         guard let order = order else { return false }
         return order.nfts.contains(nftId)
     }
     
     func didTapLikeFor(nft id: UUID) {
-        guard let profile = self.profile else { return }
-        var likes: [UUID] = []
-        if profile.likes.contains(id) {
-            likes = profile.likes.filter { $0 != id}
+        
+        if likes.contains(id) {
+            likes = likes.filter { $0 != id}
         } else {
-            likes = profile.likes
             likes.append(id)
         }
-        profileService.changeLikesWith(likes)
+        profileService.putData(likes, url: RequestConstants.profileFetchEndpoint, isLikes: true)
     }
     
     func didTapCartFor(nft id: UUID) {
-        guard let order = self.order else { return }
-        var nfts: [UUID] = []
-        if order.nfts.contains(id) {
-            nfts = order.nfts.filter { $0 != id}
+        if cart.contains(id) {
+            cart = cart.filter { $0 != id}
         } else {
-            nfts = order.nfts
-            nfts.append(id)
+            cart.append(id)
         }
-        orderService.changeOrderWith(nfts)
+        orderService.putData(cart, url: RequestConstants.orderFetchEndpoint, isLikes: false)
     }
     
     func clearData() {
@@ -105,7 +99,7 @@ final class CollectionViewModel: CollectionViewModelProtocol {
         
         self.nftCollectionServiceObserver = NotificationCenter.default
             .addObserver(
-                forName: NftService.didChangeNftNotification,
+                forName: NftService.didGetNftNotification,
                 object: nil,
                 queue: .main) { [weak self] _ in
                     guard let self = self else { return }
@@ -118,39 +112,33 @@ final class CollectionViewModel: CollectionViewModelProtocol {
                 }
         
         for nftId in nfts {
-            DispatchQueue.main.async {
-                let id = nftId.uuidString.lowercased()
-                self.nftService.fetchNft(withId: id)
-            }
+            let id = nftId.uuidString.lowercased()
+            self.nftService.fetchNft(withId: id)
         }
     }
     
     private func getOrder() {
-        DispatchQueue.main.async {
-            self.nftCollectionServiceObserver = NotificationCenter.default
-                .addObserver(
-                    forName: OrderService.didChangeOrderNotification,
-                    object: nil,
-                    queue: .main) { [weak self] _ in
-                        guard let self = self else { return }
-                        self.order = orderService.order
-                        self.fetchNfts()
-                    }
-            self.orderService.fetchOrder()
-        }
+        self.nftCollectionServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: OrderService.didChangeOrderNotification,
+                object: nil,
+                queue: .main) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.order = orderService.order
+                    self.cart = self.order?.nfts ?? []
+                }
+        self.orderService.fetchOrder()
     }
     private func getProfile() {
-        DispatchQueue.main.async {
-            self.nftCollectionServiceObserver = NotificationCenter.default
-                .addObserver(
-                    forName: ProfileService.didChangeProfileNotification,
-                    object: nil,
-                    queue: .main) { [weak self] _ in
-                        guard let self = self else { return }
-                        self.profile = profileService.profile
-                        getOrder()
-                    }
-            self.profileService.fetchProfile()
-        }
+        self.nftCollectionServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileService.didChangeProfileNotification,
+                object: nil,
+                queue: .main) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.profile = profileService.profile
+                    self.likes = self.profile?.likes ?? []
+                }
+        self.profileService.fetchProfile()
     }
 }
