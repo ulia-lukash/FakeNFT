@@ -56,7 +56,7 @@ final class MyNFTViewController: UIViewController, ErrorView, LoadingView  {
     override func viewDidLoad() {
         super.viewDidLoad()
         bind()
-        viewModel.setState(state: .loading)
+        viewModel.loadMyNFT()
         view.backgroundColor = .whiteUniversal
         setupUIItem()
     }

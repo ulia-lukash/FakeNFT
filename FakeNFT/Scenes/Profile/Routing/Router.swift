@@ -21,7 +21,6 @@ final class Router: BaseRouter {
         sourceVc.myNftDelegate = vc
         let navVc = UINavigationController(rootViewController: vc)
         navVc.modalPresentationStyle = .fullScreen
-        viewModel.loadMyNFT()
         sourceViewController?.present(navVc, animated: true)
     }
     
