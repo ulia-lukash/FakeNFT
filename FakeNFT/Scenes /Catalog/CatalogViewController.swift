@@ -30,7 +30,8 @@ final class CatalogViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewModel = CatalogViewControllerViewModel()
+        viewModel = CatalogViewControllerViewModel(delegate: self)
+        
         nftCollection.dataSource = self
         nftCollection.delegate = self
         setUp()
@@ -144,5 +145,20 @@ extension CatalogViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 40
+    }
+}
+
+extension CatalogViewController: CatalogViewModelDelegateProtocol {
+    func showError() {
+        let alertTitle = NSLocalizedString("Couldn't retrieve data", comment: "")
+        let alert = UIAlertController(title: alertTitle, message: nil, preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .default)
+        let tryAgainAction = UIAlertAction(title: NSLocalizedString("Try again", comment: ""), style: .cancel) { _ in
+            
+            self.viewModel?.getCollections()
+        }
+        alert.addAction(cancelAction)
+        alert.addAction(tryAgainAction)
+        self.present(alert, animated: true, completion: nil)
     }
 }

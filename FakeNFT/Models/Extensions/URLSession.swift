@@ -32,6 +32,7 @@ extension URLSession {
                         fulfillCompletion(.failure(NetworkError.urlRequestError(error)))
                     }
                 } else {
+                    
                     fulfillCompletion(.failure(NetworkError.httpStatusCode(statusCode)))
                 }
             } else if let error = error {

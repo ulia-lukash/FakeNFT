@@ -15,10 +15,17 @@ protocol CatalogViewModelProtocol: AnyObject {
     var onChange: (() -> Void)? { get set }
     var collections: [NftCollection] { get }
 }
+
+protocol CatalogViewModelDelegateProtocol: AnyObject {
+    func showError()
+}
+
 final class CatalogViewControllerViewModel: CatalogViewModelProtocol {
 
+    private let delegate: CatalogViewModelDelegateProtocol
     private let service = NftCollectionService.shared
     private var nftCollectionsServiceObserver: NSObjectProtocol?
+    private var nftCollectionsErrorServiceObserver: NSObjectProtocol?
     private let defaults = UserDefaults.standard
 
     var onChange: (() -> Void)?
@@ -28,7 +35,11 @@ final class CatalogViewControllerViewModel: CatalogViewModelProtocol {
                 onChange?()
             }
         }
-
+    
+    init(delegate: CatalogViewModelDelegateProtocol) {
+        self.delegate = delegate
+    }
+    
     func getCollections() {
         nftCollectionsServiceObserver = NotificationCenter.default
             .addObserver(
@@ -38,6 +49,10 @@ final class CatalogViewControllerViewModel: CatalogViewModelProtocol {
                     guard let self = self else { return }
                     self.collections = service.collections
                 }
+        nftCollectionsErrorServiceObserver = NotificationCenter.default.addObserver(forName: NftCollectionService.errorFetchingData, object: nil, queue: .main) { [weak self] _ in
+            guard let self = self else { return }
+            self.delegate.showError()
+        }
         service.fetchCollections()
     }
 

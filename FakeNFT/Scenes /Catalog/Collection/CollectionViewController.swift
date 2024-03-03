@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import Kingfisher
 import ProgressHUD
+import StoreKit
 
 final class CollectionViewController: UIViewController {
     
@@ -88,8 +89,11 @@ final class CollectionViewController: UIViewController {
         super.viewDidLoad()
         self.navigationController?.navigationBar.tintColor = .segmentActive
         self.navigationController?.navigationBar.topItem?.title = ""
-
+        
         view.backgroundColor = UIColor.whiteModeThemes
+            
+        SKStoreReviewController.requestReview()
+
         ProgressHUD.show()
         self.viewModelNftsObserver = NotificationCenter.default
             .addObserver(
@@ -224,7 +228,7 @@ final class CollectionViewController: UIViewController {
     
     @objc private func didTapAuthorName() {
         
-        /*        Запрос колекции из АПИшки возвращает коллекцию, 
+        /*        Запрос колекции из АПИшки возвращает коллекцию,
          где в поле автор указано только его имя. Из двух вариантов:
          подтягивать всех пользователей и фильтровать по этому имени,
          чтоб найти таки его ссылку на сайт, или натолкать рандомных
