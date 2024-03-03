@@ -17,12 +17,14 @@
 "MyNFT.profile" = "Мои NFT";
 "MyNFTCell.from" = "от";
 "MyNFTCell.price" = "Цена";
-"MyNFTVC.sortName" = "Сортировка";
 "MyNFTVC.byPrice" = "По цене";
-"MyNFTVC.byRating" = "По рейтингу";
 "MyNFTVC.byName" = "По названию";
-"MyNFTVC.close" = "Закрыть";
 "MyNFTVC.empty" = "У Вас еще нет NFT";
 "Favorite.header" = "Избранные NFT";
 "FavoriteVc.empty" = "У Вас еще нет избранных NFT";
-
+"Sort.byName" = "По имени";
+"Sort.byRating" = "По рейтингу";
+"SortAlert.title" = "Сортировка";
+"SortAlert.close" = "Закрыть";
+"UserWebsite.button" = "Перейти на сайт пользователя";
+"NFTCollection.screenTitle" = "Коллекция NFT";
