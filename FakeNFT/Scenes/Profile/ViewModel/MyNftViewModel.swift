@@ -12,7 +12,6 @@ protocol MyNftViewModelProtocol {
     func loadMyNFT()
     func makeErrorModel(error: Error) -> ErrorModel
     func getListMyNft() -> [MyNFTCellModel]
-//    func getLikeIndexPath() -> IndexPath?
     func setSortState(state: SortState)
     func setLikeIndexPathAndUpdateId(_ indexPath: IndexPath?)
     func setUpdateId(index: Int)
@@ -132,6 +131,18 @@ private extension MyNftViewModel {
             self.state = .failed(error)
         }
     }
+    
+    func loadProfile(id: String, completion: @escaping ProfileCompletion) {
+        service.loadProfile { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let profile):
+                self.profile = profile
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
 }
 
 //MARK: - MyNftViewModelProtocol
@@ -148,18 +159,6 @@ extension MyNftViewModel: MyNftViewModelProtocol {
         return ErrorModel(message: message, actionText: actionText) { [weak self] in
             guard let self else { return }
             if !isUpdate { loadMyNFT() }
-        }
-    }
-    
-    func loadProfile(id: String, completion: @escaping ProfileCompletion) {
-        service.loadProfile { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let profile):
-                self.profile = profile
-            case .failure(let error):
-                completion(.failure(error))
-            }
         }
     }
     

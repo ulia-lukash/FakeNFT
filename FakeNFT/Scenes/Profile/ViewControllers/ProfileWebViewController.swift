@@ -61,7 +61,7 @@ extension ProfileWebViewController {
     
     private func isUserInterecrion(flag: Bool) {
         flag ? self.hideLoading() : self.showLoading()
-        view.isUserInteractionEnabled = flag
+        self.navigationController?.navigationBar.isUserInteractionEnabled = flag
     }
     
     private func addSubViews() {

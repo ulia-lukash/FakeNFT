@@ -54,7 +54,7 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
     }()
     
     
-    init(viewModel: FavoriteViewModel) {
+    init(viewModel: FavoriteViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -114,7 +114,7 @@ private extension FavoriteViewController {
     
     func isUserInterecrion(flag: Bool) {
         flag ? self.hideLoading() : self.showLoading()
-        view.isUserInteractionEnabled = flag
+        self.navigationController?.navigationBar.isUserInteractionEnabled = flag
     }
     
     func showStabLabel() {

@@ -83,8 +83,13 @@ private extension MyNFTViewController {
                 let errorModel = viewModel.makeErrorModel(error: error)
                 self.showError(errorModel)
             case .data:
-                if let isEmptyViewModel = viewModel.profile?.nfts.isEmpty, !isEmptyViewModel {
-                    showStabLabel()
+                if viewModel.isUpdate,
+                   let indexPath = viewModel.likeIndexPath,
+                   let cell = getCell(indexPath: indexPath) {
+                    cell.likeButttonPulse(flag: false)
+                    myNFTTable.performBatchUpdates {
+                        self.myNFTTable.reloadRows(at: [indexPath], with: .automatic)
+                    }
                 }
                 if viewModel.isUpdate, let indexPath = viewModel.likeIndexPath {
                     myNFTTable.reloadRows(at: [indexPath], with: .automatic)
@@ -101,7 +106,7 @@ private extension MyNFTViewController {
     
     func isUserInterecrion(flag: Bool) {
         flag ? self.hideLoading() : self.showLoading()
-        view.isUserInteractionEnabled = flag
+        self.navigationController?.navigationBar.isUserInteractionEnabled = flag
     }
     
     func showStabLabel() {
@@ -181,6 +186,12 @@ private extension MyNFTViewController {
         viewModel.isUpdate = false
         viewModel.setSortState(state: state)
         viewModel.loadMyNFT()
+    }
+    
+    func getCell(indexPath: IndexPath) -> MyNFTTableCell? {
+        guard let cell = myNFTTable.cellForRow(at: indexPath) as? MyNFTTableCell
+        else { return nil }
+        return cell
     }
     
     func setupConstraint() {
