@@ -23,6 +23,8 @@
 		261378F82B8B9C7000B59590 /* CurrencyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261378F72B8B9C7000B59590 /* CurrencyService.swift */; };
 		261378FA2B8B9D3F00B59590 /* NftImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261378F92B8B9D3F00B59590 /* NftImageCollectionViewCell.swift */; };
 		261378FC2B8B9D5800B59590 /* CurrenciesTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261378FB2B8B9D5800B59590 /* CurrenciesTableCell.swift */; };
+		261379012B9475F600B59590 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261379002B9475F600B59590 /* OnboardingViewController.swift */; };
+		261379032B94760B00B59590 /* OnboardingViewControllerBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261379022B94760B00B59590 /* OnboardingViewControllerBase.swift */; };
 		2624D8372B868771002DDC95 /* NftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2624D8362B868771002DDC95 /* NftService.swift */; };
 		2624D8392B86877E002DDC95 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2624D8382B86877E002DDC95 /* ProfileService.swift */; };
 		2624D83B2B868791002DDC95 /* OrderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2624D83A2B868791002DDC95 /* OrderService.swift */; };
@@ -100,6 +102,8 @@
 		261378F72B8B9C7000B59590 /* CurrencyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyService.swift; sourceTree = "<group>"; };
 		261378F92B8B9D3F00B59590 /* NftImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		261378FB2B8B9D5800B59590 /* CurrenciesTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrenciesTableCell.swift; sourceTree = "<group>"; };
+		261379002B9475F600B59590 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		261379022B94760B00B59590 /* OnboardingViewControllerBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewControllerBase.swift; sourceTree = "<group>"; };
 		2624D8362B868771002DDC95 /* NftService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftService.swift; sourceTree = "<group>"; };
 		2624D8382B86877E002DDC95 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		2624D83A2B868791002DDC95 /* OrderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderService.swift; sourceTree = "<group>"; };
@@ -241,6 +245,15 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		261378FF2B9475CD00B59590 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				261379002B9475F600B59590 /* OnboardingViewController.swift */,
+				261379022B94760B00B59590 /* OnboardingViewControllerBase.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		2670CFC92B7A99A100E763B3 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -364,6 +377,7 @@
 		3F6806C729CBBC5B00B4F915 /* Scenes  */ = {
 			isa = PBXGroup;
 			children = (
+				261378FF2B9475CD00B59590 /* Onboarding */,
 				E1A1B9D82AA01C9700C3AFBC /* TabBarController */,
 				0CF2C2D92A783C1600FDC837 /* Common */,
 				0CFCB7472A7808870009A829 /* Catalog */,
@@ -638,6 +652,7 @@
 				2670CFDE2B7C0D3A00E763B3 /* CollectionParameters.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,
 				2670CFEC2B80ADDF00E763B3 /* UserResponse.swift in Sources */,
+				261379032B94760B00B59590 /* OnboardingViewControllerBase.swift in Sources */,
 				261378F62B8B9C5200B59590 /* Currency.swift in Sources */,
 				3F6806D529CBBEC700B4F915 /* NetworkTask.swift in Sources */,
 				261378FC2B8B9D5800B59590 /* CurrenciesTableCell.swift in Sources */,
@@ -656,6 +671,7 @@
 				2670CFCB2B7A99B300E763B3 /* URLSession.swift in Sources */,
 				2670CFF62B80ECBF00E763B3 /* Profile.swift in Sources */,
 				2670CFE62B7CDBA300E763B3 /* AuthorViewController.swift in Sources */,
+				261379012B9475F600B59590 /* OnboardingViewController.swift in Sources */,
 				2670CFDA2B7C0CB700E763B3 /* CollectionViewController.swift in Sources */,
 				2670CFEA2B80AC8500E763B3 /* User.swift in Sources */,
 				261378F12B8B9B0700B59590 /* NftViewModel.swift in Sources */,

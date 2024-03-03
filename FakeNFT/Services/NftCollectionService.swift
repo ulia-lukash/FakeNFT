@@ -13,6 +13,7 @@ final class NftCollectionService: RequestService {
 
     static let shared = NftCollectionService()
     static let didChangeNotification = Notification.Name(rawValue: "NftCollectionsServiceDidChange")
+    static let errorFetchingData = Notification.Name(rawValue: "ErrorFetchingCollectionData")
 
     // MARK: - Private Properties
 
@@ -40,7 +41,8 @@ final class NftCollectionService: RequestService {
                     object: self,
                     userInfo: ["collections": self.collections] )
             case .failure(let error):
-                print(error)
+                NotificationCenter.default.post(name: NftCollectionService.errorFetchingData, object: self)
+//                print(error)
             }
             self.task = nil
         }
