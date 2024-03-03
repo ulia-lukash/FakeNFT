@@ -354,8 +354,8 @@
 				1AABF3912B7659BB003C71C3 /* ProfileViewController.swift */,
 				1A7304C42B83DD2A000BABDB /* MyNFTViewController.swift */,
 				1AE6EE862B77DD7F003E0E3C /* EditProfileViewController.swift */,
-				1A899D512B8F6D430038D3D4 /* ProfileWebViewController.swift */,
 				1A37DBC72B8E2D900044071C /* FavoriteViewController.swift */,
+				1A899D512B8F6D430038D3D4 /* ProfileWebViewController.swift */,
 				1A37DBC92B8E2DBA0044071C /* FavoriteAssembly.swift */,
 			);
 			path = ViewControllers;

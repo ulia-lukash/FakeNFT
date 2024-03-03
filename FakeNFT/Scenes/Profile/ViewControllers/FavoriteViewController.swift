@@ -114,7 +114,7 @@ private extension FavoriteViewController {
     
     func isUserInterecrion(flag: Bool) {
         flag ? self.hideLoading() : self.showLoading()
-        view.isUserInteractionEnabled = flag
+        self.navigationController?.navigationBar.isUserInteractionEnabled = flag
     }
     
     func showStabLabel() {
