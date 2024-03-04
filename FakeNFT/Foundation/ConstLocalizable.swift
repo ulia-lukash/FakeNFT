@@ -22,7 +22,6 @@ public enum ConstLocalizable {
     static let editLink = NSLocalizedString("Edit.link", comment: "")
     static let editUserImage = NSLocalizedString("Edit.editImage", comment: "")
     static let editVCLoadImage = NSLocalizedString("Edit.loadImage", comment: "")
-    
     static let basketPay = NSLocalizedString("basketPay", comment: "")
     static let basketMakingAPurchase = NSLocalizedString("basketMakingAPurchase", comment: "")
     static let basketUserAgreement = NSLocalizedString("basketUserAgreement", comment: "")
@@ -44,5 +43,17 @@ public enum ConstLocalizable {
     static let basketSuccess = NSLocalizedString("basketSuccess", comment: "")
     static let basketReturnCatalog = NSLocalizedString("basketReturnCatalog", comment: "")
     static let basket = NSLocalizedString("basket", comment: "")
-
+    static let editImageLink = NSLocalizedString("Edit.imageLink", comment: "")
+    static let tabProfile = NSLocalizedString("Tab.profile", comment: "")
+    static let myNftCellFrom = NSLocalizedString("MyNFTCell.from", comment: "")
+    static let myNftCellPrice = NSLocalizedString("MyNFTCell.price", comment: "")
+    static let myNftVcSortName = NSLocalizedString("SortAlert.title", comment: "")
+    static let myNftVcByPrice = NSLocalizedString("MyNFTVC.byPrice", comment: "")
+    static let myNftVcByRating = NSLocalizedString("Sort.byRating", comment: "")
+    static let myNftVcByName = NSLocalizedString("MyNFTVC.byName", comment: "")
+    static let myNftVcClose = NSLocalizedString( "MyNFTVC.close", comment: "")
+    static let myNftVcEmpty = NSLocalizedString( "MyNFTVC.empty", comment: "")
+    static let myNFTProfile = NSLocalizedString( "MyNFT.profile", comment: "")
+    static let favoriteHeader = NSLocalizedString( "Favorite.header", comment: "")
+    static let favoriteVcEmpty = NSLocalizedString( "FavoriteVc.empty", comment: "")
 }

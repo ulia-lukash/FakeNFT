@@ -3,6 +3,7 @@ import UIKit
 final class TabBarController: UITabBarController {
     
     var servicesAssembly: ServicesAssembly!
+    
     let basketViewModel = BasketViewModel(
         service: BasketService(
             networkClient: DefaultNetworkClient()
@@ -16,16 +17,22 @@ final class TabBarController: UITabBarController {
         )
     )
     
+    private let profileTabBarItem = UITabBarItem(
+        title: NSLocalizedString(ConstLocalizable.tabProfile, comment: ""),
+        image: UIImage(named: "profilActive"),
+        tag: 0
+    )
+    
     private let catalogTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.catalog", comment: ""),
         image: UIImage(systemName: "square.stack.3d.up.fill"),
-        tag: 0
+        tag: 1
     )
     
     private let basketTabBarItem = UITabBarItem(
         title: ConstLocalizable.basket,
         image: UIImage(named: "BasketNoActive"),
-        tag: 1
+        tag: 2
     )
     
     override func viewDidLoad() {
@@ -36,7 +43,13 @@ final class TabBarController: UITabBarController {
         )
         catalogController.tabBarItem = catalogTabBarItem
         
-        viewControllers = [catalogController, createBasketViewController()]
+        let profileViewModel = ProfileViewModel(service: ProfileServiceImpl(networkClient: DefaultNetworkClient(),
+                                                                     storage: ProfileStorageImpl()))
+        let profileController = ProfileViewController(viewModel: profileViewModel)
+        
+        profileController.tabBarItem = profileTabBarItem
+        
+        viewControllers = [profileController, catalogController, createBasketViewController()]
         
         view.backgroundColor = .systemBackground
     }

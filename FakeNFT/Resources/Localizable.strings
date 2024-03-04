@@ -12,11 +12,20 @@
 "Edit.link" = "Ссылка";
 "Edit.editImage" = "Сменить фото";
 "Edit.loadImage" = "Загрузить изображение";
+"Edit.imageLink" = "Ссылка на изображение";
+"Tab.profile" = "Профиль";
+"MyNFT.profile" = "Мои NFT";
+"MyNFTCell.from" = "от";
+"MyNFTCell.price" = "Цена";
+"MyNFTVC.byPrice" = "По цене";
+"MyNFTVC.byName" = "По названию";
+"MyNFTVC.empty" = "У Вас еще нет NFT";
+"Favorite.header" = "Избранные NFT";
+"FavoriteVc.empty" = "У Вас еще нет избранных NFT";
 "Sort.byName" = "По имени";
 "Sort.byRating" = "По рейтингу";
 "SortAlert.title" = "Сортировка";
 "SortAlert.close" = "Закрыть";
-
 "basketPay" = "Оплатить";
 "basketMakingAPurchase" = "Совершая покупку, вы соглашаетесь с условиями";
 "basketUserAgreement" = "Пользовательского соглашения";
@@ -38,3 +47,6 @@
 "basketSuccess" = "Успех! Оплата прошла, \nпоздравляем с покупкой!";
 "basketReturnCatalog" = "Вернуться в каталог";
 "basket" = "Корзина";
+"UserWebsite.button" = "Перейти на сайт пользователя";
+"NFTCollection.screenTitle" = "Коллекция NFT";
+
