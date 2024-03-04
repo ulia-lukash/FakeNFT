@@ -15,12 +15,31 @@ final class BasketViewController: UIViewController, LoadingView {
     
     private var sortedAlertPresenter: SortAlertPresenterProtocol?
     
-    // MARK: - UI
+    private let paymentViewModel: PaymentViewModelProtocol
+    
+    private lazy var rightButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(
+            image: UIImage(named: "Sort"),
+            style: .plain,
+            target: self,
+            action: #selector(didTapSortButton)
+        )
+        button.tintColor = .segmentActive
+        return button
+    }()
+    
+    internal lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
+    // MARK: - UI Elements
     
     private lazy var bottomView: UIView = {
-        var view = UIView()
+        let view = UIView()
         view.layer.cornerRadius = 12
-        view.backgroundColor = UIColor.segmentInactive
+        view.backgroundColor = .segmentInactive
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         view.isHidden = true
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -28,12 +47,11 @@ final class BasketViewController: UIViewController, LoadingView {
     }()
     
     private lazy var paymentButton: UIButton = {
-        var button = UIButton(type: .system)
+        let button = UIButton(type: .system)
         button.backgroundColor = UIColor.segmentActive
-        button.tintColor = UIColor.whiteModeThemes
-        button.setTitle("К оплате", for: .normal)
+        button.tintColor = .whiteModeThemes
+        button.setTitle(ConstLocalizable.basketToBePaid, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
-        button.layer.masksToBounds = true
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(didTapPayButton), for: .touchUpInside)
         button.isHidden = true
@@ -42,25 +60,25 @@ final class BasketViewController: UIViewController, LoadingView {
     }()
     
     private lazy var counterNftLabel: UILabel = {
-        var label = UILabel()
+        let label = UILabel()
         label.font = .systemFont(ofSize: 15, weight: .regular)
-        label.textColor = UIColor.segmentActive
+        label.textColor = .segmentActive
         label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var quantityNftLabel: UILabel = {
-        var label = UILabel()
+        let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.textColor = UIColor.greenUniversal
+        label.textColor = .greenUniversal
         label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var tableView: UITableView = {
-        var tableView = UITableView()
+        let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
@@ -73,10 +91,10 @@ final class BasketViewController: UIViewController, LoadingView {
     }()
     
     private lazy var stubLabel: UILabel = {
-        var label = UILabel()
-        label.text = "Корзина пуста"
+        let label = UILabel()
+        label.text = ConstLocalizable.basketIsEmpty
         label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.textColor = UIColor.segmentActive
+        label.textColor = .segmentActive
         label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -84,35 +102,24 @@ final class BasketViewController: UIViewController, LoadingView {
     
     private lazy var scrollView: UIScrollView = {
         let scroll = UIScrollView()
-        scroll.isMultipleTouchEnabled = false
-        scroll.isScrollEnabled = true
         scroll.translatesAutoresizingMaskIntoConstraints = false
-        scroll.decelerationRate = .init(rawValue: 1)
+        scroll.decelerationRate = .fast
         scroll.isHidden = true
         return scroll
     }()
     
     private lazy var blurEffectView: UIVisualEffectView = {
-        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
-        let view = UIVisualEffectView(effect: blurEffect)
-        return view
+        let blurEffect = UIBlurEffect(style: .light)
+        return UIVisualEffectView(effect: blurEffect)
     }()
     
     private lazy var deleteCardView = BasketDeleteCardView()
     
-    private lazy var rightButton = UIBarButtonItem(
-        image: UIImage(named: "Sort"),
-        style: .plain,
-        target: self,
-        action: #selector(didTapSortButton)
-    )
-    
-    internal var activityIndicator = UIActivityIndicatorView()
-    
     // MARK: - Initializers
     
-    init(viewModel: BasketViewModelProtocol) {
+    init(viewModel: BasketViewModelProtocol, paymentViewModel: PaymentViewModelProtocol) {
         self.viewModel = viewModel
+        self.paymentViewModel = paymentViewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -124,23 +131,23 @@ final class BasketViewController: UIViewController, LoadingView {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        navBarItem()
-        setupView()
+        setupUI()
         setupConstraints()
         deleteCardView.delegate = self
-        setupViewModel()
+        bindViewModel()
         sortedAlertPresenter = SortAlertPresenter(delegate: self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.viewModel.loadNftData()
+        viewModel.loadNftData()
+        setupNavBar()
     }
     
     // MARK: - Private Methods
     
-    private func setupView() {
+    private func setupUI() {
+        view.backgroundColor = .systemBackground
         view.addSubview(scrollView)
         view.addSubview(bottomView)
         view.addSubview(counterNftLabel)
@@ -188,43 +195,33 @@ final class BasketViewController: UIViewController, LoadingView {
         ])
     }
     
-    private func setupViewModel() {
+    private func setupNavBar() {
+        tabBarController?.tabBar.isHidden = false
+        navigationController?.navigationBar.isHidden = false
+    }
+    
+    private func bindViewModel() {
         viewModel.onSortButtonClicked = { [weak self] in
             guard let self else { return }
             self.setupFilters()
         }
         
-        viewModel.onChange = { [weak self] in
+        viewModel.onChange = { [weak self] nftCount, nftQuantity in
             guard let self else { return }
             self.tableView.reloadData()
-            updateCounterLabel()
+            self.counterNftLabel.text = nftCount
+            self.quantityNftLabel.text = nftQuantity
         }
         
         viewModel.onLoad = { [weak self] onLoad in
             guard let self else { return }
-            onLoad ? self.activityIndicator.startAnimating() : self.activityIndicator.stopAnimating()
-            if onLoad == false {
-                setupStubLabel()
+            if onLoad {
+                self.activityIndicator.startAnimating()
+            } else {
+                self.activityIndicator.stopAnimating()
+                self.setupStubLabel()
             }
         }
-    }
-    
-    private func updateCounterLabel() {
-        viewModel.quantityNft = 0
-        for a in 0..<viewModel.nft.count {
-            viewModel.quantityNft += viewModel.nft[a].price
-        }
-        let formatterLabel = String(
-            format:"%.2f", viewModel.quantityNft).replacingOccurrences(
-                of: ".", with: ","
-            )
-        counterNftLabel.text = "\(viewModel.nft.count) NFT"
-        quantityNftLabel.text = "\(formatterLabel) ETH"
-    }
-    
-    private func navBarItem() {
-        guard let navigationBar = navigationController?.navigationBar else { return }
-        navigationBar.topItem?.largeTitleDisplayMode = .always
     }
     
     private func setupBlurView() {
@@ -243,31 +240,30 @@ final class BasketViewController: UIViewController, LoadingView {
     }
     
     private func setupFilters() {
-        sortedAlertPresenter?.showAlert(
-            model: SortAlertModel(
-                title: "Сортировка",
-                message: nil,
-                actionSheetTextFirst: "По цене",
-                actionSheetTextSecond: "По рейтингу",
-                actionSheetTextThird: "По названию",
-                actionSheetTextCancel: "Закрыть",
-                completionFirst: { [weak self] in
-                    guard let self else { return }
-                    self.viewModel.sorting(with: .price)
-                },
-                completionSecond: { [weak self] in
-                    guard let self else { return }
-                    self.viewModel.sorting(with: .rating)
-                },
-                completionThird: { [weak self] in
-                    guard let self else { return }
-                    self.viewModel.sorting(with: .name)
-                }
-            ))
+        sortedAlertPresenter?.showAlert(model: SortAlertModel(
+            title: ConstLocalizable.basketSort,
+            message: nil,
+            actionSheetTextFirst: ConstLocalizable.basketSortPrice,
+            actionSheetTextSecond: ConstLocalizable.basketSortRait,
+            actionSheetTextThird: ConstLocalizable.basketSortName,
+            actionSheetTextCancel: ConstLocalizable.basketClose,
+            completionFirst: { [weak self] in
+                guard let self else { return }
+                self.viewModel.sortItems(with: .price)
+            },
+            completionSecond: { [weak self] in
+                guard let self else { return }
+                self.viewModel.sortItems(with: .rating)
+            },
+            completionThird: { [weak self] in
+                guard let self else { return }
+                self.viewModel.sortItems(with: .name)
+            }
+        ))
     }
     
     private func setupStubLabel() {
-        let isEmptyNFT = viewModel.nft.isEmpty
+        let isEmptyNFT = viewModel.nftItems.isEmpty
         bottomView.isHidden = isEmptyNFT
         scrollView.isHidden = isEmptyNFT
         tableView.isHidden = isEmptyNFT
@@ -279,17 +275,20 @@ final class BasketViewController: UIViewController, LoadingView {
         if isEmptyNFT {
             navigationItem.rightBarButtonItem = nil
         } else {
-            rightButton.tintColor = UIColor.segmentActive
             navigationItem.rightBarButtonItem = rightButton
         }
     }
+    
+    //MARK: - Objc Methods
     
     @objc private func didTapSortButton() {
         viewModel.sortButtonClicked()
     }
     
     @objc private func didTapPayButton() {
-        //TODO: - Basket3-3
+        let viewController = PaymentViewController(viewModel: paymentViewModel)
+        viewController.delegate = self
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
@@ -305,15 +304,15 @@ extension BasketViewController: UITableViewDelegate {
 
 extension BasketViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.nft.count
+        viewModel.nftItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: BasketTableViewCell.identifier) as? BasketTableViewCell else {
             return UITableViewCell()
         }
-        let nft = viewModel.nft[indexPath.row]
-        cell.configureCell(for: nft)
+        let nft = viewModel.nftItems[indexPath.row]
+        cell.configure(with: nft)
         cell.delegate = self
         return cell
     }
@@ -322,9 +321,9 @@ extension BasketViewController: UITableViewDataSource {
 //MARK: - BasketTableViewCellDelegate
 
 extension BasketViewController: BasketTableViewCellDelegate {
-    func deleteButtonClicked(image: UIImage, idNftToDelete: String) {
+    func deleteButtonClicked(image: UIImage, id: String) {
         setupBlurView()
-        deleteCardView.configureView(image: image, idNftToDelete: idNftToDelete)
+        deleteCardView.configureView(image: image, id: id)
     }
 }
 
@@ -342,4 +341,11 @@ extension BasketViewController: BasketDeleteCardViewDelegate {
         deleteCardView.removeFromSuperview()
     }
 }
+
+extension BasketViewController: PaymentViewControllerDelegate {
+    func updateNftAfterPay() {
+        viewModel.deleteAllNft()
+    }
+}
+
 

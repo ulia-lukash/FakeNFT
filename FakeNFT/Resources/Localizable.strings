@@ -16,3 +16,25 @@
 "Sort.byRating" = "По рейтингу";
 "SortAlert.title" = "Сортировка";
 "SortAlert.close" = "Закрыть";
+
+"basketPay" = "Оплатить";
+"basketMakingAPurchase" = "Совершая покупку, вы соглашаетесь с условиями";
+"basketUserAgreement" = "Пользовательского соглашения";
+"basketDelete" = "Выберите способ оплаты";
+"basketPaymentFail" = "Не удалось произвести оплату";
+"basketCancel" = "Отмена";
+"basketRepeat" = "Повторить";
+"basketToBePaid" = "К оплате";
+"basketIsEmpty" = "Корзина пуста";
+"basketSort" = "Сортировка";
+"basketSortPrice" = "По цене";
+"basketSortRait" = "По рейтингу";
+"basketSortName" = "По названию";
+"basketClose" = "Закрыть";
+"basketPrice" = "Цена";
+"basketWantToDelete" = "Вы уверены, что хотите \nудалить объект из корзины?";
+"basketRemove" = "Удалить";
+"basketReturn" = "Вернуться";
+"basketSuccess" = "Успех! Оплата прошла, \nпоздравляем с покупкой!";
+"basketReturnCatalog" = "Вернуться в каталог";
+"basket" = "Корзина";

@@ -15,36 +15,43 @@ enum Filters: String {
 }
 
 protocol BasketViewModelProtocol: AnyObject {
-    var onChange: (() -> Void)? { get set }
+    var onChange: ((String, String) -> Void)? { get set }
     var onLoad: ((Bool) -> Void)? { get set }
     var onSortButtonClicked: (() -> Void)? { get set }
-    var counterNft: Int { get set }
-    var quantityNft: Float { get set }
-    var nft: [Nft] { get }
+    var nftCount: String { get }
+    var nftQuantity: String { get }
+    var nftItems: [Nft] { get }
     func sortButtonClicked()
-    func sorting(with sortList: Filters)
+    func sortItems(with sortList: Filters)
     func loadNftData()
     func deleteNft(index: String)
+    func deleteAllNft()
 }
 
 final class BasketViewModel: BasketViewModelProtocol {
     
     // MARK: - Public properties:
     
-    var onChange: (() -> Void)?
+    var onChange: ((String, String) -> Void)?
     var onLoad: ((Bool) -> Void)?
     var onSortButtonClicked: (() -> Void)?
-    var counterNft: Int = 0
-    var quantityNft: Float = 0
+    var nftCount: String {
+        return "\(nftItems.count) NFT"
+    }
+    var nftQuantity: String {
+        let totalNftPrice = nftItems.reduce(0) { $0 + $1.price }
+        let formatterPrice = String(format: "%.2f", totalNftPrice).replacingOccurrences(of: ".", with: ",")
+        return "\(formatterPrice) ETH"
+    }
     
     // MARK: - Private properties:
     
     private let service: BasketServiceProtocol
     private let storage: StorageManagerProtocol
     
-    private(set) var nft: [Nft] = [] {
+    private(set) var nftItems: [Nft] = [] {
         didSet {
-            onChange?()
+            onChange?(nftCount, nftQuantity)
         }
     }
     
@@ -57,15 +64,15 @@ final class BasketViewModel: BasketViewModelProtocol {
     
     // MARK: - Public Methods
     
-    func sorting(with sortList: Filters) {
+    func sortItems(with sortList: Filters) {
         onLoad?(true)
         switch sortList {
         case .price:
-            nft = nft.sorted { $0.price > $1.price }
+            nftItems = nftItems.sorted { $0.price > $1.price }
         case .rating:
-            nft = nft.sorted { $0.rating > $1.rating }
+            nftItems = nftItems.sorted { $0.rating > $1.rating }
         case .name:
-            nft = nft.sorted { $0.name < $1.name }
+            nftItems = nftItems.sorted { $0.name < $1.name }
         case .error:
             print("error by sorting")
         }
@@ -79,7 +86,7 @@ final class BasketViewModel: BasketViewModelProtocol {
     
     func deleteNft(index: String) {
         onLoad?(true)
-        nft.removeAll(where: { $0.id == index })
+        nftItems.removeAll(where: { $0.id == index })
         onLoad?(false)
         updateOrder()
     }
@@ -108,10 +115,23 @@ final class BasketViewModel: BasketViewModelProtocol {
             }
             dispatch.notify(queue: .main) {
                 let filterNfts = self.sortingArrayFromServer(arrayWithNft)
-                self.nft = filterNfts
+                self.nftItems = filterNfts
                 self.onLoad?(false)
             }
         }
+    }
+    
+    func deleteAllNft() {
+        onLoad?(true)
+        nftItems = []
+        let arrayIdString = nftItems.map( { $0.id } )
+        service.updateByOrders(with: arrayIdString) { result in
+            switch result {
+            case .success: break
+            case .failure: break
+            }
+        }
+        onLoad?(false)
     }
     
     // MARK: - Private Methods
@@ -119,7 +139,7 @@ final class BasketViewModel: BasketViewModelProtocol {
     private func loadingLastSort() {
         if let sortData = storage.string(forKey: .sort) {
             if let sortValue = Filters(rawValue: sortData) {
-                sorting(with: sortValue)
+                sortItems(with: sortValue)
             }
         }
     }
@@ -145,13 +165,11 @@ final class BasketViewModel: BasketViewModelProtocol {
     }
     
     private func updateOrder() {
-        let arrayIdString = nft.map( { $0.id } )
+        let arrayIdString = nftItems.map( { $0.id } )
         service.updateByOrders(with: arrayIdString) { result in
             switch result {
-            case .success:
-                print("error by updateOrder")
-            case .failure:
-                print("error by updateOrder")
+            case .success: break
+            case .failure: break
             }
         }
     }

@@ -1,9 +1,7 @@
-//
 //  BasketDeleteCardView.swift
 //  FakeNFT
 //
 //  Created by Ivan Cherkashin on 12.02.2024.
-//
 
 import UIKit
 
@@ -14,21 +12,15 @@ protocol BasketDeleteCardViewDelegate: AnyObject {
 
 final class BasketDeleteCardView: UIView {
     
-    //MARK: - Delegate
+    // MARK: - Delegate
     
     weak var delegate: BasketDeleteCardViewDelegate?
     
-    // MARK: - Private properties:
+    // MARK: - Private Properties
     
-    private var idNftToDelete = ""
+    private var idNft: String?
     
-    //MARK: - UI
-    
-    private lazy var innerView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    // MARK: - UI Elements
     
     private lazy var deleteCardImage: UIImageView = {
         let imageView = UIImageView()
@@ -40,21 +32,21 @@ final class BasketDeleteCardView: UIView {
     }()
     
     private lazy var deleteCardLabel: UILabel = {
-        var label = UILabel()
-        label.text = "Вы уверены, что хотите \nудалить объект из корзины?"
+        let label = UILabel()
+        label.text = ConstLocalizable.basketWantToDelete
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.numberOfLines = 2
         label.textAlignment = .center
-        label.textColor = UIColor.segmentActive
+        label.textColor = .segmentActive
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var deleteCardButton: UIButton = {
-        var button = UIButton(type: .system)
-        button.backgroundColor = UIColor.segmentActive
-        button.tintColor = UIColor.redUniversal
-        button.setTitle("Удалить", for: .normal)
+        let button = UIButton(type: .system)
+        button.backgroundColor = .segmentActive
+        button.tintColor = .redUniversal
+        button.setTitle(ConstLocalizable.basketRemove, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 12
@@ -64,19 +56,19 @@ final class BasketDeleteCardView: UIView {
     }()
     
     private lazy var backCardButton: UIButton = {
-        var button = UIButton(type: .system)
-        button.backgroundColor = UIColor.segmentActive
-        button.tintColor = UIColor.whiteModeThemes
-        button.setTitle("Вернуться", for: .normal)
+        let button = UIButton(type: .system)
+        button.backgroundColor = .segmentActive
+        button.tintColor = .whiteModeThemes
+        button.setTitle(ConstLocalizable.basketRepeat, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 12
-        button.addTarget(self, action: #selector(didTapbackCardButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapBackCardButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    //MARK: - Life Cycle
+    // MARK: - Life Cycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -94,45 +86,38 @@ final class BasketDeleteCardView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - Public Properties
+    // MARK: - Public Methods
     
-    func configureView(image: UIImage, idNftToDelete: String) {
+    func configureView(image: UIImage, id: String) {
         deleteCardImage.image = image
-        self.idNftToDelete = idNftToDelete
+        idNft = id
     }
     
-    //MARK: - Private Properties
+    // MARK: - Private Methods
     
     private func setupView() {
-        addSubview(innerView)
-        innerView.addSubview(deleteCardImage)
-        innerView.addSubview(deleteCardLabel)
-        innerView.addSubview(deleteCardButton)
-        innerView.addSubview(backCardButton)
+        addSubview(deleteCardImage)
+        addSubview(deleteCardLabel)
+        addSubview(deleteCardButton)
+        addSubview(backCardButton)
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            
-            innerView.topAnchor.constraint(equalTo: self.topAnchor),
-            innerView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            innerView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            innerView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            
             deleteCardImage.heightAnchor.constraint(equalToConstant: 108),
             deleteCardImage.widthAnchor.constraint(equalToConstant: 108),
-            deleteCardImage.centerXAnchor.constraint(equalTo: innerView.centerXAnchor),
-            deleteCardImage.topAnchor.constraint(equalTo: innerView.topAnchor, constant: 244),
+            deleteCardImage.centerXAnchor.constraint(equalTo: centerXAnchor),
+            deleteCardImage.topAnchor.constraint(equalTo: topAnchor, constant: 244),
             
             deleteCardLabel.topAnchor.constraint(equalTo: deleteCardImage.bottomAnchor, constant: 12),
-            deleteCardLabel.centerXAnchor.constraint(equalTo: innerView.centerXAnchor),
+            deleteCardLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             
-            deleteCardButton.leadingAnchor.constraint(equalTo: innerView.leadingAnchor, constant: 56),
+            deleteCardButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 56),
             deleteCardButton.topAnchor.constraint(equalTo: deleteCardLabel.bottomAnchor, constant: 20),
             deleteCardButton.heightAnchor.constraint(equalToConstant: 44),
             deleteCardButton.trailingAnchor.constraint(equalTo: backCardButton.leadingAnchor, constant: -8),
             
-            backCardButton.trailingAnchor.constraint(equalTo: innerView.trailingAnchor, constant: -57),
+            backCardButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -57),
             backCardButton.topAnchor.constraint(equalTo: deleteCardLabel.bottomAnchor, constant: 20),
             backCardButton.heightAnchor.constraint(equalTo: deleteCardButton.heightAnchor),
             backCardButton.widthAnchor.constraint(equalTo: deleteCardButton.widthAnchor),
@@ -141,15 +126,14 @@ final class BasketDeleteCardView: UIView {
         ])
     }
     
-    
-    // MARK: - Objc Methods:
+    // MARK: - Objc Methods
     
     @objc private func didTapDeleteCardButton() {
-        delegate?.didTapDeleteCardButton(index: idNftToDelete)
+        guard let index = idNft else { return }
+        delegate?.didTapDeleteCardButton(index: index)
     }
     
-    @objc private func didTapbackCardButton() {
+    @objc private func didTapBackCardButton() {
         delegate?.backButtonClicked()
     }
 }
-
