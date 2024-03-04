@@ -7,7 +7,6 @@
 
 import UIKit
 import Kingfisher
-import ProgressHUD
 
 protocol NftCollectionCellDelegate: AnyObject {
    func didTapLikeFor(nft id: String)

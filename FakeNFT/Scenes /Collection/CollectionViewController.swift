@@ -7,7 +7,6 @@
 
 import UIKit
 import Kingfisher
-import ProgressHUD
 import StoreKit
 
 final class CollectionViewController: UIViewController, LoadingView, ErrorView {

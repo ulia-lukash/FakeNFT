@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import ProgressHUD
 import SafariServices
 
 final class NftViewController: UIViewController, ErrorView, LoadingView {
