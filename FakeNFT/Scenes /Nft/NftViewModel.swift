@@ -5,6 +5,8 @@
 //  Created by Uliana Lukash on 04.03.2024.
 //
 
+import Foundation
+
 protocol NftViewModelDelegateProtocol: AnyObject {
     func updateCollectionView(oldCount: Int, newCount: Int)
 }
@@ -61,6 +63,7 @@ final class NftViewModel: NftViewModelProtocol {
                     self.loadProfile()
                     self.loadCurrencies()
                     self.fetchMoreNfts()
+                    self.state = .data(nft)
                 case .failure(let error):
                     self.state = .failed(error)
                 }
@@ -75,8 +78,6 @@ final class NftViewModel: NftViewModelProtocol {
                 switch result {
                 case .success(let profile):
                     self.saveProfile(profile)
-                    guard let nft = self.nft else { return }
-                    self.state = .data(nft)
                 case .failure(let error):
                     self.state = .failed(error)
                 }
@@ -91,6 +92,8 @@ final class NftViewModel: NftViewModelProtocol {
                 switch result {
                 case .success(let order):
                     self.saveOrder(order)
+                    guard let nft = self.nft else { return }
+                    self.state = .data(nft)
                 case .failure(let error):
                     self.state = .failed(error)
                 }
@@ -212,14 +215,13 @@ final class NftViewModel: NftViewModelProtocol {
     }
 
     func fetchMoreNfts() {
-        nftService.loadNftsNextPage {
-            [weak self] result in
+        nftService.loadNftsNextPage { [weak self] result in
             guard let self else { return }
             DispatchQueue.main.async { [self] in
                 switch result {
                 case .success(let nfts):
                     self.updateCollectionView(nfts)
-
+                    guard let nft = self.nft else { return }
                 case .failure(let error):
                     self.state = .failed(error)
                 }

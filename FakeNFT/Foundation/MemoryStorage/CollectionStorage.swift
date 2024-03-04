@@ -52,7 +52,7 @@ extension CollectionStorageImpl: CollectionStorageProtocol {
                     collections.append(collection)
                 }
             }
-            if collections.count > 0 {
+            if !collections.isEmpty {
                 return collections
             } else {
                 return nil

@@ -5,89 +5,60 @@
 //  Created by Uliana Lukash on 12.02.2024.
 //
 
-import Foundation
+typealias CollectionCompletion = (Result<NftCollection, Error>) -> Void
+typealias CollectionsCompletion = (Result<[NftCollection], Error>) -> Void
 
-final class NftCollectionService: RequestService {
+protocol CollectionService {
+    func loadCollection(id: String, completion: @escaping CollectionCompletion)
+    func loadCollections(completion: @escaping CollectionsCompletion)
+}
 
-    // MARK: - Public Properties
+// MARK: - ProfileServiceImpl
+final class CollectionServiceImpl {
+    private let networkClient: NetworkClient
+    private let storage: CollectionStorageProtocol
 
-    static let shared = NftCollectionService()
-    static let didChangeNotification = Notification.Name(rawValue: "NftCollectionsServiceDidChange")
-    static let errorFetchingData = Notification.Name(rawValue: "ErrorFetchingCollectionData")
+    init(networkClient: NetworkClient, storage: CollectionStorageProtocol) {
+        self.storage = storage
+        self.networkClient = networkClient
+    }
+}
 
-    // MARK: - Private Properties
-
-    private (set) var collections: [NftCollection] = []
-    private (set) var collection: NftCollection?
-
-    private var task: URLSessionTask?
-    private let defaults = UserDefaults.standard
-
-    // MARK: - Public Methods
-    func fetchCollections() {
-
-        assert(Thread.isMainThread)
-        if task != nil { return }
-
-        guard let request = makeGetRequest(path: RequestConstants.collectionsFetchEndpoint) else {
-            return assertionFailure("Failed to make collections request")}
-        let task = urlSession.objectTask(for: request) {[weak self] (result: Result<[NftCollection], Error>) in
-            guard let self = self else { return }
+// MARK: - ProfileService
+extension CollectionServiceImpl: CollectionService {
+    func loadCollections(completion: @escaping CollectionsCompletion) {
+        if let collections = storage.getCollections() {
+            completion(.success(collections))
+            return
+        }
+        let request = CollectionsRequest()
+        networkClient.send(request: request, type: [NftCollection].self) { [weak storage] result in
             switch result {
             case .success(let collections):
-                self.mapCollections(collections)
-                NotificationCenter.default.post(
-                    name: NftCollectionService.didChangeNotification,
-                    object: self,
-                    userInfo: ["collections": self.collections] )
+                storage?.saveCollections(collections: collections)
+                completion(.success(collections))
             case .failure(let error):
-                NotificationCenter.default.post(name: NftCollectionService.errorFetchingData, object: self)
-//                print(error)
+                completion(.failure(error))
             }
-            self.task = nil
         }
-        self.task = task
-        task.resume()
     }
 
-    func fetchCollection(withId id: String) {
-        if task != nil { return }
-
-        guard let request = makeGetRequest(path: RequestConstants.fetchCollection(withId: id)) else {
-            return assertionFailure("Failed to make a collection request")}
-        let task = urlSession.objectTask(for: request) {[weak self] (result: Result<NftCollection, Error>) in
-            guard let self = self else { return }
+    func loadCollection(id: String, completion: @escaping CollectionCompletion) {
+        if let collection = storage.getCollection(with: id) {
+            completion(.success(collection))
+            return
+        }
+        let request = CollectionRequest(id: id)
+        networkClient.send(request: request,
+                           type: NftCollection.self) { [weak storage] result in
             switch result {
             case .success(let collection):
-                self.mapCollection(collection)
-                NotificationCenter.default.post(
-                    name: NftCollectionService.didChangeNotification,
-                    object: self,
-                    userInfo: ["collection": self.collection as Any] )
+                storage?.saveCollection(collection: collection)
+                completion(.success(collection))
             case .failure(let error):
-                print(error)
+                completion(.failure(error))
             }
-            self.task = nil
-        }
-        self.task = task
-        task.resume()
-    }
-
-    private func mapCollections(_ collections: [NftCollection]) {
-        if defaults.object(forKey: "ShouldFilterByName") != nil {
-            self.collections = collections.sorted(by: {$0.name < $1.name})
-        } else {
-            self.collections = collections.sorted(by: {$0.nfts.count > $1.nfts.count})
         }
     }
 
-    private func mapCollection(_ collection: NftCollection) {
-        self.collection = NftCollection(
-            name: collection.name,
-            cover: collection.cover,
-            nfts: collection.nfts,
-            description: collection.description,
-            author: collection.author,
-            id: collection.id)
-    }
 }

@@ -5,6 +5,8 @@
 //  Created by Uliana Lukash on 04.03.2024.
 //
 
+import Foundation
+
 protocol CollectionViewModelProtocol: AnyObject {
 
     var collection: NftCollection? { get }

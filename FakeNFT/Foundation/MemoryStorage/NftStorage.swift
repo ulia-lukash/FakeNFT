@@ -31,6 +31,6 @@ final class NftStorageImpl: NftStorage {
                 nfts.append(nft)
             }
         }
-        return nfts.count > 0 ? nfts : nil
+        return !nfts.isEmpty ? nfts : nil
     }
 }
