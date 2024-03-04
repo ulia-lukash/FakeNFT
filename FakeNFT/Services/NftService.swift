@@ -7,75 +7,110 @@
 
 import Foundation
 
-final class NftService: RequestService {
 
-    // MARK: - Public Properties
+typealias NftCompletion = (Result<Nft, Error>) -> Void
+typealias NftsCompletion = (Result<[Nft], Error>) -> Void
 
-    static let shared = NftService()
-    static let didGetNftNotification = Notification.Name(rawValue: "Did fetch NFT")
-    static let didChangeNftsNotification = Notification.Name(rawValue: "Did fetch NFTs")
-    // MARK: - Private Properties
+protocol NftService {
+    func loadNft(id: String, completion: @escaping NftCompletion)
+    func loadNftsNextPage(completion: @escaping NftsCompletion)
+    func loadNfts(withIds nfts: [String], completion: @escaping NftsCompletion)
+}
 
-    private (set) var nft: Nft?
-    private (set) var nfts: [Nft] = []
-    private var task: URLSessionTask?
+final class NftServiceImpl: NftService {
+
     private var lastLoadedPage: Int?
-    private let defaults = UserDefaults.standard
+    private let networkClient: NetworkClient
+    private let storage: NftStorage
 
-    // MARK: - Public Methods
+    init(networkClient: NetworkClient, storage: NftStorage) {
+        self.storage = storage
+        self.networkClient = networkClient
+    }
 
-    // MARK: - Public Methods
-    func fetchNftsNextPage() {
-                
+    func loadNft(id: String, completion: @escaping NftCompletion) {
+        if let nft = storage.getNft(with: id) {
+            completion(.success(nft))
+            return
+        }
+
+        let request = NFTRequest(id: id)
+        networkClient.send(request: request, type: Nft.self) { [weak storage] result in
+            switch result {
+            case .success(let nft):
+                storage?.saveNft(nft)
+                completion(.success(nft))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func loadNftsNextPage(completion: @escaping NftsCompletion) {
         let nextPage = lastLoadedPage == nil
         ? 1
         : lastLoadedPage! + 1
         lastLoadedPage = nextPage
-        
-        guard let request = makeGetRequest(path: RequestConstants.fetchNfts(forPage: nextPage)) else {
-            return assertionFailure("Не удалось создать запрос nfts")}
-        let task = urlSession.objectTask(for: request) {[weak self] (result: Result<[Nft], Error>) in
-            guard let self = self else { return }
+
+        let request = NFTsRequest(page: nextPage)
+
+        networkClient.send(request: request, type: [Nft].self) { result in
             switch result {
             case .success(let nfts):
-                self.nfts.append(contentsOf: nfts)
-                NotificationCenter.default.post(name: NftService.didChangeNftsNotification, object: self, userInfo: ["nfts": self.nfts] )
+                completion(.success(nfts))
             case .failure(let error):
-                print(error)
+                completion(.failure(error))
             }
-            self.task = nil
         }
-        self.task = task
-        task.resume()
     }
-    
-    func fetchNft(withId id: String) {
 
-        guard let request = makeGetRequest(path: RequestConstants.fetchNft(withId: id)) else {
-            return assertionFailure("Failed to make an NFT request")}
+    func loadNfts(withIds nfts: [String], completion: @escaping NftsCompletion) {
+        var returnNfts: [Nft] = []
 
-        let task = urlSession.objectTask(for: request) {[weak self] (result: Result<Nft, Error>) in
-            guard let self = self else { return }
+        let operationQueue = OperationQueue()
+        operationQueue.maxConcurrentOperationCount = 1
+
+        for id in nfts {
+            let operation = BlockOperation {
+                let request = NFTRequest(id: id)
+                var nft: Nft?
+
+                let semaphore = DispatchSemaphore(value: 0)
+
+                self.load(request: request) { result in
+                    switch result {
+                    case .success(let loadedNFT):
+                        nft = loadedNFT
+                    case .failure(let error):
+                        completion(.failure(error))
+                        return
+                    }
+                    semaphore.signal()
+                }
+                _ = semaphore.wait(timeout: .distantFuture)
+
+                if let nft = nft {
+                    returnNfts.append(nft)
+
+                    if returnNfts.count == nfts.count {
+                        completion(.success(returnNfts))
+                    }
+                }
+            }
+            operationQueue.addOperation(operation)
+        }
+    }
+
+    func load(request: NetworkRequest,
+              completion: @escaping NftCompletion) {
+        networkClient.send(request: request,
+                           type: Nft.self) { result in
             switch result {
             case .success(let nft):
-                self.nft = nft
-                NotificationCenter.default.post(
-                    name: NftService.didGetNftNotification,
-                    object: self,
-                    userInfo: ["nft": self.nft as Any] )
+                completion(.success(nft))
             case .failure(let error):
-                print(error)
+                completion(.failure(error))
             }
-            self.task = nil
         }
-        self.task = task
-        task.resume()
     }
-
-    func clearData() {
-        self.nfts = []
-    }
-
-    // MARK: - Private Methods
-    
 }

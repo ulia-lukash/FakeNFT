@@ -10,8 +10,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     )
 
     func scene(_: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
-        setUpProgreeHUD()
-//
         
         configureInitialViewController()
     }
@@ -34,10 +32,5 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         self.window?.rootViewController = initialViewController
         window?.makeKeyAndVisible()
-    }
-
-    private func setUpProgreeHUD() {
-        ProgressHUD.animationType = .circleSpinFade
-        ProgressHUD.colorAnimation = .blueUniversal
     }
 }

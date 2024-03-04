@@ -7,48 +7,41 @@
 
 import Foundation
 
-final class CurrencyService: RequestService {
+typealias CurrenciesCompletion = (Result<[Currency], Error>) -> Void
 
-    // MARK: - Public Properties
+protocol CurrenciesService {
+    func loadCurrencies(completion: @escaping CurrenciesCompletion)
+}
 
-    static let shared = CurrencyService()
-    static let didChangeCurrenciesNotification = Notification.Name(rawValue: "Did fetch curremcies")
-    // MARK: - Private Properties
+// MARK: - ProfileServiceImpl
+final class CurrenciesServiceImpl {
+    private let networkClient: NetworkClient
+    private let storage: CurrenciesStorageProtocol
 
-    private (set) var currencies: [Currency] = []
-    private var task: URLSessionTask?
-    private let defaults = UserDefaults.standard
+    init(networkClient: NetworkClient, storage: CurrenciesStorageProtocol) {
+        self.storage = storage
+        self.networkClient = networkClient
+    }
+}
 
-    // MARK: - Public Methods
+// MARK: - ProfileService
+extension CurrenciesServiceImpl: CurrenciesService {
 
-    func fetchCurrencies() {
-
-        guard let request = makeGetRequest(path: RequestConstants.currenciesFetchEndpoint) else {
-            return assertionFailure("Failed to make an NFT request")}
-
-        let task = urlSession.objectTask(for: request) {[weak self] (result: Result<[Currency], Error>) in
-            guard let self = self else { return }
+    func loadCurrencies(completion: @escaping CurrenciesCompletion) {
+        if let currencies = storage.getCurrencies() {
+            completion(.success(currencies))
+            return
+        }
+        let request = CurrenciesRequest()
+        networkClient.send(request: request,
+                           type: [Currency].self) { [weak storage] result in
             switch result {
             case .success(let currencies):
-                self.mapCurrencies(currencies)
-                NotificationCenter.default.post(
-                    name: CurrencyService.didChangeCurrenciesNotification,
-                    object: self,
-                    userInfo: ["currencies": self.currencies] )
+                storage?.saveCurrencies(currencies)
+                completion(.success(currencies))
             case .failure(let error):
-                print(error)
+                completion(.failure(error))
             }
-            self.task = nil
-        }
-        self.task = task
-        task.resume()
-    }
-    
-    // MARK: - Private Methods
-    private func mapCurrencies(_ currencies: [Currency]) {
-        currencies.forEach {
-            self.currencies.append(Currency(id: $0.id, title: $0.title, name: $0.name, image: $0.image))
         }
     }
-    
 }

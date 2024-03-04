@@ -7,42 +7,89 @@
 
 import Foundation
 
-final class OrderService: RequestService {
+typealias OrderCompletion = (Result<Order, Error>) -> Void
 
-    // MARK: - Public Properties
+protocol OrderService {
+    func loadOrder(completion: @escaping OrderCompletion)
+    func updateOrder(dto: String, completion: @escaping OrderCompletion)
+    func updateOrder(nfts: [String], completion: @escaping OrderCompletion)
+}
 
-    static let shared = OrderService()
-    static let didChangeOrderNotification = Notification.Name(rawValue: "Did fetch ORDER")
+// MARK: - ProfileServiceImpl
+final class OrderServiceImpl {
+    private let networkClient: NetworkClient
+    private let storage: OrderStorageProtocol
 
-    // MARK: - Private Properties
+    init(networkClient: NetworkClient, storage: OrderStorageProtocol) {
+        self.storage = storage
+        self.networkClient = networkClient
+    }
+}
 
-    private (set) var order: Order?
-    private var task: URLSessionTask?
-    private let defaults = UserDefaults.standard
+// MARK: - ProfileService
+extension OrderServiceImpl: OrderService {
 
-    // MARK: - Public Methods
-
-    func fetchOrder() {
-
-        if task != nil { return }
-
-        guard let request = makeGetRequest(path: RequestConstants.orderFetchEndpoint) else {
-            return assertionFailure("Failed to make order request")}
-        let task = urlSession.objectTask(for: request) {[weak self] (result: Result<Order, Error>) in
-            guard let self = self else { return }
+    func loadOrder(completion: @escaping OrderCompletion) {
+        if let order = storage.getOrder() {
+            completion(.success(order))
+            return
+        }
+        let request = OrderRequest()
+        networkClient.send(request: request,
+                           type: Order.self) { [weak storage] result in
             switch result {
             case .success(let order):
-                self.order = order
-                NotificationCenter.default.post(
-                    name: OrderService.didChangeOrderNotification,
-                    object: self,
-                    userInfo: ["order": self.order as Any] )
+                storage?.saveOrder(order: order)
+                completion(.success(order))
             case .failure(let error):
-                print(error)
+                completion(.failure(error))
             }
-            self.task = nil
         }
-        self.task = task
-        task.resume()
+    }
+
+    func updateOrder(dto: String, completion: @escaping OrderCompletion) {
+        let request = OrderPutRequest(dto: dto)
+        networkClient.send(request: request,
+                           type: Profile.self) { [weak self, storage] result in
+            guard let self else { return }
+            storage.removeOrder()
+            switch result {
+            case .success:
+                self.loadOrder { result in
+                    switch result {
+                    case .success(let order):
+                        completion(.success(order))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func updateOrder(nfts: [String], completion: @escaping OrderCompletion) {
+        let dto = nfts.map {"nfts=\($0)"}.joined(separator: "&")
+        let request = OrderPutRequest(dto: dto)
+        networkClient.send(request: request,
+                           type: Profile.self) { [weak self, storage] result in
+            guard let self else { return }
+            storage.removeOrder()
+            switch result {
+            case .success:
+                self.loadOrder { result in
+                    switch result {
+                    case .success(let order):
+                        storage.saveOrder(order: order)
+                        completion(.success(order))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 }

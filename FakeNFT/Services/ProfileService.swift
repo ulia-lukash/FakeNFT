@@ -7,43 +7,107 @@
 
 import Foundation
 
-final class ProfileService: RequestService {
+typealias ProfileCompletion = (Result<Profile, Error>) -> Void
 
-    // MARK: - Public Properties
+protocol ProfileService {
+    func loadProfile(id: String, completion: @escaping ProfileCompletion)
+    func loadProfile(completion: @escaping ProfileCompletion)
+    func updateProfile(dto: String, id: String,
+                       completion: @escaping ProfileCompletion)
+    func updateProfile(likes: [String], completion: @escaping ProfileCompletion)
+}
 
-    static let shared = ProfileService()
-    static let didChangeProfileNotification = Notification.Name(rawValue: "Did fetch PROFILE")
+// MARK: - ProfileServiceImpl
+final class ProfileServiceImpl {
+    private let networkClient: NetworkClient
+    private let storage: ProfileStorageProtocol
 
-    // MARK: - Private Properties
+    init(networkClient: NetworkClient, storage: ProfileStorageProtocol) {
+        self.storage = storage
+        self.networkClient = networkClient
+    }
+}
 
-    private (set) var user: User?
-    private (set) var profile: Profile?
-    private var task: URLSessionTask?
-    private let defaults = UserDefaults.standard
+// MARK: - ProfileService
+extension ProfileServiceImpl: ProfileService {
 
-    // MARK: - Public Methods
-
-    func fetchProfile() {
-
-        if task != nil { return }
-
-        guard let request = makeGetRequest(path: RequestConstants.profileFetchEndpoint) else {
-            return assertionFailure("Failed to make PROFILE REQUEST")}
-        let task = urlSession.objectTask(for: request) {[weak self] (result: Result<Profile, Error>) in
-            guard let self = self else { return }
+    func loadProfile(id: String, completion: @escaping ProfileCompletion) {
+        if let profile = storage.getProfile() {
+            completion(.success(profile))
+            return
+        }
+        let request = ProfileRequest()
+        networkClient.send(request: request,
+                           type: Profile.self) {result in
             switch result {
             case .success(let profile):
-                self.profile = profile
-                NotificationCenter.default.post(
-                    name: ProfileService.didChangeProfileNotification,
-                    object: self,
-                    userInfo: ["profile": self.profile as Any] )
+                completion(.success(profile))
             case .failure(let error):
-                assertionFailure("Failed to fetch PROFILE: " + error.localizedDescription)
+                completion(.failure(error))
             }
-            self.task = nil
         }
-        self.task = task
-        task.resume()
+    }
+    func loadProfile(completion: @escaping ProfileCompletion) {
+        if let profile = storage.getProfile() {
+            completion(.success(profile))
+            return
+        }
+        let request = ProfileRequest()
+        networkClient.send(request: request,
+                           type: Profile.self) {result in
+            switch result {
+            case .success(let profile):
+                completion(.success(profile))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func updateProfile(dto: String, id: String, completion: @escaping ProfileCompletion) {
+        let request = ProfilePutRequest(dto: dto)
+        networkClient.send(request: request,
+                           type: Profile.self) { [weak self, storage] result in
+            guard let self else { return }
+            storage.removeProfile()
+            switch result {
+            case .success:
+                self.loadProfile { result in
+                    switch result {
+                    case .success(let profile):
+                        completion(.success(profile))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func updateProfile(likes: [String], completion: @escaping ProfileCompletion) {
+
+        let dto = likes.map {"likes=\($0)"}.joined(separator: "&")
+        let request = ProfilePutRequest(dto: dto)
+        networkClient.send(request: request,
+                           type: Profile.self) { [weak self, storage] result in
+            guard let self else { return }
+            storage.removeProfile()
+            switch result {
+            case .success:
+                self.loadProfile { result in
+                    switch result {
+                    case .success(let profile):
+                        storage.saveProfile(profile: profile)
+                        completion(.success(profile))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 }
