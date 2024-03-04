@@ -2,11 +2,11 @@
 //  NftDetailViewController.swift
 //  FakeNFT
 //
-//  Created by Uliana Lukash on 25.02.2024.
+//  Created by Uliana Lukash on 04.03.2024.
 //
 
-import Foundation
 import UIKit
+import Kingfisher
 
 final class NftDetailViewController: UIViewController {
 
@@ -46,16 +46,16 @@ final class NftDetailViewController: UIViewController {
         view.backgroundColor = .white
         setupLayout()
     }
-    
+
     init(urls: [URL]) {
         self.urls = urls
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - private functions
 
     private func setupLayout() {
@@ -119,3 +119,4 @@ extension NftDetailViewController: UICollectionViewDelegateFlowLayout {
         pageControl.selectedItem = selectedItem
     }
 }
+

@@ -2,14 +2,13 @@
 //  NftImageCollectionViewCell.swift
 //  FakeNFT
 //
-//  Created by Uliana Lukash on 25.02.2024.
+//  Created by Uliana Lukash on 04.03.2024.
 //
 
-import Foundation
 import UIKit
 
 final class NftImageCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
-    
+
     // MARK: - Properties
 
     private lazy var scrollView: UIScrollView = {
