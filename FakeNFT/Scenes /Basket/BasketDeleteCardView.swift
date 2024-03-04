@@ -59,7 +59,7 @@ final class BasketDeleteCardView: UIView {
         let button = UIButton(type: .system)
         button.backgroundColor = .segmentActive
         button.tintColor = .whiteModeThemes
-        button.setTitle(ConstLocalizable.basketRepeat, for: .normal)
+        button.setTitle(ConstLocalizable.basketReturn, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 12
