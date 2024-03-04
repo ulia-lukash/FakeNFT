@@ -2,19 +2,18 @@
 //  AuthorViewController.swift
 //  FakeNFT
 //
-//  Created by Uliana Lukash on 14.02.2024.
+//  Created by Uliana Lukash on 04.03.2024.
 //
 
-import Foundation
 import UIKit
 import WebKit
 
 final class AuthorViewController: UIViewController, WKUIDelegate {
 
     // MARK: - Public Properties
-    
+
     private let url: URL
-    
+
     // MARK: - Private Properties
 
     private var webView: WKWebView!
@@ -52,18 +51,18 @@ final class AuthorViewController: UIViewController, WKUIDelegate {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
-    
+
     // MARK: - Initializers
-    
+
     init(url: URL) {
         self.url = url
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Private Methods
 
     private func updateProgress() {

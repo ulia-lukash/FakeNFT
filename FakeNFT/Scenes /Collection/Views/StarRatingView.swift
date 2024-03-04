@@ -2,10 +2,9 @@
 //  StarRatingView.swift
 //  FakeNFT
 //
-//  Created by Uliana Lukash on 13.02.2024.
+//  Created by Uliana Lukash on 04.03.2024.
 //
 
-import Foundation
 import UIKit
 
 final class StarRatingView: UIView {

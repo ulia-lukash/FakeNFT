@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 typealias NftCompletion = (Result<Nft, Error>) -> Void
 typealias NftsCompletion = (Result<[Nft], Error>) -> Void
 
