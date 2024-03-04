@@ -10,9 +10,9 @@ import Foundation
 struct User {
     let name: String
     let website: URL?
-    let id: UUID
+    let id: String
 
-    init(name: String, website: String, id: UUID) {
+    init(name: String, website: String, id: String) {
         self.name = name
         self.website = URL(string: website)
         self.id = id

@@ -8,7 +8,11 @@
 import Foundation
 
 struct Profile: Codable {
-    let nfts: [UUID]
-    let likes: [UUID]
+    let name: String
+    let avatar: String
+    let description: String
+    let website: String
+    let nfts: [String]
+    let likes: [String]
     let id: String
 }

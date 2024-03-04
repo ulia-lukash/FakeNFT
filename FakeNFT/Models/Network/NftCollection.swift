@@ -10,9 +10,8 @@ import Foundation
 struct NftCollection: Codable {
     let name: String
     let cover: String
-    let nfts: [UUID]
+    let nfts: [String]
     let description: String
     let author: String
-    let id: UUID
-
+    let id: String
 }

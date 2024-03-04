@@ -8,6 +8,6 @@
 import Foundation
 
 struct Order: Codable {
-    let nfts: [UUID]
+    let nfts: [String]
     let id: String
 }
