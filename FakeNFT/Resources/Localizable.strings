@@ -49,4 +49,22 @@
 "basket" = "Корзина";
 "UserWebsite.button" = "Перейти на сайт пользователя";
 "NFTCollection.screenTitle" = "Коллекция NFT";
-
+"Catalog.sort" = "Сортировка";
+"Catalog.sort.byName" = "По названию";
+"Catalog.sort.byNftNumber" = "По количеству NFT";
+"Close" = "Закрыть";
+"Collection author:" = "Автор коллекции:";
+"Price" = "Цена";
+"Add to cart" = "Добавить в корзину";
+"Go to cart" = "Перейти в корзину";
+"Go to seller's website" = "Перейти на сайт продавца";
+"Couldn't retrieve data" = "Не удалось получить данные";
+"Cancel" = "Отменить";
+"Try again" = "Повторить";
+"What's inside?" = "Что внутри?";
+"OnboardingTitle1" = "Исследуйте";
+"OnboardingTitle2" = "Коллекционируйте";
+"OnboardingTitle3" = "Состязайтесь";
+"OnboardingCaption1" = "Присоединяйтесь и откройте новый мир уникальных NFT для коллекционеров";
+"OnboardingCaption2" = "Пополняйте свою коллекцию эксклюзивными картинками, созданными нейросетью!";
+"OnboardingCaption3" = "Смотрите статистику других и покажите всем, что у вас самая ценная коллекция";
