@@ -2,12 +2,12 @@
 //  Profile.swift
 //  FakeNFT
 //
-//  Created by Uliana Lukash on 17.02.2024.
+//  Created by Григорий Машук on 12.02.24.
 //
 
 import Foundation
 
-struct Profile: Codable {
+struct Profile: Decodable {
     let name: String
     let avatar: String
     let description: String

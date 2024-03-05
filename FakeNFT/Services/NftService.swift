@@ -8,12 +8,12 @@
 import Foundation
 
 typealias NftCompletion = (Result<Nft, Error>) -> Void
-typealias NftsCompletion = (Result<[Nft], Error>) -> Void
+typealias NftsArrayCompletion = (Result<[Nft], Error>) -> Void
 
 protocol NftService {
     func loadNft(id: String, completion: @escaping NftCompletion)
-    func loadNftsNextPage(completion: @escaping NftsCompletion)
-    func loadNfts(withIds nfts: [String], completion: @escaping NftsCompletion)
+    func loadNftsNextPage(completion: @escaping NftsArrayCompletion)
+    func loadNfts(withIds nfts: [String], completion: @escaping NftsArrayCompletion)
 }
 
 final class NftServiceImpl: NftService {
@@ -45,7 +45,7 @@ final class NftServiceImpl: NftService {
         }
     }
 
-    func loadNftsNextPage(completion: @escaping NftsCompletion) {
+    func loadNftsNextPage(completion: @escaping NftsArrayCompletion) {
         let nextPage = lastLoadedPage == nil
         ? 1
         : lastLoadedPage! + 1
@@ -63,7 +63,7 @@ final class NftServiceImpl: NftService {
         }
     }
 
-    func loadNfts(withIds nfts: [String], completion: @escaping NftsCompletion) {
+    func loadNfts(withIds nfts: [String], completion: @escaping NftsArrayCompletion) {
         var returnNfts: [Nft] = []
 
         let operationQueue = OperationQueue()

@@ -73,7 +73,7 @@ extension OrderServiceImpl: OrderService {
         let dto = nfts.map {"nfts=\($0)"}.joined(separator: "&")
         let request = OrderPutRequest(dto: dto)
         networkClient.send(request: request,
-                           type: Profile.self) { [weak self, storage] result in
+                           type: Order.self) { [weak self, storage] result in
             guard let self else { return }
             storage.removeOrder()
             switch result {

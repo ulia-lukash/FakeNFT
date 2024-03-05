@@ -12,7 +12,7 @@ struct NFTRequest: NetworkRequest {
     let id: String
 
     var endpoint: URL? {
-        URL(string: "\(RequestConstants.baseURL)/nft/\(id)")
+        URL(string: "\(RequestConstants.baseURL)/api/v1/nft/\(id)")
     }
 }
 
@@ -21,6 +21,6 @@ struct NFTsRequest: NetworkRequest {
     let page: Int
 
     var endpoint: URL? {
-        URL(string: "\(RequestConstants.baseURL)/nft?page=\(page)&size=10")
+        URL(string: "\(RequestConstants.baseURL)/api/v1/nft?page=\(page)&size=10")
     }
 }

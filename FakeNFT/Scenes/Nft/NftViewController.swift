@@ -201,12 +201,14 @@ final class NftViewController: UIViewController, ErrorView, LoadingView {
            addToCartButton.setTitleColor(.segmentActive, for: .normal)
            let title = NSLocalizedString("Go to cart", comment: "")
            addToCartButton.setTitle(title, for: .normal)
+           addToCartButton.removeTarget(self, action: #selector(addToCart), for: .touchUpInside)
            addToCartButton.addTarget(self, action: #selector(goToCart), for: .touchUpInside)
-       } else {
+       } else if !viewModel.isInCart(nft: nftId) {
            addToCartButton.backgroundColor = .segmentActive
            addToCartButton.setTitleColor(.whiteModeThemes, for: .normal)
            let title = NSLocalizedString("Add to cart", comment: "")
            addToCartButton.setTitle(title, for: .normal)
+           addToCartButton.removeTarget(self, action: #selector(goToCart), for: .touchUpInside)
            addToCartButton.addTarget(self, action: #selector(addToCart), for: .touchUpInside)
        }
    }
@@ -301,11 +303,27 @@ final class NftViewController: UIViewController, ErrorView, LoadingView {
        addToCartButton.setTitleColor(.segmentActive, for: .normal)
        let title = NSLocalizedString("Go to cart", comment: "")
        addToCartButton.setTitle(title, for: .normal)
+       addToCartButton.removeTarget(self, action: #selector(addToCart), for: .touchUpInside)
        addToCartButton.addTarget(self, action: #selector(goToCart), for: .touchUpInside)
    }
 
    @objc private func goToCart() {
-       //        TODO: make segue to cart page
+       let basketViewModel = BasketViewModel(
+           service: BasketService(
+               networkClient: DefaultNetworkClient()
+           ),
+           storage: StorageManager()
+       )
+       
+       let paymentViewModel = PaymentViewModel(
+           service: PaymentService(
+               networkClient: DefaultNetworkClient()
+           )
+       )
+       
+       let basketController = BasketViewController(viewModel: basketViewModel, paymentViewModel: paymentViewModel)
+       
+       present(basketController, animated: true)
    }
 
    @objc private func goToSellerWebsite() {

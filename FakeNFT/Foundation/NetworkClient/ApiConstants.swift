@@ -2,7 +2,7 @@
 //  ApiConstants.swift
 //  FakeNFT
 //
-//  Created by Uliana Lukash on 04.03.2024.
+//  Created by Григорий Машук on 16.02.24.
 //
 
 import Foundation

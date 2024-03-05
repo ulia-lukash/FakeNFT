@@ -2,7 +2,7 @@
 //  ProfileService.swift
 //  FakeNFT
 //
-//  Created by Uliana Lukash on 21.02.2024.
+//  Created by Григорий Машук on 13.02.24.
 //
 
 import Foundation

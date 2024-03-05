@@ -1,6 +1,6 @@
 import Foundation
 
-struct Nft: Codable {
+struct Nft: Codable, Equatable {
     let name: String
     let images: [String]
     let rating: Int

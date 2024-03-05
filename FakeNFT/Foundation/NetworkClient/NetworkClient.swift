@@ -114,18 +114,19 @@ struct DefaultNetworkClient: NetworkClient {
             assertionFailure("Empty endpoint")
             return nil
         }
-
+        
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
         urlRequest.setValue(ApiConstants.tockenValue,
                             forHTTPHeaderField: ApiConstants.tokenHeder)
-
+        
         if let dto = request.dto as? String {
             urlRequest.setValue(ApiConstants.contentTypeValuePUT,
                                 forHTTPHeaderField: ApiConstants.contenTypeHeader)
+
             urlRequest.httpBody = Data(dto.utf8)
         }
-
+        
         return urlRequest
     }
 

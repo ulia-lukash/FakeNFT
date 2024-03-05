@@ -22,7 +22,9 @@ extension ErrorView where Self: UIViewController {
         let action = UIAlertAction(title: model.actionText, style: UIAlertAction.Style.default) {_ in
             model.action()
         }
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel)
         alert.addAction(action)
+        alert.addAction(cancelAction)
         present(alert, animated: true)
     }
 }
