@@ -130,7 +130,7 @@ final class BasketTableViewCell: UITableViewCell {
     }
     
     private func setupNftData(_ nft: Nft) {
-//        imageNFT.kf.setImage(with: nft.images.first, placeholder: UIImage(named: "Placeholder"), options: [.transition(.fade(1))])
+        imageNFT.kf.setImage(with: nft.images.first, placeholder: UIImage(named: "Placeholder"), options: [.transition(.fade(1))])
         nameNFTLabel.text = nft.name
         let formattedPrice = String(format: "%.2f", nft.price).replacingOccurrences(of: ".", with: ",")
         quantityNFTLabel.text = "\(formattedPrice) ETH"
