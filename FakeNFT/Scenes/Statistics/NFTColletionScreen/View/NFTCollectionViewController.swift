@@ -51,6 +51,7 @@ final class NFTCollectionViewController: UIViewController, LoadingView, ErrorVie
     }
 
     private func setupCollectionView() {
+        collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self

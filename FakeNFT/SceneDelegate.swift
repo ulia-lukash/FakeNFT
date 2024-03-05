@@ -9,7 +9,26 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     )
 
     func scene(_: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
-        let tabBarController = window?.rootViewController as? TabBarController
-        tabBarController?.servicesAssembly = servicesAssembly
+        
+        configureInitialViewController()
+    }
+    
+    private func configureInitialViewController() {
+
+        let defaults = UserDefaults.standard
+        let initialViewController: UIViewController
+
+        if !defaults.bool(forKey: "SkippedUnboarding") {
+                        
+            let transitionStyle = UIPageViewController.TransitionStyle.scroll
+            let navOrientation = UIPageViewController.NavigationOrientation.horizontal
+            let onboardingController = OnboardingViewController(transitionStyle: transitionStyle, navigationOrientation: navOrientation, options: nil)
+            initialViewController = onboardingController
+        } else {
+            let tabBarController = TabBarController(servicesAssembly: servicesAssembly)
+            initialViewController = tabBarController
+        }
+        self.window?.rootViewController = initialViewController
+        window?.makeKeyAndVisible()
     }
 }
