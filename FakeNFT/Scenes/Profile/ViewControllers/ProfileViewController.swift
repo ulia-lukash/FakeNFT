@@ -206,9 +206,10 @@ private extension ProfileViewController {
     }
     
     func displayMyNft() {
-        guard let router else { return }
-        router.showMyNft()
-        myNftDelegate?.setProfile(model: viewModel.getProfile(), vc: self)
+        guard let router,
+              let profile = viewModel.getProfile()
+        else { return }
+        router.showMyNft(profile: profile)
     }
     
     func displayFavoriteNft() {

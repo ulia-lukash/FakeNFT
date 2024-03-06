@@ -10,7 +10,7 @@ import UIKit
 final class Router: BaseRouter {
     /*коментарий для ревью: не совсем уверен в правильности всего,
      что написано в этих методах. буду благодарен за пару советов)*/
-    func showMyNft() {
+    func showMyNft(profile: Profile) {
         guard let sourceVc = sourceViewController as? ProfileViewController
         else { return }
         let service = MyNFTServiceIml(networkClient: DefaultNetworkClient(),
@@ -21,6 +21,7 @@ final class Router: BaseRouter {
         sourceVc.myNftDelegate = vc
         let navVc = UINavigationController(rootViewController: vc)
         navVc.modalPresentationStyle = .fullScreen
+        sourceVc.myNftDelegate?.setProfile(model: profile, vc: sourceVc)
         sourceViewController?.present(navVc, animated: true)
     }
     
