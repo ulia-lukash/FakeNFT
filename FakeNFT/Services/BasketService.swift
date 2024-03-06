@@ -37,7 +37,7 @@ final class BasketService: BasketServiceProtocol {
     }
     
     func updateByOrders(with nfts: [String], completion: @escaping OrdersCompletion) {
-        let request = PutOrderRequest(nfts: nfts, httpMethod: .put)
+        let request = PutOrderRequest(nfts: nfts)
         networkClient.send(request: request, type: OrdersModel.self) { result in
             switch result {
             case .success(let data):
@@ -49,7 +49,7 @@ final class BasketService: BasketServiceProtocol {
     }
     
     func loadByOrders(completion: @escaping OrdersCompletion) {
-        let request = GetOrderRequest(httpMethod: .get)
+        let request = GetOrderRequest()
         networkClient.send(request: request, type: OrdersModel.self) { result in
             switch result {
             case .success(let data):

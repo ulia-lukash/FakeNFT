@@ -120,10 +120,18 @@ final class OnboardingViewControllerBase: UIViewController {
         }
     }
     @objc func didTapOnboardingButton() {
-        let viewController = TabBarController()
+        
+        let servicesAssembly = ServicesAssembly(
+            networkClient: DefaultNetworkClient(),
+            nftStorage: NftStorageImpl()
+        )
+        
+        let tabBarController = TabBarController(servicesAssembly: servicesAssembly)
+                
         let defaults = UserDefaults.standard
         defaults.set(true, forKey: "SkippedUnboarding")
-        viewController.modalPresentationStyle = .fullScreen
-        present(viewController, animated: true, completion: nil)
+        
+        tabBarController.modalPresentationStyle = .fullScreen
+        present(tabBarController, animated: true, completion: nil)
     }
 }

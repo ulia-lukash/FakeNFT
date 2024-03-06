@@ -25,8 +25,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let onboardingController = OnboardingViewController(transitionStyle: transitionStyle, navigationOrientation: navOrientation, options: nil)
             initialViewController = onboardingController
         } else {
-            let tabBarController = TabBarController()
-            tabBarController.servicesAssembly = servicesAssembly
+            let tabBarController = TabBarController(servicesAssembly: servicesAssembly)
             initialViewController = tabBarController
         }
         self.window?.rootViewController = initialViewController

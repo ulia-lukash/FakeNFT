@@ -10,10 +10,16 @@ import Foundation
 typealias NftCompletion = (Result<Nft, Error>) -> Void
 typealias NftsArrayCompletion = (Result<[Nft], Error>) -> Void
 
+typealias NftDataCompletion = (Result<NFTData, Error>) -> Void
+typealias AllNFTsCompletion = (Result<[NFTData], Error>) -> Void
+
 protocol NftService {
     func loadNft(id: String, completion: @escaping NftCompletion)
     func loadNftsNextPage(completion: @escaping NftsArrayCompletion)
     func loadNfts(withIds nfts: [String], completion: @escaping NftsArrayCompletion)
+
+    func loadNftData(id: String, completion: @escaping NftDataCompletion)
+    func loadUserNfts(nftIDS: [String], completion: @escaping AllNFTsCompletion)
 }
 
 final class NftServiceImpl: NftService {
@@ -25,6 +31,60 @@ final class NftServiceImpl: NftService {
     init(networkClient: NetworkClient, storage: NftStorage) {
         self.storage = storage
         self.networkClient = networkClient
+    }
+
+    func loadUserNfts(nftIDS: [String], completion: @escaping AllNFTsCompletion) {
+        Task {
+            let results = await loadNftsSequentially(ids: nftIDS)
+
+            var loadedNfts: [NFTData] = []
+
+            for result in results {
+                switch result {
+                case .success(let nft):
+                    loadedNfts.append(nft)
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+
+            if loadedNfts.count == nftIDS.count {
+                completion(.success(loadedNfts))
+            }
+        }
+    }
+
+    func loadNftsSequentially(ids: [String]) async -> [Result<NFTData, Error>] {
+        var results: [Result<NFTData, Error>] = []
+
+        for id in ids {
+            let result = await withCheckedContinuation { continuation in
+                loadNftData(id: id) { result in
+                    continuation.resume(returning: result)
+                }
+            }
+            results.append(result)
+        }
+
+        return results
+    }
+
+    func loadNftData(id: String, completion: @escaping NftDataCompletion) {
+        if let nft = storage.getNftData(with: id) {
+            completion(.success(nft))
+            return
+        }
+
+        let request = NFTRequest(id: id)
+        networkClient.send(request: request, type: NFTData.self) { [weak storage] result in
+            switch result {
+            case .success(let nft):
+                storage?.saveNft(nft)
+                completion(.success(nft))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
     func loadNft(id: String, completion: @escaping NftCompletion) {

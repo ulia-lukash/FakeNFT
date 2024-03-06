@@ -3,29 +3,18 @@ import UIKit
 final class TabBarController: UITabBarController {
     
     var servicesAssembly: ServicesAssembly!
-    
-    let basketViewModel = BasketViewModel(
-        service: BasketService(
-            networkClient: DefaultNetworkClient()
-        ),
-        storage: StorageManager()
-    )
-    
-    let paymentViewModel = PaymentViewModel(
-        service: PaymentService(
-            networkClient: DefaultNetworkClient()
-        )
-    )
-    
+
     private let profileTabBarItem = UITabBarItem(
         title: NSLocalizedString(ConstLocalizable.tabProfile, comment: ""),
         image: UIImage(named: "profilActive"),
         tag: 0
     )
 
-    let catalogViewModel = CatalogViewModel(
-            service: CollectionServiceImpl(networkClient: DefaultNetworkClient(),
-            storage: CollectionStorageImpl()))
+    private let statisticsTabBarItem = UITabBarItem(
+        title: NSLocalizedString("Tab.statistics", comment: ""),
+        image: UIImage(named: "statisticsTabBarItem"),
+        tag: 0
+    )
     
     private let catalogTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.catalog", comment: ""),
@@ -42,30 +31,77 @@ final class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let profileController = createProfileController()
         let catalogController = createCatalogController()
+        let basketController = createBasketViewController()
+        let statsController = createStatsController()
         
+        viewControllers = [profileController, catalogController, basketController, statsController]
+        
+        view.backgroundColor = .systemBackground
+    }
+    
+    init(servicesAssembly: ServicesAssembly!) {
+        self.servicesAssembly = servicesAssembly
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+            super.init(coder: aDecoder)
+    }
+    
+    private func createProfileController() -> UINavigationController {
         let profileViewModel = ProfileViewModel(service: ProfileServiceImpl(networkClient: DefaultNetworkClient(),
                                                                      storage: ProfileStorageImpl()))
         let profileController = ProfileViewController(viewModel: profileViewModel)
         
         profileController.tabBarItem = profileTabBarItem
         
-        viewControllers = [profileController, catalogController, createBasketViewController()]
-        
-        view.backgroundColor = .systemBackground
+        return UINavigationController(rootViewController: profileController)
     }
     
-    func createBasketViewController() -> UINavigationController {
+    private func createBasketViewController() -> UINavigationController {
+        
+        let basketViewModel = BasketViewModel(
+            service: BasketService(
+                networkClient: DefaultNetworkClient()
+            ),
+            storage: StorageManager()
+        )
+        
+        let paymentViewModel = PaymentViewModel(
+            service: PaymentService(
+                networkClient: DefaultNetworkClient()
+            )
+        )
         let basketController = BasketViewController(viewModel: basketViewModel, paymentViewModel: paymentViewModel)
         basketController.tabBarItem = basketTabBarItem
         return UINavigationController(rootViewController: basketController)
     }
 
-    func createCatalogController() -> UINavigationController {
+    private func createCatalogController() -> UINavigationController {
+        
+        let catalogViewModel = CatalogViewModel(
+                service: CollectionServiceImpl(networkClient: DefaultNetworkClient(),
+                storage: CollectionStorageImpl()))
         let rootController = CatalogViewController(viewModel: catalogViewModel)
         let catalogController = UINavigationController(rootViewController: rootController)
         catalogController.modalPresentationStyle = .fullScreen
         catalogController.tabBarItem = catalogTabBarItem
         return catalogController
+    }
+    
+    private func createStatsController() -> UINavigationController {
+        let userModel = RatingModel()
+        
+        let ratingViewModel = RatingViewModel(for: userModel, servicesAssembly: servicesAssembly)
+        let ratingViewController = UINavigationController(
+            rootViewController: RatingViewController(
+                viewModel: ratingViewModel
+            )
+        )
+        ratingViewController.tabBarItem = statisticsTabBarItem
+        
+        return ratingViewController
     }
 }

@@ -8,6 +8,8 @@
 import Foundation
 
 typealias ProfileCompletion = (Result<Profile, Error>) -> Void
+typealias ProfileDataCompletion = (Result<ProfileData, Error>) -> Void
+typealias OrderDataCompletion = (Result<OrderData, Error>) -> Void
 
 protocol ProfileService {
     func loadProfile(id: String, completion: @escaping ProfileCompletion)
@@ -15,6 +17,11 @@ protocol ProfileService {
     func updateProfile(dto: String, id: String,
                        completion: @escaping ProfileCompletion)
     func updateProfile(likes: [String], completion: @escaping ProfileCompletion)
+
+    func loadProfile(id: String, completion: @escaping ProfileDataCompletion)
+    func setLikes(nfts: [String], completion: @escaping ProfileDataCompletion)
+    func loadOrder(completion: @escaping OrderDataCompletion)
+    func setOrder(nfts: [String], completion: @escaping OrderDataCompletion)
 }
 
 // MARK: - ProfileServiceImpl
@@ -105,6 +112,58 @@ extension ProfileServiceImpl: ProfileService {
                         completion(.failure(error))
                     }
                 }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+
+    func loadProfile(id: String, completion: @escaping ProfileDataCompletion) {
+        let request = ProfileByIdRequest(id: id)
+        networkClient.send(request: request, type: ProfileData.self) { result in
+            switch result {
+            case .success(let profile):
+                completion(.success(profile))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func setLikes(nfts: [String], completion: @escaping ProfileDataCompletion) {
+        let request = PutLikesRequest(nfts: nfts)
+
+        networkClient.send(request: request, type: ProfileData.self) { result in
+            switch result {
+            case .success(let profile):
+                completion(.success(profile))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func loadOrder(completion: @escaping OrderDataCompletion) {
+        let request = GetOrderRequest()
+
+        networkClient.send(request: request, type: OrderData.self) { result in
+            switch result {
+            case .success(let order):
+                completion(.success(order))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func setOrder(nfts: [String], completion: @escaping OrderDataCompletion) {
+        let request = PutOrderRequest(nfts: nfts)
+
+        networkClient.send(request: request, type: OrderData.self) { result in
+            switch result {
+            case .success(let order):
+                completion(.success(order))
             case .failure(let error):
                 completion(.failure(error))
             }
