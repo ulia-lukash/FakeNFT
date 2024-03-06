@@ -3,6 +3,7 @@
 <br /> Группа: 3
 <br /> Эпик: Корзина
 <br /> Ссылка: https://github.com/users/chrnivan/projects/1
+<br /> Ссылка на скринкаст: https://disk.yandex.ru/i/Sm0CJn6zMmH97w
 
 # Basket Flow Decomposition
 
