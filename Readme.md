@@ -1,5 +1,15 @@
 # ТЗ мобильного приложения FakeNFT
 
+# Ссылки на скринкасты
+
+[Статистика](https://disk.yandex.ru/i/CJ4tXbE74MS_7w)
+
+[Каталог](https://disk.yandex.ru/i/mqckCKMqbW-N6A)
+
+[Корзина](https://disk.yandex.ru/i/Sm0CJn6zMmH97w)
+
+[Профиль](https://disk.yandex.ru/client/disk?idApp=client&dialog=slider&idDialog=%2Fdisk%2F%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%202024-03-05%20%D0%B2%2022.26.49.mov)
+
 # Ссылки
 
 [Дизайн Figma](https://www.figma.com/file/k1LcgXHGTHIeiCv4XuPbND/FakeNFT-(YP)?node-id=96-5542&t=YdNbOI8EcqdYmDeg-0)
@@ -82,8 +92,6 @@
 Экран частично реализуется наставником в ходе life coding. Реализация экрана студентами не требуется.
 
 ## Корзина
-
-Ссылка на скринкаст: https://disk.yandex.ru/i/Sm0CJn6zMmH97w
 
 **Экран заказа**
 
