@@ -150,8 +150,8 @@ extension CatalogViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell() as CatalogTableViewCell
         let collection = viewModel.collections?[indexPath.section]
-        if let urlEndpoint = collection?.cover.components(separatedBy: "/").last {
-            cell.configure(for: urlEndpoint)
+        if let urlString = collection?.cover {
+            cell.configure(for: urlString)
         }
         cell.selectionStyle = .none
         return cell

@@ -31,10 +31,9 @@ final class CatalogTableViewCell: UITableViewCell, ReuseIdentifying {
 
     // MARK: - Public Methods
 
-    func configure(for name: String) {
+    func configure(for urlString: String) {
 
-        let urlString = "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/" + name
-        let url = URL(string: urlString)!
+        guard let url = URL(string: urlString) else { return }
 
         let processor = ResizingImageProcessor(
             referenceSize: CGSize(width: contentView.frame.width, height: 140),
