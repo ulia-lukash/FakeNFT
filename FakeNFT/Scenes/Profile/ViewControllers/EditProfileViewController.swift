@@ -11,7 +11,7 @@ protocol EditProfileVCDelegate: AnyObject {
     func update(profile: ProfileUIModel)
 }
 
-//MARK: - EditProfileViewController
+// MARK: - EditProfileViewController
 final class EditProfileViewController: UIViewController {
     private enum ConstansEditVC: String {
         static let editButtonSize = CGSize(width: 42, height: 42)
@@ -194,13 +194,13 @@ final class EditProfileViewController: UIViewController {
 }
 
 private extension EditProfileViewController {
-    //MARK: - @objc function
+    // MARK: - @objc function
     @objc
     func keyboardWillShow(notification: NSNotification) {
         guard let userInfo = notification.userInfo else { return }
-        if var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+        if var keyboardFrame: CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             keyboardFrame = self.view.convert(keyboardFrame, from: nil)
-            var contentInset:UIEdgeInsets = self.scrollView.contentInset
+            var contentInset: UIEdgeInsets = self.scrollView.contentInset
             contentInset.bottom = keyboardFrame.size.height + 70
             scrollView.contentInset = contentInset
         }
@@ -254,7 +254,7 @@ private extension EditProfileViewController {
         linkTextField.text = model.link
     }
     
-    //MARK: - Setup UIItem
+    // MARK: - Setup UIItem
     func setupUIItem() {
         userImageView.addSubview(userImageEditLabelView)
         setupScrollView()
@@ -319,7 +319,7 @@ private extension EditProfileViewController {
         }
         
         [editImageLinkTextField, nameTextField,
-         linkTextField, ].forEach {
+         linkTextField ].forEach {
             $0.layer.cornerRadius = ConstansEditVC.textFieldCornerRadius
             $0.layer.masksToBounds = true
             $0.textColor = .segmentActive
@@ -337,7 +337,7 @@ private extension EditProfileViewController {
     }
 }
 
-//MARK: - NSLayoutManagerDelegate
+// MARK: - NSLayoutManagerDelegate
 extension EditProfileViewController: NSLayoutManagerDelegate {
     func layoutManager(_ layoutManager: NSLayoutManager,
                        lineSpacingAfterGlyphAt glyphIndex: Int,
@@ -346,10 +346,9 @@ extension EditProfileViewController: NSLayoutManagerDelegate {
     }
 }
 
-//MARK: - ProfileVCDelegate
+// MARK: - ProfileVCDelegate
 extension EditProfileViewController: ProfileVCEditDelegate {
     func setDataUI(model: ProfileUIModel) {
         displayProfile(model: model)
     }
 }
-

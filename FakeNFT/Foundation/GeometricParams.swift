@@ -18,8 +18,7 @@ struct GeometricParams {
     init(cellCount: Int,
          leftInset: CGFloat,
          rightInset: CGFloat,
-         cellSpacing: CGFloat)
-    {
+         cellSpacing: CGFloat) {
         self.cellCount = cellCount
         self.leftInset = leftInset
         self.rightInset = rightInset

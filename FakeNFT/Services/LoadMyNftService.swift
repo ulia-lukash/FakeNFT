@@ -11,7 +11,7 @@ protocol LoadMyNftServiceProtocol {
     func loadMyNft(listId: [String], completion: @escaping MyListNftCompletion)
 }
 
-//MARK: - LoadMyNftServiceImp
+// MARK: - LoadMyNftServiceImp
 final class LoadMyNftServiceImp {
     private let networkClient: NetworkClient
     
@@ -43,7 +43,7 @@ private extension LoadMyNftServiceImp {
         return nil
     }
     
-    func loadNFT(listId: [String], completion: @escaping MyListNftCompletion)  {
+    func loadNFT(listId: [String], completion: @escaping MyListNftCompletion) {
         var returnNft: [MyListNFT] = []
         
         let operationQueue = OperationQueue()
@@ -89,7 +89,7 @@ private extension LoadMyNftServiceImp {
     }
 }
 
-//MARK: - LoadMyNftServiceProtocol
+// MARK: - LoadMyNftServiceProtocol
 extension LoadMyNftServiceImp: LoadMyNftServiceProtocol {
     func loadMyNft(listId: [String], completion: @escaping MyListNftCompletion) {
         loadNFT(listId: listId, completion: completion)

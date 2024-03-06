@@ -11,8 +11,8 @@ protocol MyNFTViewControllerDlegate: AnyObject {
     func updateProfileForMyNft(vc: UIViewController)
 }
 
-//MARK: - MyNFTViewController
-final class MyNFTViewController: UIViewController, ErrorView, LoadingView  {
+// MARK: - MyNFTViewController
+final class MyNFTViewController: UIViewController, ErrorView, LoadingView {
     private enum ConstMyNFTVC {
         static let heightCell = CGFloat(140)
     }
@@ -69,7 +69,7 @@ final class MyNFTViewController: UIViewController, ErrorView, LoadingView  {
 }
 
 private extension MyNFTViewController {
-    //MARK: - private func
+    // MARK: - private func
     func bind() {
         guard let viewModel = viewModel as? MyNftViewModel else { return }
         viewModel.$state.bind { [weak self] state in
@@ -222,10 +222,10 @@ private extension MyNFTViewController {
     }
 }
 
-//MARK: - UITableViewDataSource
+// MARK: - UITableViewDataSource
 extension MyNFTViewController: UITableViewDelegate {}
 
-//MARK: - UITableViewDataSource
+// MARK: - UITableViewDataSource
 extension MyNFTViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.getListMyNft().count
@@ -248,7 +248,7 @@ extension MyNFTViewController: UITableViewDataSource {
     }
 }
 
-//MARK: - MyNFTTableCellDelegate
+// MARK: - MyNFTTableCellDelegate
 extension MyNFTViewController: MyNFTTableCellDelegate {
     func likeTap(_ cell: UITableViewCell) {
         guard let myNftCell = cell as? MyNFTTableCell,
@@ -262,7 +262,7 @@ extension MyNFTViewController: MyNFTTableCellDelegate {
     }
 }
 
-//MARK: - ProfileVCMyNftDelegate
+// MARK: - ProfileVCMyNftDelegate
 extension MyNFTViewController: ProfileVCMyNftDelegate {
     func setProfile(model: Profile?, vc: UIViewController) {
         viewModel.saveProfile(profile: model)

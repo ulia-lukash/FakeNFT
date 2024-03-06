@@ -11,7 +11,7 @@ struct ProfilePutRequest: NetworkRequest {
     var httpMethod: HttpMethod { .put }
     
     var endpoint: URL? {
-        URL(string: "\(RequestConstants.baseURL)/profile/1")
+        URL(string: "\(RequestConstants.baseURL)/api/v1/profile/1")
     }
     
     var dto: Encodable?

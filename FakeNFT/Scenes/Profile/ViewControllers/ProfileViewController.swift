@@ -147,7 +147,7 @@ final class ProfileViewController: UIViewController, ErrorView, LoadingView {
 }
 
 private extension ProfileViewController {
-    //MARK: - private function
+    // MARK: - private function
     func bind() {
         guard let viewModel = viewModel as? ProfileViewModel else { return }
         viewModel.$state.bind { [weak self] state in
@@ -175,7 +175,7 @@ private extension ProfileViewController {
                 self.isUserInterecrion(flag: true)
             }
         }
-        viewModel.$cellModel.bind { [weak self] cellModel in
+        viewModel.$cellModel.bind { [weak self] _ in
             guard let self else { return }
             self.nftTableView.reloadData()
         }
@@ -241,7 +241,7 @@ private extension ProfileViewController {
         view.layoutIfNeeded()
     }
     
-    //MARK: - setupUI function
+    // MARK: - setupUI function
     func setupUIItem() {
         addSubViewsAndBackColor()
         setupConstraint()
@@ -303,7 +303,7 @@ private extension ProfileViewController {
     }
 }
 
-//MARK: - NSLayoutManagerDelegate
+// MARK: - NSLayoutManagerDelegate
 extension ProfileViewController: NSLayoutManagerDelegate {
     func layoutManager(_ layoutManager: NSLayoutManager,
                        lineSpacingAfterGlyphAt glyphIndex: Int,
@@ -312,7 +312,7 @@ extension ProfileViewController: NSLayoutManagerDelegate {
     }
 }
 
-//MARK: - UITableViewDelegate
+// MARK: - UITableViewDelegate
 extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == CountProfileCell.one.rawValue {
@@ -327,7 +327,7 @@ extension ProfileViewController: UITableViewDelegate {
     }
 }
 
-//MARK: - UITableViewDataSource
+// MARK: - UITableViewDataSource
 extension ProfileViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         Int(ConstantsProfileVC.countCellTableView)

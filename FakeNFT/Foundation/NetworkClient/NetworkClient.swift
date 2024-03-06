@@ -121,8 +121,9 @@ struct DefaultNetworkClient: NetworkClient {
                             forHTTPHeaderField: ApiConstants.tokenHeder)
         
         if let dto = request.dto as? String {
-            urlRequest.setValue(ApiConstants.contentTypeValuePUT ,
+            urlRequest.setValue(ApiConstants.contentTypeValuePUT,
                                 forHTTPHeaderField: ApiConstants.contenTypeHeader)
+
             urlRequest.httpBody = Data(dto.utf8)
         }
         

@@ -13,7 +13,7 @@ protocol FavoriteCollectionCellDelegate: AnyObject {
     func likeTap(_ cell: UICollectionViewCell)
 }
 
-//MARK: - FavoriteCollectionCell
+// MARK: - FavoriteCollectionCell
 final class FavoriteCollectionCell: UICollectionViewCell {
     private enum ConstantsCell: String {
         static let imageCornerRadius = CGFloat(12)
@@ -100,7 +100,7 @@ final class FavoriteCollectionCell: UICollectionViewCell {
 }
 
 extension FavoriteCollectionCell {
-    //MARK: private func
+    // MARK: private func
     @objc
     private func didLike() {
         guard let delegate else { return }
@@ -136,7 +136,7 @@ extension FavoriteCollectionCell {
             starRatingView.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
             starRatingView.centerYAnchor.constraint(equalTo: nftView.centerYAnchor),
             priceValueLabel.bottomAnchor.constraint(equalTo: nftView.bottomAnchor),
-            priceValueLabel.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
+            priceValueLabel.leadingAnchor.constraint(equalTo: nftView.leadingAnchor)
         ])
     }
     

@@ -20,7 +20,7 @@ protocol MyNftViewModelProtocol {
     var isUpdate: Bool { get set }
 }
 
-//MARK: - MyNftViewModel
+// MARK: - MyNftViewModel
 final class MyNftViewModel {
     @Observable<MyNftState> private(set) var state: MyNftState = .initial
     @Observable<SortState> private(set) var sortState: SortState = .none
@@ -39,7 +39,7 @@ final class MyNftViewModel {
 }
 
 private extension MyNftViewModel {
-    //MARK: - private func
+    // MARK: - private func
     func convertUI(_ model: MyListNFT) -> MyNFTCellModel {
         MyNFTCellModel(urlNFT: URL(string: model.images.first ?? ""),
                        nameNFT: model.name,
@@ -123,7 +123,7 @@ private extension MyNftViewModel {
     func updateResult(_ result: Result<Void, Error>) {
         self.state = .loading
         switch result {
-        case .success():
+        case .success:
             listMyNft = createMyListNftLikes()
             self.isUpdate = true
             self.state = .data
@@ -145,7 +145,7 @@ private extension MyNftViewModel {
     }
 }
 
-//MARK: - MyNftViewModelProtocol
+// MARK: - MyNftViewModelProtocol
 extension MyNftViewModel: MyNftViewModelProtocol {
     func makeErrorModel(error: Error) -> ErrorModel {
         let message: String
@@ -186,7 +186,7 @@ extension MyNftViewModel: MyNftViewModelProtocol {
     func loadMyNFT() {
         state = .loading
         guard let profile else { return }
-        service.load(listId: profile.nfts){ [weak self] result in
+        service.load(listId: profile.nfts) { [weak self] result in
             guard let self else { return }
             self.loadResult(result)
         }

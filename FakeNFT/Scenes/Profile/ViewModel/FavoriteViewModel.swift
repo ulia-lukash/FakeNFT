@@ -17,7 +17,7 @@ protocol FavoriteViewModelProtocol {
     func setLikeIndexPath(indexPath: IndexPath)
 }
 
-//MARK: - FavoriteViewModel
+// MARK: - FavoriteViewModel
 final class FavoriteViewModel {
     @Observable<MyNftState> private(set) var state: MyNftState = .initial
     private(set) var likesId: [String] = []
@@ -32,7 +32,7 @@ final class FavoriteViewModel {
     }
 }
 
-//MARK: - private extension
+// MARK: - private extension
 private extension FavoriteViewModel {
     func createLikesString(likes: [String], like: String) -> String {
         helperMyNft.networkFormat(likes: likes.filter { $0 != like })
@@ -49,7 +49,7 @@ private extension FavoriteViewModel {
     }
 }
 
-//MARK: - FavoriteViewModelProtocol
+// MARK: - FavoriteViewModelProtocol
 extension FavoriteViewModel: FavoriteViewModelProtocol {
     func loadNftLikes() {
         state = .loading
@@ -76,7 +76,7 @@ extension FavoriteViewModel: FavoriteViewModelProtocol {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let likes):
-                    //Комментарий дляя ревью:
+                    // Комментарий дляя ревью:
                    // при последнем тесте перестал удаляться последний id с сервера
                     self.state = self.isRemoveLikeId(
                         likes.likes) ?

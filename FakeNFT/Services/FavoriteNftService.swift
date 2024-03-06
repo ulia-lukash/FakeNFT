@@ -7,10 +7,10 @@
 
 import Foundation
 
-typealias likesNftCompletion = (Result<Likes, Error>) -> Void
+typealias LikesNftCompletion = (Result<Likes, Error>) -> Void
 
 protocol FavoriteNftServiceProtocol {
-    func likes(likes: String, completion: @escaping likesNftCompletion)
+    func likes(likes: String, completion: @escaping LikesNftCompletion)
     func loadLikesNft(listId: [String], completion: @escaping MyListNftCompletion)
 }
 
@@ -24,9 +24,9 @@ final class FavoriteNftServiceImp {
     }
 }
 
-//MARK: - FavoriteNftServiceProtocol
+// MARK: - FavoriteNftServiceProtocol
 extension FavoriteNftServiceImp: FavoriteNftServiceProtocol {
-    func likes(likes: String, completion: @escaping likesNftCompletion) {
+    func likes(likes: String, completion: @escaping LikesNftCompletion) {
         let request = ProfilePutRequest(dto: likes)
         networkClient.send(request: request,
                            type: Likes.self) { result in

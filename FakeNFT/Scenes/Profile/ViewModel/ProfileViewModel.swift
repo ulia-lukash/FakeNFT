@@ -24,7 +24,7 @@ protocol ProfileViewModelProtocol {
     func createRequest(_ urlString: String) -> URLRequest?
 }
 
-//MARK: - ProfileViewModel
+// MARK: - ProfileViewModel
 final class ProfileViewModel {
     @Observable<TableCellModel>
     private(set) var cellModel: TableCellModel = TableCellModel(countNFT: "\(0)",
@@ -41,7 +41,7 @@ final class ProfileViewModel {
 }
 
 private extension ProfileViewModel {
-    //MARK: - private func
+    // MARK: - private func
     func createNetworkFormat(_ newModel: ProfileUIModel) -> String {
         var json: [String: String] = [:]
         guard let model = profileUIModel else { return "" }
@@ -66,7 +66,7 @@ private extension ProfileViewModel {
     }
 }
 
-//MARK: - ProfileViewModelProtocol
+// MARK: - ProfileViewModelProtocol
 extension ProfileViewModel: ProfileViewModelProtocol {
     func loadProfile(id: String) {
         service.loadProfile(id: id) { [weak self] result in
@@ -90,7 +90,7 @@ extension ProfileViewModel: ProfileViewModelProtocol {
             guard let profileID else { return }
             service.updateProfile(dto: json, id: profileID) { [weak self] result in
                 guard let self else { return }
-                DispatchQueue.main.async  {
+                DispatchQueue.main.async {
                     switch result {
                     case .success(let profile):
                         self.saveProfile(model: profile)

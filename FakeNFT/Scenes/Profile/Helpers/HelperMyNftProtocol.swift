@@ -46,7 +46,7 @@ final class HelperMyNft {
     }
 }
 
-//MARK: - HelperMyNftProtocol
+// MARK: - HelperMyNftProtocol
 extension HelperMyNft: HelperMyNftProtocol {
     func createMyListNftCellModels(_ listMyNft: [MyListNFT]) -> [MyNFTCellModel] {
         createListMyNft(listMyNft)

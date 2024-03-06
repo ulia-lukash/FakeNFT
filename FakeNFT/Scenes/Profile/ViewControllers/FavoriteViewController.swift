@@ -11,7 +11,7 @@ protocol FavoriteViewControllerDelegate: AnyObject {
     func updateProfileForLikes(vc: UIViewController)
 }
 
-//MARK: - FavoriteViewController
+// MARK: - FavoriteViewController
 final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
     private enum ConstansFavorite {
         static let cellCount: Int = 2
@@ -53,7 +53,6 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
         return emptyNftLabel
     }()
     
-    
     init(viewModel: FavoriteViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -79,7 +78,7 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
 }
 
 private extension FavoriteViewController {
-    //MARK: - private func
+    // MARK: - private func
     @objc
     func leftBarButtonItemTap() {
         dismiss(animated: true)
@@ -187,7 +186,7 @@ private extension FavoriteViewController {
     }
 }
 
-//MARK: - UICollectionViewDataSource
+// MARK: - UICollectionViewDataSource
 extension FavoriteViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
@@ -209,7 +208,7 @@ extension FavoriteViewController: UICollectionViewDataSource {
     }
 }
 
-//MARK: - UICollectionViewDelegateFlowLayout
+// MARK: - UICollectionViewDelegateFlowLayout
 extension FavoriteViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
@@ -226,17 +225,17 @@ extension FavoriteViewController: UICollectionViewDelegateFlowLayout {
                      bottom: 0, right: nftCollectionView.params.rightInset)
     }
 }
-//MARK: - UICollectionViewDelegate
+// MARK: - UICollectionViewDelegate
 extension FavoriteViewController: UICollectionViewDelegate {}
 
-//MARK: - ProfileVCFavoriteDelegate
+// MARK: - ProfileVCFavoriteDelegate
 extension FavoriteViewController: ProfileVCFavoriteDelegate {
     func setLikesId(model: Profile, vc: UIViewController) {
         viewModel.setLikesId(likesId: model.likes)
     }
 }
 
-//MARK: - FavoriteCollectionCellDelegate
+// MARK: - FavoriteCollectionCellDelegate
 extension FavoriteViewController: FavoriteCollectionCellDelegate {
     func likeTap(_ cell: UICollectionViewCell) {
         guard let cell = cell as? FavoriteCollectionCell,

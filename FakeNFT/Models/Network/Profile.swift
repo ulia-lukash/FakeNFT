@@ -16,5 +16,3 @@ struct Profile: Decodable {
     let likes: [String]
     let id: String
 }
-
-

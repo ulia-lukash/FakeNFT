@@ -9,18 +9,18 @@ import Foundation
 
 typealias MyNftCompletion = (Result<MyListNFT, Error>) -> Void
 typealias MyListNftCompletion = (Result<[MyListNFT], Error>) -> Void
-typealias likeNftCompletion = (Result<Void, Error>) -> Void
+typealias LikeNftCompletion = (Result<Void, Error>) -> Void
 
 protocol MyNFTServiceProtocol {
     func load(listId: [String], completion: @escaping MyListNftCompletion)
     func updateNftPut(dto: String,
-                      completion: @escaping likeNftCompletion)
+                      completion: @escaping LikeNftCompletion)
     func loadProfile(completion: @escaping ProfileCompletion)
     func getStorageNft() -> [MyListNFT]
     func updateStorage(nft: [MyListNFT])
 }
 
-//MARK: - MyNFTServiceIml
+// MARK: - MyNFTServiceIml
 final class MyNFTServiceIml {
     private let networkClient: NetworkClient
     private let storage: MyNftStorageProtocol
@@ -35,12 +35,12 @@ final class MyNFTServiceIml {
 }
 
 private extension MyNFTServiceIml {
-    //MARK: - private func
+    // MARK: - private func
     func updateLikeAndNftPut(request: NetworkRequest,
-                             completion: @escaping likeNftCompletion) {
+                             completion: @escaping LikeNftCompletion) {
         networkClient.send(request: request, completionQueue: .main) { result in
             switch result {
-            case .success(_):
+            case .success:
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
@@ -49,7 +49,7 @@ private extension MyNFTServiceIml {
     }
 }
 
-//MARK: - MyNFTServiceProtocol
+// MARK: - MyNFTServiceProtocol
 extension MyNFTServiceIml: MyNFTServiceProtocol {
     func load(listId: [String], completion: @escaping MyListNftCompletion) {
         if !storage.getNft().isEmpty {
@@ -82,7 +82,7 @@ extension MyNFTServiceIml: MyNFTServiceProtocol {
     }
     
     func updateNftPut(dto: String,
-                      completion: @escaping likeNftCompletion) {
+                      completion: @escaping LikeNftCompletion) {
         let request = ProfilePutRequest(dto: dto)
         updateLikeAndNftPut(request: request, completion: completion)
     }
@@ -95,4 +95,3 @@ extension MyNFTServiceIml: MyNFTServiceProtocol {
         storage.getNft()
     }
 }
-

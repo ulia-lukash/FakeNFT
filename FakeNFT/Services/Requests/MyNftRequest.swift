@@ -11,6 +11,6 @@ struct MyNftRequest: NetworkRequest {
     var id: String
     
     var endpoint: URL? {
-        URL(string: "\(RequestConstants.baseURL)/nft/\(id)")
+        URL(string: "\(RequestConstants.baseURL)/api/v1/nft/\(id)")
     }
 }

@@ -13,7 +13,7 @@ protocol MyNFTTableCellDelegate: AnyObject {
     func likeTap(_ cell: UITableViewCell)
 }
 
-//MARK: MyNFTTableCell
+// MARK: MyNFTTableCell
 final class MyNFTTableCell: UITableViewCell {
     private enum ConstMyNFTCell: String {
         static let imageCornerRadius = CGFloat(12)
@@ -151,7 +151,7 @@ final class MyNFTTableCell: UITableViewCell {
 }
 
 extension MyNFTTableCell {
-    //MARK: private @objc func
+    // MARK: private @objc func
     @objc
     private func didLike() {
         guard let delegate else { return }
@@ -159,7 +159,7 @@ extension MyNFTTableCell {
         delegate.likeTap(self)
     }
     
-    //MARK: private func
+    // MARK: private func
     private func setupUIItem() {
         setupHorisontalStack()
         addSubviews()

@@ -8,7 +8,7 @@
 import UIKit
 import WebKit
 
-//MARK: - ProfileWebViewController
+// MARK: - ProfileWebViewController
 final class ProfileWebViewController: UIViewController, LoadingView {
     private lazy var webView: WKWebView = {
         let webView = WKWebView()
@@ -34,7 +34,7 @@ final class ProfileWebViewController: UIViewController, LoadingView {
 }
 
 extension ProfileWebViewController {
-    //MARK: - func
+    // MARK: - func
     @objc
     private func leftBarButtonItemTap() {
         dismiss(animated: true)
@@ -76,7 +76,7 @@ extension ProfileWebViewController {
             webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
     
@@ -89,7 +89,7 @@ extension ProfileWebViewController {
     }
 }
 
-//MARK: - WKNavigationDelegate
+// MARK: - WKNavigationDelegate
 extension ProfileWebViewController: WKNavigationDelegate {    
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         isUserInterecrion(flag: true)

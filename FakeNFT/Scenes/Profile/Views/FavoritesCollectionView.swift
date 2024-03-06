@@ -7,7 +7,7 @@
 
 import UIKit
 
-//MARK: - FavoritesCollectionView
+// MARK: - FavoritesCollectionView
 final class FavoritesCollectionView: UICollectionView {
     var params: GeometricParams
     
@@ -22,4 +22,3 @@ final class FavoritesCollectionView: UICollectionView {
         fatalError("init(coder:) has not been implemented")
     }
 }
-

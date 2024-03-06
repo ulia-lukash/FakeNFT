@@ -21,4 +21,3 @@ public final class FavoriteAssembly {
         return viewController
     }
 }
-
