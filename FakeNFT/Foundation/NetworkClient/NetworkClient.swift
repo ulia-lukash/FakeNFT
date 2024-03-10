@@ -114,16 +114,19 @@ struct DefaultNetworkClient: NetworkClient {
             assertionFailure("Empty endpoint")
             return nil
         }
-
+        
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
+        urlRequest.setValue(ApiConstants.tockenValue,
+                            forHTTPHeaderField: ApiConstants.tokenHeder)
+        
+        if let dto = request.dto as? String {
+            urlRequest.setValue(ApiConstants.contentTypeValuePUT,
+                                forHTTPHeaderField: ApiConstants.contenTypeHeader)
 
-        if let dto = request.dto,
-           let dtoEncoded = try? encoder.encode(dto) {
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            urlRequest.httpBody = dtoEncoded
+            urlRequest.httpBody = Data(dto.utf8)
         }
-
+        
         return urlRequest
     }
 

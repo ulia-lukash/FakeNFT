@@ -1,4 +1,14 @@
-# ТЗ мобильного приложения FakeNFT
+docs/ProfileDecomposition.md# ТЗ мобильного приложения FakeNFT
+
+# Ссылки на скринкасты
+
+[Статистика](https://disk.yandex.ru/i/CJ4tXbE74MS_7w)
+
+[Каталог](https://disk.yandex.ru/i/mqckCKMqbW-N6A)
+
+[Корзина](https://disk.yandex.ru/i/Sm0CJn6zMmH97w)
+
+[Профиль](https://disk.yandex.ru/i/q4F5zFUu39Ptlw)
 
 # Ссылки
 
