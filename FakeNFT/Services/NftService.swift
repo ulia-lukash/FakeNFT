@@ -75,7 +75,7 @@ final class NftServiceImpl: NftService {
             return
         }
 
-        let request = NFTRequest(id: id)
+        let request = GetNFTRequest(id: id)
         networkClient.send(request: request, type: NFTData.self) { [weak storage] result in
             switch result {
             case .success(let nft):
@@ -93,7 +93,7 @@ final class NftServiceImpl: NftService {
             return
         }
 
-        let request = NFTRequest(id: id)
+        let request = GetNFTRequest(id: id)
         networkClient.send(request: request, type: Nft.self) { [weak storage] result in
             switch result {
             case .success(let nft):
@@ -111,7 +111,7 @@ final class NftServiceImpl: NftService {
         : lastLoadedPage! + 1
         lastLoadedPage = nextPage
 
-        let request = NFTsRequest(page: nextPage)
+        let request = GetNFTsRequest(page: nextPage)
 
         networkClient.send(request: request, type: [Nft].self) { result in
             switch result {
@@ -131,7 +131,7 @@ final class NftServiceImpl: NftService {
 
         for id in nfts {
             let operation = BlockOperation {
-                let request = NFTRequest(id: id)
+                let request = GetNFTRequest(id: id)
                 var nft: Nft?
 
                 let semaphore = DispatchSemaphore(value: 0)

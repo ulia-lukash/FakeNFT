@@ -32,7 +32,7 @@ extension CurrenciesServiceImpl: CurrenciesService {
             completion(.success(currencies))
             return
         }
-        let request = CurrenciesRequest()
+        let request = GetCurrenciesRequest()
         networkClient.send(request: request,
                            type: [Currency].self) { [weak storage] result in
             switch result {

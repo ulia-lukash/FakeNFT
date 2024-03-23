@@ -51,7 +51,7 @@ private extension LoadMyNftServiceImp {
         
         for id in listId {
             let operation = BlockOperation {
-                let request = MyNftRequest(id: id)
+                let request = GetNFTRequest(id: id)
                 var nft: MyListNFT?
                 
                 let semaphore = DispatchSemaphore(value: 0)

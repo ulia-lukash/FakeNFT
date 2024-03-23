@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct NFTRequest: NetworkRequest {
+struct GetNFTRequest: NetworkRequest {
 
     let id: String
 
@@ -16,7 +16,7 @@ struct NFTRequest: NetworkRequest {
     }
 }
 
-struct NFTsRequest: NetworkRequest {
+struct GetNFTsRequest: NetworkRequest {
 
     let page: Int
 
