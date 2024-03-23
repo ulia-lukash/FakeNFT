@@ -42,13 +42,11 @@ final class ProfileViewController: UIViewController, ErrorView, LoadingView {
     private var textHeightConstraint: NSLayoutConstraint?
     private let viewModel: ProfileViewModelProtocol
     
-    private lazy var editProfileButton: UIButton = {
-        let editProfileButton = UIButton()
-        editProfileButton.addTarget(nil, action: #selector(self.didEditTap), for: .touchUpInside)
-        editProfileButton.setImage(UIImage(named: ConstantsProfileVC.editProfile.rawValue),
-                                   for: .normal)
-        
-        return editProfileButton
+    private lazy var editProfileButton: UIBarButtonItem = {
+        let image = UIImage(systemName: "square.and.pencil")
+        let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(self.didEditTap))
+        button.tintColor = Asset.Colors.black.color
+        return button
     }()
     
     private lazy var horisontalStackView: UIStackView = {
@@ -139,7 +137,7 @@ final class ProfileViewController: UIViewController, ErrorView, LoadingView {
     override func viewDidLoad() {
         super.viewDidLoad()
         router = Router(sourceViewController: self)
-        view.backgroundColor = .whiteUniversal
+        view.backgroundColor = Asset.Colors.white.color
         bind()
         setupUIItem()
         viewModel.setStateLoading()
@@ -251,14 +249,16 @@ private extension ProfileViewController {
     func setupConstraint() {
         verticalStackView.setCustomSpacing(20, after: horisontalStackView)
         NSLayoutConstraint.activate([
-            editProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9),
-            editProfileButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+//            editProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9),
+//            editProfileButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+//            editProfileButton.widthAnchor.constraint(equalToConstant: 42),
+//            editProfileButton.heightAnchor.constraint(equalToConstant: 42),
             
             userImageView.leadingAnchor.constraint(equalTo: horisontalStackView.leadingAnchor),
             userImageView.widthAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize),
             userImageView.heightAnchor.constraint(equalToConstant: ConstantsProfileVC.userImageSize),
             
-            verticalStackView.topAnchor.constraint(equalTo: editProfileButton.bottomAnchor,
+            verticalStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,
                                                    constant: 20),
             verticalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
                                                        constant: 16),
@@ -296,11 +296,12 @@ private extension ProfileViewController {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         [activityIndicator, nftTableView,
-         verticalStackView, editProfileButton].forEach {
+         verticalStackView].forEach {
             view.addSubview($0)
             $0.backgroundColor = .clear
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
+        self.navigationItem.rightBarButtonItem = editProfileButton
     }
 }
 

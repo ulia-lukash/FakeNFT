@@ -53,11 +53,11 @@ final class TabBarController: UITabBarController {
     private func createProfileController() -> UINavigationController {
         let profileViewModel = ProfileViewModel(service: ProfileServiceImpl(networkClient: DefaultNetworkClient(),
                                                                      storage: ProfileStorageImpl()))
-        let profileController = ProfileViewController(viewModel: profileViewModel)
-        
+        let rootController = ProfileViewController(viewModel: profileViewModel)
+        let profileController = UINavigationController(rootViewController: rootController)
         profileController.tabBarItem = profileTabBarItem
         
-        return UINavigationController(rootViewController: profileController)
+        return profileController
     }
     
     private func createBasketViewController() -> UINavigationController {
