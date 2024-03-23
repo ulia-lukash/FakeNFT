@@ -69,7 +69,7 @@ extension MyNFTServiceIml: MyNFTServiceProtocol {
     }
     
     func loadProfile(completion: @escaping ProfileCompletion) {
-        let request = ProfileRequest()
+        let request = GetProfileRequest()
         networkClient.send(request: request,
                            type: Profile.self) {result in
             switch result {
@@ -83,7 +83,7 @@ extension MyNFTServiceIml: MyNFTServiceProtocol {
     
     func updateNftPut(dto: String,
                       completion: @escaping LikeNftCompletion) {
-        let request = ProfilePutRequest(dto: dto)
+        let request = PutProfileRequest(dto: dto)
         updateLikeAndNftPut(request: request, completion: completion)
     }
     

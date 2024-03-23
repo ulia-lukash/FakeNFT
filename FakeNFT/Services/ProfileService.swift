@@ -43,7 +43,7 @@ extension ProfileServiceImpl: ProfileService {
             completion(.success(profile))
             return
         }
-        let request = ProfileRequest()
+        let request = GetProfileRequest()
         networkClient.send(request: request,
                            type: Profile.self) {result in
             switch result {
@@ -59,7 +59,7 @@ extension ProfileServiceImpl: ProfileService {
             completion(.success(profile))
             return
         }
-        let request = ProfileRequest()
+        let request = GetProfileRequest()
         networkClient.send(request: request,
                            type: Profile.self) {result in
             switch result {
@@ -72,7 +72,7 @@ extension ProfileServiceImpl: ProfileService {
     }
 
     func updateProfile(dto: String, id: String, completion: @escaping ProfileCompletion) {
-        let request = ProfilePutRequest(dto: dto)
+        let request = PutProfileRequest(dto: dto)
         networkClient.send(request: request,
                            type: Profile.self) { [weak self, storage] result in
             guard let self else { return }
@@ -96,7 +96,7 @@ extension ProfileServiceImpl: ProfileService {
     func updateProfile(likes: [String], completion: @escaping ProfileCompletion) {
 
         let dto = likes.map {"likes=\($0)"}.joined(separator: "&")
-        let request = ProfilePutRequest(dto: dto)
+        let request = PutProfileRequest(dto: dto)
         networkClient.send(request: request,
                            type: Profile.self) { [weak self, storage] result in
             guard let self else { return }
@@ -132,7 +132,8 @@ extension ProfileServiceImpl: ProfileService {
     }
 
     func setLikes(nfts: [String], completion: @escaping ProfileDataCompletion) {
-        let request = PutLikesRequest(nfts: nfts)
+        let dto = nfts.map {"likes=\($0)"}.joined(separator: "&")
+        let request = PutProfileRequest(dto: dto)
 
         networkClient.send(request: request, type: ProfileData.self) { result in
             switch result {
@@ -158,7 +159,8 @@ extension ProfileServiceImpl: ProfileService {
     }
 
     func setOrder(nfts: [String], completion: @escaping OrderDataCompletion) {
-        let request = PutOrderRequest(nfts: nfts)
+        let dto = nfts.map {"nfts=\($0)"}.joined(separator: "&")
+        let request = PutOrderRequest(dto: dto)
 
         networkClient.send(request: request, type: OrderData.self) { result in
             switch result {

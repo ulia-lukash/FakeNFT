@@ -34,7 +34,7 @@ extension OrderServiceImpl: OrderService {
             completion(.success(order))
             return
         }
-        let request = OrderRequest()
+        let request = GetOrderRequest()
         networkClient.send(request: request,
                            type: Order.self) { [weak storage] result in
             switch result {
@@ -48,7 +48,7 @@ extension OrderServiceImpl: OrderService {
     }
 
     func updateOrder(dto: String, completion: @escaping OrderCompletion) {
-        let request = OrderPutRequest(dto: dto)
+        let request = PutOrderRequest(dto: dto)
         networkClient.send(request: request,
                            type: Profile.self) { [weak self, storage] result in
             guard let self else { return }
@@ -71,7 +71,7 @@ extension OrderServiceImpl: OrderService {
 
     func updateOrder(nfts: [String], completion: @escaping OrderCompletion) {
         let dto = nfts.map {"nfts=\($0)"}.joined(separator: "&")
-        let request = OrderPutRequest(dto: dto)
+        let request = PutOrderRequest(dto: dto)
         networkClient.send(request: request,
                            type: Order.self) { [weak self, storage] result in
             guard let self else { return }

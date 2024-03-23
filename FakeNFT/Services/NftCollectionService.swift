@@ -31,7 +31,7 @@ extension CollectionServiceImpl: CollectionService {
             completion(.success(collections))
             return
         }
-        let request = CollectionsRequest()
+        let request = GetCollectionsRequest()
         networkClient.send(request: request, type: [NftCollection].self) { [weak storage] result in
             switch result {
             case .success(let collections):
@@ -48,7 +48,7 @@ extension CollectionServiceImpl: CollectionService {
             completion(.success(collection))
             return
         }
-        let request = CollectionRequest(id: id)
+        let request = GetCollectionRequest(id: id)
         networkClient.send(request: request,
                            type: NftCollection.self) { [weak storage] result in
             switch result {

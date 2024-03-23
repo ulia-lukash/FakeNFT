@@ -25,7 +25,7 @@ final class BasketService: BasketServiceProtocol {
     }
     
     func loadByNft(by id: String, completion: @escaping NftsCompletion) {
-        let request = NFTRequest(id: id)
+        let request = GetNFTRequest(id: id)
         networkClient.send(request: request, type: Nft.self) { result in
             switch result {
             case .success(let nft):
@@ -37,7 +37,8 @@ final class BasketService: BasketServiceProtocol {
     }
     
     func updateByOrders(with nfts: [String], completion: @escaping OrdersCompletion) {
-        let request = PutOrderRequest(nfts: nfts)
+        let dto = nfts.map {"nfts=\($0)"}.joined(separator: "&")
+        let request = PutOrderRequest(dto: dto)
         networkClient.send(request: request, type: OrdersModel.self) { result in
             switch result {
             case .success(let data):

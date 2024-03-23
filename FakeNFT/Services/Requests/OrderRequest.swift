@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct OrderRequest: NetworkRequest {
+struct GetOrderRequest: NetworkRequest {
     var endpoint: URL? {
         URL(string: "\(RequestConstants.baseURL)/api/v1/orders/1")
     }
 }
 
-struct OrderPutRequest: NetworkRequest {
+struct PutOrderRequest: NetworkRequest {
     var httpMethod: HttpMethod { .put }
 
     var endpoint: URL? {

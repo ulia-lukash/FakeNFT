@@ -14,7 +14,7 @@ final class UserServiceImpl: UserService {
     }
 
     func loadUsers(completion: @escaping AllUsersCompletion) {
-        let request = UsersRequest()
+        let request = GetUsersRequest()
         networkClient.send(request: request, type: [UserData].self) { result in
             switch result {
             case .success(let users):

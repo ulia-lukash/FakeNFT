@@ -27,7 +27,7 @@ final class FavoriteNftServiceImp {
 // MARK: - FavoriteNftServiceProtocol
 extension FavoriteNftServiceImp: FavoriteNftServiceProtocol {
     func likes(likes: String, completion: @escaping LikesNftCompletion) {
-        let request = ProfilePutRequest(dto: likes)
+        let request = PutProfileRequest(dto: likes)
         networkClient.send(request: request,
                            type: Likes.self) { result in
             switch result {

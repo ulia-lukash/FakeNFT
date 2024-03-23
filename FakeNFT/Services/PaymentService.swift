@@ -23,7 +23,7 @@ final class PaymentService: PaymentServiceProtocol {
     }
     
     func loadByPayment(completion: @escaping PaymentCompletion) {
-        let request = GetCurrenciesRequest(httpMethod: .get)
+        let request = GetCurrenciesRequest()
         networkClient.send(request: request, type: [CurrenciesModel].self) { result in
             switch result {
             case .success(let pay):
@@ -35,7 +35,7 @@ final class PaymentService: PaymentServiceProtocol {
     }
     
     func loadByOrderPayment(by id: String, completion: @escaping OrderPayment) {
-        let request = GetOrderPaymentRequest(id: id, httpMethod: .get)
+        let request = GetOrderPaymentRequest(id: id)
         networkClient.send(request: request, type: PaymentCurrency.self) { result in
             switch result {
             case .success(let order):

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ProfilePutRequest: NetworkRequest {
+struct PutProfileRequest: NetworkRequest {
     var httpMethod: HttpMethod { .put }
     
     var endpoint: URL? {

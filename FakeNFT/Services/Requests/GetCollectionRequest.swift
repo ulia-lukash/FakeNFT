@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CollectionRequest: NetworkRequest {
+struct GetCollectionRequest: NetworkRequest {
 
     let id: String
 
