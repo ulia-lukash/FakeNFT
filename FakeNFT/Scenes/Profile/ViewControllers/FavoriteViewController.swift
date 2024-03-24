@@ -78,10 +78,6 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
 
 private extension FavoriteViewController {
     // MARK: - private func
-    @objc
-    func leftBarButtonItemTap() {
-        dismiss(animated: true)
-    }
     
     func bind() {
         guard let viewModel = viewModel as? FavoriteViewModel else { return }

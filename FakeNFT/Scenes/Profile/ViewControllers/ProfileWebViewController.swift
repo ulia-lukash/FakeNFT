@@ -21,24 +21,20 @@ final class ProfileWebViewController: UIViewController, LoadingView {
     
     lazy var activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView()
-        activityIndicator.color = .blackUniversal
+        activityIndicator.color = Asset.Colors.black.color
         
         return activityIndicator
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .whiteUniversal
+        view.backgroundColor = Asset.Colors.white.color
         setupUiItems()
     }
 }
 
 extension ProfileWebViewController {
     // MARK: - func
-    @objc
-    private func leftBarButtonItemTap() {
-        dismiss(animated: true)
-    }
     
     private func setupUiItems() {
         setupNavigationBar()
@@ -47,16 +43,7 @@ extension ProfileWebViewController {
     }
     
     private func setupNavigationBar() {
-        guard let navBar = navigationController?.navigationBar,
-              let topItem = navBar.topItem
-        else { return }
-        topItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: ImagesName.backwardProfile.rawValue),
-            style: .plain, target: self,
-            action: #selector(leftBarButtonItemTap))
-        topItem.leftBarButtonItem?.tintColor = .blackUniversal
-        navBar.backgroundColor = .clear
-        navigationController?.navigationBar.barTintColor = .white
+        self.navigationController?.navigationBar.tintColor = Asset.Colors.black.color
     }
     
     private func isUserInterecrion(flag: Bool) {

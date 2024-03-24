@@ -42,7 +42,7 @@ final class EditProfileViewController: UIViewController {
                                                 size: ConstansEditVC.editButtonSize))
         exitButton.addTarget(nil, action: #selector(didTapExitButton), for: .touchUpInside)
         exitButton.backgroundColor = .clear
-        exitButton.tintColor = .blackUniversal
+        exitButton.tintColor = Asset.Colors.black.color
         exitButton.setImage(UIImage(named: ConstansEditVC.close.rawValue),
                             for: .normal)
         
@@ -66,7 +66,7 @@ final class EditProfileViewController: UIViewController {
             .blackUniversal.withAlphaComponent(ConstansEditVC.editImageViewAlphaComponent)
         userImageEditLabelView.numberOfLines = ConstansEditVC.editLabelNumberOfLines
         userImageEditLabelView.textAlignment = .center
-        userImageEditLabelView.textColor = .whiteUniversal
+        userImageEditLabelView.textColor = Asset.Colors.whiteUniversal.color
         userImageEditLabelView.font = .headline6
         userImageEditLabelView.frame = userImageView.frame
         
@@ -79,7 +79,7 @@ final class EditProfileViewController: UIViewController {
         editLoadImageButton.titleLabel?.font = .bodyRegular
         editLoadImageButton.setTitle( ConstLocalizable.editVCLoadImage, for: .normal)
         editLoadImageButton.addTarget(nil, action: #selector(editLoadImageButtonTap), for: .touchUpInside)
-        editLoadImageButton.setTitleColor(.blackUniversal, for: .normal)
+        editLoadImageButton.setTitleColor(Asset.Colors.black.color, for: .normal)
         editLoadImageButton.titleLabel?.textAlignment = .center
         editLoadImageButton.isHidden = true
         
@@ -90,7 +90,6 @@ final class EditProfileViewController: UIViewController {
         let editImageLinkLabel = UILabel()
         editImageLinkLabel.backgroundColor = .clear
         editImageLinkLabel.text = ConstLocalizable.editImageLink
-        editImageLinkLabel.textColor = .blackUniversal
         editImageLinkLabel.isHidden = true
         
         return editImageLinkLabel
@@ -100,8 +99,8 @@ final class EditProfileViewController: UIViewController {
         let editImageLinkTextField = TextField()
         editImageLinkTextField.layer.cornerRadius = ConstansEditVC.textFieldCornerRadius
         editImageLinkTextField.layer.masksToBounds = true
-        editImageLinkTextField.textColor = .blackUniversal
-        editImageLinkTextField.backgroundColor = .segmentInactive
+        editImageLinkTextField.textColor = Asset.Colors.black.color
+        editImageLinkTextField.backgroundColor = Asset.Colors.lightGray.color
         editImageLinkTextField.isHidden = true
         
         return editImageLinkTextField
@@ -118,23 +117,18 @@ final class EditProfileViewController: UIViewController {
     
     private lazy var nameLabelView: UILabel = {
         let nameLabelView = UILabel()
-        nameLabelView.backgroundColor = .clear
         nameLabelView.text = ConstLocalizable.editName
-        
         return nameLabelView
     }()
     
     private lazy var nameTextField: UITextField = {
         let nameTextField = TextField()
-        
         return nameTextField
     }()
     
     private lazy var descriptionLabelView: UILabel = {
         let descriptionLabelView = UILabel()
-        descriptionLabelView.backgroundColor = .clear
         descriptionLabelView.text = ConstLocalizable.editDescription
-        
         return descriptionLabelView
     }()
     
@@ -147,17 +141,15 @@ final class EditProfileViewController: UIViewController {
         descriptionTextView.layer.masksToBounds = true
         descriptionTextView.layoutManager.delegate = self
         descriptionTextView.font = .bodyRegular
-        descriptionTextView.textColor = .segmentActive
-        descriptionTextView.backgroundColor = .segmentInactive
+        descriptionTextView.textColor = Asset.Colors.black.color
+        descriptionTextView.backgroundColor = Asset.Colors.lightGray.color
         
         return descriptionTextView
     }()
     
     private lazy var linkLabelView: UILabel = {
         let linkLabelView = UILabel()
-        linkLabelView.backgroundColor = .clear
         linkLabelView.text = ConstLocalizable.editLink
-        
         return linkLabelView
     }()
     
@@ -179,7 +171,7 @@ final class EditProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         hideKeyboardWhenTappedAround()
-        view.backgroundColor = .whiteUniversal
+        view.backgroundColor = Asset.Colors.white.color
         setupUIItem()
         scrollView.contentSize = CGSize(width: view.frame.width, height: view.frame.height)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow),
@@ -331,7 +323,7 @@ private extension EditProfileViewController {
          descriptionLabelView,
          linkLabelView].forEach {
             $0.font = .headline3
-            $0.textColor = .blackUniversal
+            $0.textColor = Asset.Colors.black.color
             $0.textAlignment = .left
         }
     }

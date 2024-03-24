@@ -149,11 +149,6 @@ private extension MyNFTViewController {
         present(createAlert(), animated: true)
     }
     
-    @objc
-    func leftBarButtonItemTap() {
-        dismiss(animated: true)
-    }
-    
     func createAlert() -> UIAlertController {
         let alertController = UIAlertController(title: ConstLocalizable.myNftVcSortName,
                                                 message: nil,

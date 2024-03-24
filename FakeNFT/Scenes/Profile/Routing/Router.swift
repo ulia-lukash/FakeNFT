@@ -23,7 +23,7 @@ final class Router: BaseRouter {
         sourceVc.navigationController?.pushViewController(rootController, animated: true)
     }
     
-    func showFavarite() {
+    func showFavorite() {
         let favoriteAssembly = FavoriteAssembly(
             service: FavoriteNftServiceImp(networkClient: DefaultNetworkClient()))
         guard let vc = favoriteAssembly.build() as? FavoriteViewController,
@@ -35,12 +35,10 @@ final class Router: BaseRouter {
     }
     
     func showWebView(request: URLRequest) {
-        guard let soursVc = sourceViewController else { return }
+        guard let sourceVc = sourceViewController else { return }
         let webViewController = ProfileWebViewController()
         webViewController.load(request: request)
-        let navController = UINavigationController(rootViewController: webViewController)
-        navController.modalPresentationStyle = .fullScreen
         webViewController.showIndicator()
-        soursVc.present(navController, animated: true)
+        sourceVc.navigationController?.pushViewController(webViewController, animated: true)
     }
 }

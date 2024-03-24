@@ -223,7 +223,7 @@ private extension ProfileViewController {
         guard let profile = viewModel.getProfile(),
               let router
         else { return }
-        router.showFavarite()
+        router.showFavorite()
         favoriteDelegate?.setLikesId(model: profile, vc: self)
     }
     
