@@ -16,13 +16,11 @@ final class Router: BaseRouter {
         let service = MyNFTServiceIml(networkClient: DefaultNetworkClient(),
                                       storage: MyNftStorageImpl())
         let viewModel = MyNftViewModel(service: service)
-        let vc = MyNFTViewController(viewModel: viewModel)
-        vc.delegate = sourceVc
-        sourceVc.myNftDelegate = vc
-        let navVc = UINavigationController(rootViewController: vc)
-        navVc.modalPresentationStyle = .fullScreen
+        let rootController = MyNFTViewController(viewModel: viewModel)
+        rootController.delegate = sourceVc
+        sourceVc.myNftDelegate = rootController
         sourceVc.myNftDelegate?.setProfile(model: profile, vc: sourceVc)
-        sourceViewController?.present(navVc, animated: true)
+        sourceVc.navigationController?.pushViewController(rootController, animated: true)
     }
     
     func showFavarite() {

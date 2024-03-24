@@ -18,9 +18,10 @@ final class MyNFTViewController: UIViewController, ErrorView, LoadingView {
     }
     
     weak var delegate: MyNFTViewControllerDlegate?
+    
     lazy var activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView()
-        activityIndicator.color = .blackUniversal
+        activityIndicator.color = Asset.Colors.black.color
         
         return activityIndicator
     }()
@@ -36,8 +37,7 @@ final class MyNFTViewController: UIViewController, ErrorView, LoadingView {
         myNFTTable.separatorColor = .clear
         myNFTTable.allowsMultipleSelection = false
         myNFTTable.isUserInteractionEnabled = true
-        myNFTTable.register(MyNFTTableCell.self,
-                            forCellReuseIdentifier: "\(MyNFTTableCell.self)")
+        myNFTTable.register(MyNFTTableCell.self)
         
         return myNFTTable
     }()
@@ -57,7 +57,7 @@ final class MyNFTViewController: UIViewController, ErrorView, LoadingView {
         super.viewDidLoad()
         bind()
         viewModel.loadMyNFT()
-        view.backgroundColor = .whiteUniversal
+        view.backgroundColor = Asset.Colors.white.color
         setupUIItem()
     }
     
@@ -121,24 +121,27 @@ private extension MyNFTViewController {
     }
     
     func setupNavigationBar() {
-        guard let navBar = navigationController?.navigationBar,
-              let topItem = navBar.topItem
-        else { return }
-        topItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: ImagesName.sortProfile.rawValue),
-                                                     style: .plain, target: self,
-                                                     action: #selector(rightBarButtonItemTap))
-        topItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: ImagesName.backwardProfile.rawValue),
-                                                    style: .plain, target: self,
-                                                    action: #selector(leftBarButtonItemTap))
-        topItem.leftBarButtonItem?.tintColor = .blackUniversal
-        topItem.rightBarButtonItem?.tintColor = .blackUniversal
-        navBar.backgroundColor = .clear
-        navigationItem.titleView?.tintColor = .blackUniversal
-        navigationItem.title = ConstLocalizable.myNFTProfile
-        self.navigationController?.navigationBar.barTintColor = .white
+        if self.navigationController == nil {
+            return
+        }
+        self.navigationController?.navigationBar.tintColor = Asset.Colors.black.color
+        self.navigationItem.titleView?.tintColor = Asset.Colors.black.color
+        self.navigationItem.title = ConstLocalizable.myNFTProfile
+//        guard let navBar = navigationController?.navigationBar,
+//              let topItem = navBar.topItem
+//        else { return }
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "text.justify.leading"), style: .plain, target: self, action: #selector(rightBarButtonItemTap))
+//        topItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: ImagesName.backwardProfile.rawValue),
+//                                                    style: .plain, target: self,
+//                                                    action: #selector(leftBarButtonItemTap))
+//        topItem.leftBarButtonItem?.tintColor = .blackUniversal
+//        topItem.rightBarButtonItem?.tintColor = .blackUniversal
+//        navBar.backgroundColor = .clear
         
-        let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.blackUniversal]
-        navigationController?.navigationBar.titleTextAttributes = textAttributes
+//        self.navigationController?.navigationBar.barTintColor = .white
+        
+//        let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.blackUniversal]
+//        navigationController?.navigationBar.titleTextAttributes = textAttributes
     }
     
     @objc
@@ -236,9 +239,7 @@ extension MyNFTViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "\(MyNFTTableCell.self)") as? MyNFTTableCell,
-              let viewModel = viewModel as? MyNftViewModel
-        else { return UITableViewCell() }
+        let cell = tableView.dequeueReusableCell() as MyNFTTableCell
         cell.delegate = self
         cell.config(model: viewModel.getListMyNft()[indexPath.row])
         let isLike = viewModel.nftIsLike(index: indexPath.row)
@@ -252,7 +253,6 @@ extension MyNFTViewController: UITableViewDataSource {
 extension MyNFTViewController: MyNFTTableCellDelegate {
     func likeTap(_ cell: UITableViewCell) {
         guard let myNftCell = cell as? MyNFTTableCell,
-              let viewModel = viewModel as? MyNftViewModel,
               let indexPath = myNFTTable.indexPath(for: myNftCell)
         else { return }
         viewModel.setLikeIndexPathAndUpdateId(indexPath)

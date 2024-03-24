@@ -280,15 +280,9 @@ private extension ProfileViewController {
         }
         loadingView.addSubview(activityIndicator)
         self.navigationItem.rightBarButtonItem = editProfileButton
-    }
-}
-
-// MARK: - NSLayoutManagerDelegate
-extension ProfileViewController: NSLayoutManagerDelegate {
-    func layoutManager(_ layoutManager: NSLayoutManager,
-                       lineSpacingAfterGlyphAt glyphIndex: Int,
-                       withProposedLineFragmentRect rect: CGRect) -> CGFloat {
-        ConstantsProfileVC.textViewLineSpacing
+        if #available(iOS 14.0, *) {
+            navigationItem.backButtonDisplayMode = .minimal
+        }
     }
 }
 
@@ -318,10 +312,7 @@ extension ProfileViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: "\(ProfileTableViewCell.self)") as? ProfileTableViewCell,
-              let viewModel = viewModel as? ProfileViewModel
-        else { return UITableViewCell()}
+        let cell = tableView.dequeueReusableCell() as ProfileTableViewCell
         let cellModel = viewModel.cellModel
         switch indexPath.row {
         case 0:
