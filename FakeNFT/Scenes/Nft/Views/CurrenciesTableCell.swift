@@ -13,28 +13,28 @@ final class CurrenciesTableCell: UITableViewCell, ReuseIdentifying {
     lazy private var coverImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.masksToBounds = true
-        imageView.backgroundColor = .blackUniversal
+        imageView.backgroundColor = Asset.Colors.blackUniversal.color
         imageView.layer.cornerRadius = 5
         return imageView
     }()
 
     lazy private var nameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .regular)
+        label.font = .SF13regular
         return label
     }()
 
     lazy private var priceLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 15, weight: .regular)
+        label.font = .SF15regular
         label.text = "$18.11"
         return label
     }()
 
     lazy private var diffLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .greenUniversal
+        label.font = .SF13regular
+        label.textColor = Asset.Colors.green.color
         label.text = "0,1 (BTC)"
         return label
     }()
@@ -53,7 +53,7 @@ final class CurrenciesTableCell: UITableViewCell, ReuseIdentifying {
     }
 
     private func setUp() {
-        contentView.backgroundColor = .segmentInactive
+        contentView.backgroundColor = Asset.Colors.lightGray.color
         [coverImageView, nameLabel, priceLabel, diffLabel].forEach {
             contentView.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false

@@ -28,8 +28,7 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
         nftCollectionView.translatesAutoresizingMaskIntoConstraints = false
         nftCollectionView.alwaysBounceVertical = false
         nftCollectionView.backgroundColor = .clear
-        nftCollectionView.register(FavoriteCollectionCell.self,
-                                   forCellWithReuseIdentifier: "\(FavoriteCollectionCell.self)")
+        nftCollectionView.register(FavoriteCollectionCell.self)
         nftCollectionView.delegate = self
         nftCollectionView.dataSource = self
         
@@ -38,7 +37,7 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
     
     lazy var activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView()
-        activityIndicator.color = .blackUniversal
+        activityIndicator.color = Asset.Colors.black.color
         
         return activityIndicator
     }()
@@ -47,7 +46,7 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
         let emptyNftLabel = UILabel()
         emptyNftLabel.translatesAutoresizingMaskIntoConstraints = false
         emptyNftLabel.backgroundColor = .clear
-        emptyNftLabel.font = .bodyBold
+        emptyNftLabel.font = .SF17bold
         emptyNftLabel.text = ConstLocalizable.favoriteVcEmpty
         
         return emptyNftLabel
@@ -64,7 +63,7 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .whiteUniversal
+        view.backgroundColor = Asset.Colors.white.color
         setupUIItem()
         bind()
         viewModel.loadNftLikes()
@@ -79,10 +78,6 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
 
 private extension FavoriteViewController {
     // MARK: - private func
-    @objc
-    func leftBarButtonItemTap() {
-        dismiss(animated: true)
-    }
     
     func bind() {
         guard let viewModel = viewModel as? FavoriteViewModel else { return }
@@ -127,27 +122,13 @@ private extension FavoriteViewController {
                                      rightInset: 16,
                                      cellSpacing: 8)
         let layout = UICollectionViewFlowLayout()
-        let trackerCollectionView = FavoritesCollectionView(frame: .zero,
-                                                            collectionViewLayout: layout,
-                                                            params: params)
+        let trackerCollectionView = FavoritesCollectionView(frame: .zero, collectionViewLayout: layout, params: params)
         return trackerCollectionView
     }
     
     func setupNavigationBar() {
-        guard let navBar = navigationController?.navigationBar,
-              let topItem = navBar.topItem
-        else { return }
-        topItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: ImagesName.backwardProfile.rawValue),
-            style: .plain, target: self,
-            action: #selector(leftBarButtonItemTap))
-        topItem.leftBarButtonItem?.tintColor = .blackUniversal
-        navBar.backgroundColor = .clear
-        navigationItem.titleView?.tintColor = .blackUniversal
-        navigationItem.title = ConstLocalizable.favoriteHeader
-        navigationController?.navigationBar.barTintColor = .white
-        let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.blackUniversal]
-        navigationController?.navigationBar.titleTextAttributes = textAttributes
+        self.navigationController?.navigationBar.tintColor = Asset.Colors.black.color
+        self.navigationItem.title = ConstLocalizable.favoriteHeader
     }
     
     func setupUIItem() {

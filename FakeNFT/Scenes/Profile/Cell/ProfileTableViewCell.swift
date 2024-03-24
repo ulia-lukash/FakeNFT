@@ -9,29 +9,23 @@ import Foundation
 import UIKit
 
 // MARK: - ProfileTableViewCell
-final class ProfileTableViewCell: UITableViewCell {
-    private enum ConstansCell {
-        static let selectImage = UIImage(named: "chevron.forward")
-    }
+final class ProfileTableViewCell: UITableViewCell, ReuseIdentifying {
+
     private lazy var myNFTLabel: UILabel = {
         let myNFTLabel = UILabel()
-        myNFTLabel.textColor = .blackUniversal
-        myNFTLabel.font = .bodyBold
+        myNFTLabel.textColor = Asset.Colors.black.color
+        myNFTLabel.font = .SF17bold
         
         return myNFTLabel
-    }()
-    
-    private lazy var selectImageView: UIImageView = {
-        let selectImageView = UIImageView()
-        selectImageView.image = ConstansCell.selectImage
-        
-        return selectImageView
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .clear
         selectionStyle = .none
+        accessoryType = .disclosureIndicator
+        accessoryView = UIImageView(image: UIImage(systemName: "chevron.right"))
+        accessoryView?.tintColor = Asset.Colors.black.color
         setupUIItem()
     }
     
@@ -43,20 +37,11 @@ final class ProfileTableViewCell: UITableViewCell {
 // MARK: - extension
 extension ProfileTableViewCell {
     private func setupUIItem() {
-        [myNFTLabel, selectImageView].forEach {
-            addSubview($0)
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.backgroundColor = .clear
-        }
-        NSLayoutConstraint.activate([
-            myNFTLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            myNFTLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            
-            selectImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            selectImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            selectImageView.heightAnchor.constraint(equalToConstant: 13.86),
-            selectImageView.widthAnchor.constraint(equalToConstant: 7.98)
-        ])
+        addSubview(myNFTLabel)
+        myNFTLabel.translatesAutoresizingMaskIntoConstraints = false
+        myNFTLabel.backgroundColor = .clear
+        myNFTLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
+        myNFTLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
     
     func config(with cellModel: ProfileCellModel) {

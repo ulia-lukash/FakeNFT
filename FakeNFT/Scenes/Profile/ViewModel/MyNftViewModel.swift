@@ -17,6 +17,8 @@ protocol MyNftViewModelProtocol {
     func setUpdateId(index: Int)
     func saveProfile(profile: Profile?)
     func setState(state: MyNftState)
+    func nftIsLike(index: Int) -> Bool
+    func updateNft(flag: Bool)
     var isUpdate: Bool { get set }
 }
 

@@ -4,7 +4,7 @@ final class RatingCell: UITableViewCell {
     private lazy var subView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.segmentInactive
+        view.backgroundColor = Asset.Colors.lightGray.color
         view.layer.cornerRadius = 12
         view.layer.masksToBounds = true
         return view
@@ -31,7 +31,7 @@ final class RatingCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Alex"
-        label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        label.font = .SF22bold
         return label
     }()
 
@@ -39,7 +39,7 @@ final class RatingCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "112"
-        label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        label.font = .SF22bold
         label.textAlignment = .right
         return label
     }()

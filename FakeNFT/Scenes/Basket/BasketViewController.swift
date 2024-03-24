@@ -19,12 +19,12 @@ final class BasketViewController: UIViewController, LoadingView {
     
     private lazy var rightButton: UIBarButtonItem = {
         let button = UIBarButtonItem(
-            image: UIImage(named: "Sort"),
+            image: UIImage(systemName: "text.justify.leading"),
             style: .plain,
             target: self,
             action: #selector(didTapSortButton)
         )
-        button.tintColor = .segmentActive
+        button.tintColor = Asset.Colors.black.color
         return button
     }()
     
@@ -39,7 +39,7 @@ final class BasketViewController: UIViewController, LoadingView {
     private lazy var bottomView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 12
-        view.backgroundColor = .segmentInactive
+        view.backgroundColor = Asset.Colors.lightGray.color
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         view.isHidden = true
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -48,10 +48,10 @@ final class BasketViewController: UIViewController, LoadingView {
     
     private lazy var paymentButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.segmentActive
-        button.tintColor = .whiteModeThemes
+        button.backgroundColor = Asset.Colors.black.color
+        button.tintColor = Asset.Colors.white.color
         button.setTitle(ConstLocalizable.basketToBePaid, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
+        button.titleLabel?.font = .SF17bold
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(didTapPayButton), for: .touchUpInside)
         button.isHidden = true
@@ -61,8 +61,8 @@ final class BasketViewController: UIViewController, LoadingView {
     
     private lazy var counterNftLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 15, weight: .regular)
-        label.textColor = .segmentActive
+        label.font = .SF15regular
+        label.textColor = Asset.Colors.black.color
         label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -70,8 +70,8 @@ final class BasketViewController: UIViewController, LoadingView {
     
     private lazy var quantityNftLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .greenUniversal
+        label.font = .SF17bold
+        label.textColor = Asset.Colors.green.color
         label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -93,8 +93,8 @@ final class BasketViewController: UIViewController, LoadingView {
     private lazy var stubLabel: UILabel = {
         let label = UILabel()
         label.text = ConstLocalizable.basketIsEmpty
-        label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .segmentActive
+        label.font = .SF17bold
+        label.textColor = Asset.Colors.black.color
         label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

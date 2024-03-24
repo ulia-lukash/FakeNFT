@@ -6,7 +6,6 @@
 //
 
 import Kingfisher
-import Cosmos
 import UIKit
 
 protocol FavoriteCollectionCellDelegate: AnyObject {
@@ -14,7 +13,7 @@ protocol FavoriteCollectionCellDelegate: AnyObject {
 }
 
 // MARK: - FavoriteCollectionCell
-final class FavoriteCollectionCell: UICollectionViewCell {
+final class FavoriteCollectionCell: UICollectionViewCell, ReuseIdentifying {
     private enum ConstantsCell: String {
         static let imageCornerRadius = CGFloat(12)
         case favouritesIcons
@@ -49,7 +48,7 @@ final class FavoriteCollectionCell: UICollectionViewCell {
         likeButton.backgroundColor = .clear
         likeButton.isUserInteractionEnabled = true
         let image = UIImage(named: ConstantsCell.favouritesIcons.rawValue)
-        likeButton.tintColor = .redUniversal
+        likeButton.tintColor = Asset.Colors.red.color
         likeButton.setImage(image?.withRenderingMode(.alwaysTemplate), for: .normal)
         likeButton.addTarget(self, action: #selector(didLike), for: .touchUpInside)
         
@@ -60,31 +59,19 @@ final class FavoriteCollectionCell: UICollectionViewCell {
     
     private lazy var nameNFTLabel: UILabel = {
         let nameNFTLabel = UILabel()
-        nameNFTLabel.font = .bodyBold
-        nameNFTLabel.textColor = .blackUniversal
+        nameNFTLabel.font = .SF17bold
+        nameNFTLabel.textColor = Asset.Colors.black.color
         
         return nameNFTLabel
     }()
     
-    private lazy var starRatingView: CosmosView = {
-        let starRatingView = CosmosView()
-        starRatingView.rating = 0
-        starRatingView.settings.starSize = 12
-        starRatingView.settings.filledImage = UIImage(named: ImagesName.starsCell.rawValue)
-        starRatingView.settings.filledColor = .yellowUniversal
-        starRatingView.settings.starMargin = 2
-        starRatingView.settings.emptyColor = .lightGreyUniversal
-        starRatingView.settings.emptyBorderColor = .clear
-        starRatingView.settings.filledBorderColor = .clear
-        
-        return starRatingView
-    }()
+    private lazy var ratingView = RatingView()
     
     private lazy var priceValueLabel: UILabel = {
         let priceValueLabel = UILabel()
         priceValueLabel.textAlignment = .center
-        priceValueLabel.textColor = .blackUniversal
-        priceValueLabel.font = .caption1
+        priceValueLabel.textColor = Asset.Colors.black.color
+        priceValueLabel.font = .SF15regular
         
         return priceValueLabel
     }()
@@ -133,8 +120,8 @@ extension FavoriteCollectionCell {
             
             nftView.heightAnchor.constraint(equalToConstant: 66),
             
-            starRatingView.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
-            starRatingView.centerYAnchor.constraint(equalTo: nftView.centerYAnchor),
+            ratingView.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
+            ratingView.centerYAnchor.constraint(equalTo: nftView.centerYAnchor),
             priceValueLabel.bottomAnchor.constraint(equalTo: nftView.bottomAnchor),
             priceValueLabel.leadingAnchor.constraint(equalTo: nftView.leadingAnchor)
         ])
@@ -148,7 +135,7 @@ extension FavoriteCollectionCell {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.backgroundColor = .clear
         }
-        [nameNFTLabel, starRatingView, priceValueLabel].forEach {
+        [nameNFTLabel, ratingView, priceValueLabel].forEach {
             nftView.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.backgroundColor = .clear
@@ -158,7 +145,7 @@ extension FavoriteCollectionCell {
     func config(model: FavCollCellModel) {
         nftImageView.kf.setImage(with: model.urlNFT)
         nameNFTLabel.text = model.nameNFT.components(separatedBy: " ").first
-        starRatingView.rating = model.rating >= 5.0 ? 5.0 : model.rating
+        ratingView.rating = model.rating >= 5.0 ? 5.0 : model.rating
         priceValueLabel.text = "\(model.priceETN) ETN"
     }
 }

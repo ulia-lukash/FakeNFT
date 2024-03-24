@@ -11,8 +11,8 @@ final class CatalogTableFooterView: UITableViewHeaderFooterView, ReuseIdentifyin
 
     private lazy var footerLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.textColor = UIColor.segmentActive
+        label.font = .SF17bold
+        label.textColor = Asset.Colors.black.color
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

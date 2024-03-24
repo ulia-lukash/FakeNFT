@@ -91,7 +91,7 @@ extension NFTModel {
             id: nftData.id,
             image: nftData.images,
             name: String(nftData.name.split(separator: " ")[0]),
-            rating: nftData.rating,
+            rating: Double(nftData.rating),
             price: String(nftData.price),
             isLiked: likedNfts.contains(nftData.id),
             isOrdered: orderedNfts.contains(nftData.id)

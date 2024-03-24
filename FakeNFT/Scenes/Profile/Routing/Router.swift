@@ -16,35 +16,29 @@ final class Router: BaseRouter {
         let service = MyNFTServiceIml(networkClient: DefaultNetworkClient(),
                                       storage: MyNftStorageImpl())
         let viewModel = MyNftViewModel(service: service)
-        let vc = MyNFTViewController(viewModel: viewModel)
-        vc.delegate = sourceVc
-        sourceVc.myNftDelegate = vc
-        let navVc = UINavigationController(rootViewController: vc)
-        navVc.modalPresentationStyle = .fullScreen
+        let rootController = MyNFTViewController(viewModel: viewModel)
+        rootController.delegate = sourceVc
+        sourceVc.myNftDelegate = rootController
         sourceVc.myNftDelegate?.setProfile(model: profile, vc: sourceVc)
-        sourceViewController?.present(navVc, animated: true)
+        sourceVc.navigationController?.pushViewController(rootController, animated: true)
     }
     
-    func showFavarite() {
+    func showFavorite() {
         let favoriteAssembly = FavoriteAssembly(
             service: FavoriteNftServiceImp(networkClient: DefaultNetworkClient()))
         guard let vc = favoriteAssembly.build() as? FavoriteViewController,
-              let soursVc = sourceViewController as? ProfileViewController
-        else { return }
-        soursVc.favoriteDelegate = vc
-        vc.delegate = soursVc
-        let navVc = UINavigationController(rootViewController: vc)
-        navVc.modalPresentationStyle = .fullScreen
-        sourceViewController?.present(navVc, animated: true)
+            let sourceVc = sourceViewController as? ProfileViewController
+              else { return }
+        sourceVc.favoriteDelegate = vc
+        vc.delegate = sourceVc
+        sourceVc.navigationController?.pushViewController(vc, animated: true)
     }
     
     func showWebView(request: URLRequest) {
-        guard let soursVc = sourceViewController else { return }
+        guard let sourceVc = sourceViewController else { return }
         let webViewController = ProfileWebViewController()
         webViewController.load(request: request)
-        let navController = UINavigationController(rootViewController: webViewController)
-        navController.modalPresentationStyle = .fullScreen
         webViewController.showIndicator()
-        soursVc.present(navController, animated: true)
+        sourceVc.navigationController?.pushViewController(webViewController, animated: true)
     }
 }

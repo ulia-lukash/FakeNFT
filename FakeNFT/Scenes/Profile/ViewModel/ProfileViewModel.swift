@@ -8,6 +8,10 @@
 import Foundation
 
 protocol ProfileViewModelProtocol {
+    
+    var cellModel: TableCellModel {
+        get
+    }
     func loadProfile(id: String)
     func updateProfile(newModel: ProfileUIModel)
     func makeErrorModel(error: Error) -> ErrorModel

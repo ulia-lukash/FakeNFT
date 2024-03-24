@@ -16,8 +16,8 @@ final class OnboardingViewController: UIPageViewController {
             button.setTitle(NSLocalizedString("What's inside?", comment: ""), for: .normal)
             button.clipsToBounds = true
             button.layer.cornerRadius = 16
-            button.backgroundColor = .blackUniversal
-            button.setTitleColor(.whiteUniversal, for: .normal)
+            button.backgroundColor = Asset.Colors.blackUniversal.color
+            button.setTitleColor(Asset.Colors.whiteUniversal.color, for: .normal)
             return button
         }()
         let first = OnboardingViewControllerBase(imageName: "onboarding-1", titleLabelText: NSLocalizedString("OnboardingTitle1", comment: ""), labelText: NSLocalizedString("OnboardingCaption1", comment: ""), button: nil)

@@ -34,20 +34,20 @@ final class BasketDeleteCardView: UIView {
     private lazy var deleteCardLabel: UILabel = {
         let label = UILabel()
         label.text = ConstLocalizable.basketWantToDelete
-        label.font = .systemFont(ofSize: 13, weight: .regular)
+        label.font = .SF13regular
         label.numberOfLines = 2
         label.textAlignment = .center
-        label.textColor = .segmentActive
+        label.textColor = Asset.Colors.black.color
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var deleteCardButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = .segmentActive
-        button.tintColor = .redUniversal
+        button.backgroundColor = Asset.Colors.black.color
+        button.tintColor = Asset.Colors.red.color
         button.setTitle(ConstLocalizable.basketRemove, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
+        button.titleLabel?.font = .SF17regular
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 12
         button.addTarget(self, action: #selector(didTapDeleteCardButton), for: .touchUpInside)
@@ -57,10 +57,10 @@ final class BasketDeleteCardView: UIView {
     
     private lazy var backCardButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = .segmentActive
-        button.tintColor = .whiteModeThemes
+        button.backgroundColor = Asset.Colors.black.color
+        button.tintColor = Asset.Colors.white.color
         button.setTitle(ConstLocalizable.basketReturn, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
+        button.titleLabel?.font = .SF17regular
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 12
         button.addTarget(self, action: #selector(didTapBackCardButton), for: .touchUpInside)

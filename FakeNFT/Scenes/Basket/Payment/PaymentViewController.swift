@@ -33,7 +33,7 @@ final class PaymentViewController: UIViewController {
     private lazy var bottomView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 12
-        view.backgroundColor = .segmentInactive
+        view.backgroundColor = Asset.Colors.lightGray.color
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -41,10 +41,10 @@ final class PaymentViewController: UIViewController {
     
     private lazy var paymentButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = .segmentActive
-        button.tintColor = .whiteModeThemes
+        button.backgroundColor = Asset.Colors.black.color
+        button.tintColor = Asset.Colors.white.color
         button.setTitle(ConstLocalizable.basketPay, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
+        button.titleLabel?.font = .SF17bold
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(didTapPayButton), for: .touchUpInside)
@@ -55,17 +55,17 @@ final class PaymentViewController: UIViewController {
     private lazy var stubLabel: UILabel = {
         let label = UILabel()
         label.text = ConstLocalizable.basketMakingAPurchase
-        label.textColor = .segmentActive
-        label.font = .systemFont(ofSize: 13, weight: .regular)
+        label.textColor = Asset.Colors.black.color
+        label.font = .SF13regular
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var agreementButton: UIButton = {
         let button = UIButton(type: .system)
-        button.tintColor = .blueUniversal
+        button.tintColor = Asset.Colors.blue.color
         button.setTitle(ConstLocalizable.basketUserAgreement, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 13, weight: .regular)
+        button.titleLabel?.font = .SF13regular
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(openWebView), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -155,9 +155,9 @@ final class PaymentViewController: UIViewController {
             target: self,
             action: #selector(chevronDidTap)
         )
-        navigationItem.leftBarButtonItem?.tintColor = UIColor.segmentActive
+        navigationItem.leftBarButtonItem?.tintColor = Asset.Colors.black.color
         navigationItem.title = ConstLocalizable.basketDelete
-        let textChangeColor = [NSAttributedString.Key.foregroundColor: UIColor.segmentActive]
+        let textChangeColor = [NSAttributedString.Key.foregroundColor: Asset.Colors.black.color]
         navigationController?.navigationBar.titleTextAttributes = textChangeColor
         navigationController?.navigationBar.largeTitleTextAttributes = textChangeColor
     }

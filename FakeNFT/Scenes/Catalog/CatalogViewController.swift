@@ -13,7 +13,7 @@ final class CatalogViewController: UIViewController, LoadingView, ErrorView {
 
     lazy var activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView()
-        activityIndicator.color = .blackUniversal
+        activityIndicator.color = Asset.Colors.black.color
 
         return activityIndicator
     }()
@@ -21,7 +21,7 @@ final class CatalogViewController: UIViewController, LoadingView, ErrorView {
     private lazy var burgerButton: UIBarButtonItem = {
         let image = UIImage(systemName: "text.justify.leading")
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didPressBurgerButton))
-        button.tintColor = UIColor.segmentActive
+        button.tintColor = Asset.Colors.black.color
         return button
     }()
 
