@@ -24,9 +24,9 @@ final class OnboardingViewControllerBase: UIViewController {
     
     lazy private var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.font = .SF32bold
         label.text = titleLabelText
-        label.textColor = .whiteUniversal
+        label.textColor = Asset.Colors.whiteUniversal.color
         label.textAlignment = .left
         return label
     }()
@@ -34,8 +34,8 @@ final class OnboardingViewControllerBase: UIViewController {
     lazy private var label: UILabel = {
         let label = UILabel()
         label.text = labelText
-        label.font = .systemFont(ofSize: 15, weight: .regular)
-        label.textColor = .whiteUniversal
+        label.font = .SF15regular
+        label.textColor = Asset.Colors.whiteUniversal.color
         label.textAlignment = .left
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
@@ -45,7 +45,7 @@ final class OnboardingViewControllerBase: UIViewController {
     lazy private var closeButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "xmark"), for: .normal)
-        button.tintColor = .whiteUniversal
+        button.tintColor = Asset.Colors.whiteUniversal.color
         button.addTarget(self, action: #selector(didTapOnboardingButton), for: .touchUpInside)
         return button
     }()
@@ -80,7 +80,7 @@ final class OnboardingViewControllerBase: UIViewController {
         
         let gradientLayer: CAGradientLayer = CAGradientLayer()
         gradientLayer.frame = view.bounds
-        gradientLayer.colors = [UIColor.blackUniversal.cgColor, UIColor.whiteUniversal.withAlphaComponent(0).cgColor]
+        gradientLayer.colors = [Asset.Colors.blackUniversal.color.cgColor, Asset.Colors.whiteUniversal.color.withAlphaComponent(0).cgColor]
         imageView.layer.insertSublayer(gradientLayer, at: 0)
         [titleLabel, label].forEach {
             view.addSubview($0)

@@ -20,16 +20,16 @@ final class NFTCell: UICollectionViewCell {
     private lazy var nftPriceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 10, weight: .medium)
-        label.textColor = .segmentActive
+        label.font = .SF10medium
+        label.textColor = Asset.Colors.black.color
         return label
     }()
 
     private lazy var nftNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .segmentActive
+        label.font = .SF17bold
+        label.textColor = Asset.Colors.black.color
         return label
     }()
 
@@ -55,7 +55,7 @@ final class NFTCell: UICollectionViewCell {
     private lazy var basketButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "basket"), for: .normal)
+        button.setImage(UIImage(named: "tabler_trash"), for: .normal)
         button.addTarget(self, action: #selector(didTapBasketButton), for: .touchUpInside)
         return button
     }()
@@ -197,7 +197,7 @@ final class NFTCell: UICollectionViewCell {
     }
 
     private func updateBasketButtonImage() {
-        let image = inBasket ? UIImage(named: "basketX") : UIImage(named: "basket")
+        let image = inBasket ? UIImage(named: "tabler_trash-x") : UIImage(named: "tabler_trash")
         basketButton.setImage(image, for: .normal)
     }
 

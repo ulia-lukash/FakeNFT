@@ -211,7 +211,7 @@ private extension MyNFTViewController {
         view.addSubview(empryNftLabel)
         empryNftLabel.translatesAutoresizingMaskIntoConstraints = false
         empryNftLabel.backgroundColor = .clear
-        empryNftLabel.font = .bodyBold
+        empryNftLabel.font = .SF17bold
         empryNftLabel.text = ConstLocalizable.myNftVcEmpty
         NSLayoutConstraint.activate([
             empryNftLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),

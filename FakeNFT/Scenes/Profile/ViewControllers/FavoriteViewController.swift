@@ -46,7 +46,7 @@ final class FavoriteViewController: UIViewController, ErrorView, LoadingView {
         let emptyNftLabel = UILabel()
         emptyNftLabel.translatesAutoresizingMaskIntoConstraints = false
         emptyNftLabel.backgroundColor = .clear
-        emptyNftLabel.font = .bodyBold
+        emptyNftLabel.font = .SF17bold
         emptyNftLabel.text = ConstLocalizable.favoriteVcEmpty
         
         return emptyNftLabel

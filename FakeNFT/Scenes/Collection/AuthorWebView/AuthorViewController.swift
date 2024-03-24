@@ -85,10 +85,10 @@ final class AuthorViewController: UIViewController, WKUIDelegate {
     }
 
     private func setUp() {
-        progressView.progressTintColor = UIColor.segmentActive
-        backButtonItem.tintColor = UIColor.segmentActive
+        progressView.progressTintColor = Asset.Colors.black.color
+        backButtonItem.tintColor = Asset.Colors.black.color
         navigationItem.leftBarButtonItem = backButtonItem
-        view.backgroundColor = UIColor.whiteModeThemes
+        view.backgroundColor = Asset.Colors.white.color
         [progressView, webView].forEach {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false

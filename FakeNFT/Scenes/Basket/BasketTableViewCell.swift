@@ -33,8 +33,8 @@ final class BasketTableViewCell: UITableViewCell {
     
     private let nameNFTLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .segmentActive
-        label.font = .systemFont(ofSize: 17, weight: .bold)
+        label.textColor = Asset.Colors.black.color
+        label.font = .SF17bold
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -47,25 +47,24 @@ final class BasketTableViewCell: UITableViewCell {
     
     private let stubNFTLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .segmentActive
+        label.textColor = Asset.Colors.black.color
         label.text = ConstLocalizable.basketPrice
-        label.font = .systemFont(ofSize: 13, weight: .regular)
+        label.font = .SF13regular
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let quantityNFTLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .segmentActive
-        label.font = .systemFont(ofSize: 17, weight: .bold)
+        label.textColor = Asset.Colors.black.color
+        label.font = .SF17bold
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let deleteNFTButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(named: "deleteCard"), for: .normal)
-        button.tintColor = .segmentActive
+        button.setImage(UIImage(named: "tabler_trash-x"), for: .normal)
         button.addTarget(self, action: #selector(didTapDeleteButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

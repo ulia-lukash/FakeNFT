@@ -30,7 +30,7 @@ final class PaymentCollectionCell: UICollectionViewCell {
     private lazy var currencyImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .blackUniversal
+        imageView.backgroundColor = Asset.Colors.blackUniversal.color
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 6
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -39,16 +39,16 @@ final class PaymentCollectionCell: UICollectionViewCell {
     
     private lazy var paymentSystemLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .segmentActive
+        label.font = .SF13regular
+        label.textColor = Asset.Colors.black.color
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var currencyNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .greenUniversal
+        label.font = .SF13regular
+        label.textColor = Asset.Colors.green.color
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -120,13 +120,13 @@ final class PaymentCollectionCell: UICollectionViewCell {
     }
     
     private func setupCellAppearance() {
-        backgroundColor = .segmentInactive
+        backgroundColor = Asset.Colors.lightGray.color
         layer.cornerRadius = 12
         updateSelectionStyle()
     }
     
     private func updateSelectionStyle() {
         layer.borderWidth = isSelected ? 1 : 0
-        layer.borderColor = isSelected ? UIColor.segmentActive.cgColor : UIColor.clear.cgColor
+        layer.borderColor = isSelected ? Asset.Colors.black.color.cgColor : UIColor.clear.cgColor
     }
 }

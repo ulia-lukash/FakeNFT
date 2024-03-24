@@ -45,16 +45,16 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
 
    private lazy var nameLabel: UILabel = {
        let label = UILabel()
-       label.font = .systemFont(ofSize: 17, weight: .bold)
-       label.textColor = UIColor.segmentActive
+       label.font = .SF17bold
+       label.textColor = Asset.Colors.black.color
        label.textAlignment = .left
        return label
    }()
 
    private lazy var priceLabel: UILabel = {
        let label = UILabel()
-       label.font = .systemFont(ofSize: 10, weight: .medium)
-       label.textColor = UIColor.segmentActive
+       label.font = .SF10medium
+       label.textColor = Asset.Colors.black.color
        label.textAlignment = .left
        return label
    }()
@@ -62,7 +62,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
    private lazy var cartButton: UIButton = {
        let button = UIButton()
        button.setImage(UIImage(named: "tabler_trash"), for: .normal)
-       button.tintColor = UIColor.segmentActive
+       button.tintColor = Asset.Colors.black.color
        button.addTarget(self, action: #selector(addToCart), for: .touchUpInside)
        return button
    }()
@@ -111,7 +111,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
        self.isLiked = isLiked
        self.isInCart = isInCart
        self.nftId = nft.id
-       likeButton.tintColor = isLiked ? Asset.Colors.red.color : UIColor.whiteUniversal
+       likeButton.tintColor = isLiked ? Asset.Colors.red.color : Asset.Colors.whiteUniversal.color
        cartButton.setImage(UIImage(named: isInCart ? "tabler_trash-x" : "tabler_trash"), for: .normal)
    }
 
@@ -166,7 +166,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
 
    @objc private func didTapLikeButton() {
        isLiked.toggle()
-       likeButton.tintColor = isLiked ? Asset.Colors.red.color : UIColor.whiteUniversal
+       likeButton.tintColor = isLiked ? Asset.Colors.red.color : Asset.Colors.whiteUniversal.color
        guard let id = self.nftId else { return }
        delegate?.didTapLikeFor(nft: id)
    }

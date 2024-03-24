@@ -60,7 +60,7 @@ final class ProfileViewController: UIViewController, ErrorView {
     private lazy var fullNameLabelView: UILabel = {
         let fullNameLabelView = UILabel()
         fullNameLabelView.textAlignment = .left
-        fullNameLabelView.font = .headline3
+        fullNameLabelView.font = .SF22bold
         fullNameLabelView.textColor = Asset.Colors.black.color
         
         return fullNameLabelView
@@ -70,7 +70,7 @@ final class ProfileViewController: UIViewController, ErrorView {
         let label = UILabel()
         label.textAlignment = .left
         label.numberOfLines = 0
-        label.font = .caption2
+        label.font = .SF13regular
         label.textColor = Asset.Colors.black.color
         
         return label
@@ -78,8 +78,8 @@ final class ProfileViewController: UIViewController, ErrorView {
     
     private lazy var linkLabelView: UILabel = {
         let linkLabelView = UILabel()
-        linkLabelView.font = .caption1
-        linkLabelView.textColor = .blueUniversal
+        linkLabelView.font = .SF15regular
+        linkLabelView.textColor = Asset.Colors.blue.color
         return linkLabelView
     }()
     

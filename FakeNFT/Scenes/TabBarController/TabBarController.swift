@@ -6,13 +6,13 @@ final class TabBarController: UITabBarController {
 
     private let profileTabBarItem = UITabBarItem(
         title: NSLocalizedString(ConstLocalizable.tabProfile, comment: ""),
-        image: UIImage(named: "profilActive"),
+        image: UIImage(systemName: "person.crop.circle.fill"),
         tag: 0
     )
 
     private let statisticsTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.statistics", comment: ""),
-        image: UIImage(named: "statisticsTabBarItem"),
+        image: UIImage(systemName: "flag.2.crossed.fill"),
         tag: 0
     )
     
@@ -24,7 +24,7 @@ final class TabBarController: UITabBarController {
     
     private let basketTabBarItem = UITabBarItem(
         title: ConstLocalizable.basket,
-        image: UIImage(named: "BasketNoActive"),
+        image: UIImage(systemName: "basket.fill"),
         tag: 2
     )
     

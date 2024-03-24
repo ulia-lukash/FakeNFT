@@ -42,7 +42,7 @@ final class MyNFTTableCell: UITableViewCell, ReuseIdentifying {
     
     private lazy var nameNFTLabel: UILabel = {
         let nameNFTLabel = UILabel()
-        nameNFTLabel.font = .bodyBold
+        nameNFTLabel.font = .SF17bold
         nameNFTLabel.textColor = Asset.Colors.black.color
         
         return nameNFTLabel
@@ -62,7 +62,7 @@ final class MyNFTTableCell: UITableViewCell, ReuseIdentifying {
     
     private lazy var nameAuthorLabel: UILabel = {
         let nameAuthorLabel = UILabel()
-        nameAuthorLabel.font = .caption2
+        nameAuthorLabel.font = .SF13regular
         nameAuthorLabel.textColor = Asset.Colors.black.color
         nameAuthorLabel.numberOfLines = 0
         nameAuthorLabel.lineBreakMode = .byWordWrapping
@@ -78,7 +78,7 @@ final class MyNFTTableCell: UITableViewCell, ReuseIdentifying {
         priceLabel.text = ConstLocalizable.myNftCellPrice
         priceLabel.textAlignment = .left
         priceLabel.textColor = Asset.Colors.black.color
-        priceLabel.font = .caption2
+        priceLabel.font = .SF13regular
         
         return priceLabel
     }()
@@ -87,7 +87,7 @@ final class MyNFTTableCell: UITableViewCell, ReuseIdentifying {
         let priceValueLabel = UILabel()
         priceValueLabel.textAlignment = .left
         priceValueLabel.textColor = Asset.Colors.black.color
-        priceValueLabel.font = .bodyBold
+        priceValueLabel.font = .SF17bold
         
         return priceValueLabel
     }()

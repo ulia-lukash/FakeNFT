@@ -60,7 +60,7 @@ final class FavoriteCollectionCell: UICollectionViewCell, ReuseIdentifying {
     
     private lazy var nameNFTLabel: UILabel = {
         let nameNFTLabel = UILabel()
-        nameNFTLabel.font = .bodyBold
+        nameNFTLabel.font = .SF17bold
         nameNFTLabel.textColor = Asset.Colors.black.color
         
         return nameNFTLabel
@@ -70,9 +70,9 @@ final class FavoriteCollectionCell: UICollectionViewCell, ReuseIdentifying {
         let starRatingView = CosmosView()
         starRatingView.rating = 0
         starRatingView.settings.starSize = 15
-        starRatingView.settings.filledColor = .yellowUniversal
+        starRatingView.settings.filledColor = Asset.Colors.yellow.color
         starRatingView.settings.starMargin = 2
-        starRatingView.settings.emptyColor = .lightGreyUniversal
+        starRatingView.settings.emptyColor = Asset.Colors.lightGray.color
         starRatingView.settings.emptyBorderColor = .clear
         starRatingView.settings.filledBorderColor = .clear
         
@@ -83,7 +83,7 @@ final class FavoriteCollectionCell: UICollectionViewCell, ReuseIdentifying {
         let priceValueLabel = UILabel()
         priceValueLabel.textAlignment = .center
         priceValueLabel.textColor = Asset.Colors.black.color
-        priceValueLabel.font = .caption1
+        priceValueLabel.font = .SF15regular
         
         return priceValueLabel
     }()

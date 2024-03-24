@@ -31,20 +31,20 @@ final class BasketSuccessView: UIView {
     private lazy var stubCardLabel: UILabel = {
         let label = UILabel()
         label.text = ConstLocalizable.basketSuccess
-        label.font = .systemFont(ofSize: 22, weight: .bold)
+        label.font = .SF22bold
         label.numberOfLines = 2
         label.textAlignment = .center
-        label.textColor = .segmentActive
+        label.textColor = Asset.Colors.black.color
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var stubCardButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = .segmentActive
-        button.tintColor = .whiteModeThemes
+        button.backgroundColor = Asset.Colors.black.color
+        button.tintColor = Asset.Colors.white.color
         button.setTitle(ConstLocalizable.basketReturnCatalog, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
+        button.titleLabel?.font = .SF17bold
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(didTapBackCatalog), for: .touchUpInside)

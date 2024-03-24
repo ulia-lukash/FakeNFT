@@ -15,7 +15,7 @@ final class NftViewController: UIViewController, ErrorView, LoadingView {
 
    lazy var activityIndicator: UIActivityIndicatorView = {
        let activityIndicator = UIActivityIndicatorView()
-       activityIndicator.color = .blackUniversal
+       activityIndicator.color = Asset.Colors.black.color
 
        return activityIndicator
    }()
@@ -47,7 +47,7 @@ final class NftViewController: UIViewController, ErrorView, LoadingView {
 
    private lazy var nameLabel: UILabel = {
        let label = UILabel()
-       label.font = .systemFont(ofSize: 22, weight: .bold)
+       label.font = .SF22bold
        return label
    }()
 
@@ -55,20 +55,20 @@ final class NftViewController: UIViewController, ErrorView, LoadingView {
 
    private lazy var collectionNameLabel: UILabel = {
        let label = UILabel()
-       label.font = .systemFont(ofSize: 17, weight: .bold)
+       label.font = .SF17bold
        return label
    }()
 
    private lazy var price: UILabel = {
        let label = UILabel()
-       label.font = .systemFont(ofSize: 15, weight: .regular)
+       label.font = .SF15regular
        label.text = NSLocalizedString("Price", comment: "")
        return label
    }()
 
    private lazy var priceLabel: UILabel = {
        let label = UILabel()
-       label.font = .systemFont(ofSize: 17, weight: .bold)
+       label.font = .SF17bold
        return label
    }()
 
@@ -87,7 +87,7 @@ final class NftViewController: UIViewController, ErrorView, LoadingView {
        tableView.layer.masksToBounds = true
        tableView.layer.cornerRadius = 12
        tableView.rowHeight = 72
-       tableView.backgroundColor = .segmentInactive
+       tableView.backgroundColor = Asset.Colors.lightGray.color
        tableView.dataSource = self
        return tableView
    }()
@@ -98,11 +98,11 @@ final class NftViewController: UIViewController, ErrorView, LoadingView {
        button.layer.cornerRadius = 16
        button.layer.borderWidth = 1
        button.backgroundColor = .clear
-       button.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
+       button.titleLabel?.font = .SF15regular
        let title = NSLocalizedString("Go to seller's website", comment: "")
        button.setTitle(title, for: .normal)
-       button.setTitleColor(.segmentActive, for: .normal)
-       button.layer.borderColor = UIColor.segmentActive.cgColor
+       button.setTitleColor(Asset.Colors.black.color, for: .normal)
+       button.layer.borderColor = Asset.Colors.black.color.cgColor
        button.addTarget(self, action: #selector(goToSellerWebsite), for: .touchUpInside)
        return button
    }()
@@ -125,9 +125,9 @@ final class NftViewController: UIViewController, ErrorView, LoadingView {
    override func viewDidLoad() {
        super.viewDidLoad()
        navigationItem.rightBarButtonItem = likeButton
-       self.navigationController?.navigationBar.tintColor = .segmentActive
+       self.navigationController?.navigationBar.tintColor = Asset.Colors.black.color
        self.navigationController?.navigationBar.topItem?.title = ""
-       view.backgroundColor = .whiteModeThemes
+       view.backgroundColor = Asset.Colors.white.color
        setUp()
        viewModel.delegate = self
        bind()
@@ -192,20 +192,20 @@ final class NftViewController: UIViewController, ErrorView, LoadingView {
    }
 
    private func setLikeButtonState() {
-       likeButton.tintColor = viewModel.isLiked(nft: nftId) ? Asset.Colors.red.color : .whiteUniversal
+       likeButton.tintColor = viewModel.isLiked(nft: nftId) ? Asset.Colors.red.color : Asset.Colors.whiteUniversal.color
    }
 
    private func setCartButtonState() {
        if viewModel.isInCart(nft: nftId) {
-           addToCartButton.backgroundColor = .segmentInactive
-           addToCartButton.setTitleColor(.segmentActive, for: .normal)
+           addToCartButton.backgroundColor = Asset.Colors.lightGray.color
+           addToCartButton.setTitleColor(Asset.Colors.black.color, for: .normal)
            let title = NSLocalizedString("Go to cart", comment: "")
            addToCartButton.setTitle(title, for: .normal)
            addToCartButton.removeTarget(self, action: #selector(addToCart), for: .touchUpInside)
            addToCartButton.addTarget(self, action: #selector(goToCart), for: .touchUpInside)
        } else if !viewModel.isInCart(nft: nftId) {
-           addToCartButton.backgroundColor = .segmentActive
-           addToCartButton.setTitleColor(.whiteModeThemes, for: .normal)
+           addToCartButton.backgroundColor = Asset.Colors.black.color
+           addToCartButton.setTitleColor(Asset.Colors.white.color, for: .normal)
            let title = NSLocalizedString("Add to cart", comment: "")
            addToCartButton.setTitle(title, for: .normal)
            addToCartButton.removeTarget(self, action: #selector(goToCart), for: .touchUpInside)
@@ -294,13 +294,13 @@ final class NftViewController: UIViewController, ErrorView, LoadingView {
    @objc private func likeButtonTapped() {
        viewModel.didTapLikeFor(nft: nftId)
 
-       likeButton.tintColor = likeButton.tintColor == Asset.Colors.red.color ? .whiteUniversal : Asset.Colors.red.color
+       likeButton.tintColor = likeButton.tintColor == Asset.Colors.red.color ? Asset.Colors.whiteUniversal.color : Asset.Colors.red.color
    }
 
    @objc private func addToCart() {
        viewModel.didTapCartFor(nft: nftId)
-       addToCartButton.backgroundColor = .segmentInactive
-       addToCartButton.setTitleColor(.segmentActive, for: .normal)
+       addToCartButton.backgroundColor = Asset.Colors.lightGray.color
+       addToCartButton.setTitleColor(Asset.Colors.black.color, for: .normal)
        let title = NSLocalizedString("Go to cart", comment: "")
        addToCartButton.setTitle(title, for: .normal)
        addToCartButton.removeTarget(self, action: #selector(addToCart), for: .touchUpInside)

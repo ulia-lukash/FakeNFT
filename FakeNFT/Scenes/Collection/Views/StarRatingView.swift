@@ -29,7 +29,7 @@ final class StarRatingView: UIView {
        stars = [firstStar, secondStar, thirdStar, fourthStar, fifthStar]
 
         stars.forEach {
-            $0.tintColor = UIColor.segmentInactive
+            $0.tintColor = Asset.Colors.lightGray.color
             self.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
@@ -53,7 +53,7 @@ final class StarRatingView: UIView {
         let maxRating = number > 5 ? 5 : number
 
         for index in 0..<maxRating {
-            stars[index].tintColor = UIColor.yellowUniversal
+            stars[index].tintColor = Asset.Colors.yellow.color
         }
     }
 }

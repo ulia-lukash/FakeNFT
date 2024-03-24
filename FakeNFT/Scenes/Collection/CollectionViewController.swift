@@ -27,7 +27,7 @@ final class CollectionViewController: UIViewController, LoadingView, ErrorView {
 
     lazy var activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView()
-        activityIndicator.color = .blackUniversal
+        activityIndicator.color = Asset.Colors.black.color
 
         return activityIndicator
     }()
@@ -42,31 +42,31 @@ final class CollectionViewController: UIViewController, LoadingView, ErrorView {
 
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 22, weight: .bold)
+        label.font = .SF22bold
         label.textAlignment = .left
-        label.textColor = UIColor.segmentActive
+        label.textColor = Asset.Colors.black.color
         return label
     }()
 
     private lazy var authorLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = UIColor.segmentActive
+        label.font = .SF13regular
+        label.textColor = Asset.Colors.black.color
         return label
     }()
 
     private lazy var authorNameLabel: UIButton = {
         let button = UIButton()
-        button.setTitleColor(.blueUniversal, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 13, weight: .regular)
+        button.setTitleColor(Asset.Colors.blue.color, for: .normal)
+        button.titleLabel?.font = .SF13regular
         button.addTarget(self, action: #selector(didTapAuthorName), for: .touchUpInside)
         return button
     }()
 
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = UIColor.segmentActive
+        label.font = .SF13regular
+        label.textColor = Asset.Colors.black.color
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
@@ -90,10 +90,10 @@ final class CollectionViewController: UIViewController, LoadingView, ErrorView {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.navigationBar.tintColor = .segmentActive
+        self.navigationController?.navigationBar.tintColor = Asset.Colors.black.color
         self.navigationController?.navigationBar.topItem?.title = ""
 
-        view.backgroundColor = UIColor.whiteModeThemes
+        view.backgroundColor = Asset.Colors.white.color
 
         SKStoreReviewController.requestReview()
         setUp()
@@ -219,7 +219,7 @@ final class CollectionViewController: UIViewController, LoadingView, ErrorView {
                 .processor(processor)
             ]) { result in
                 switch result {
-                case .success(let value):
+                case .success(_):
                     break
                 case .failure(let error):
                     print("Job failed: \(error.localizedDescription)")

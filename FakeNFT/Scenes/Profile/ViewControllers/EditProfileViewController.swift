@@ -63,11 +63,11 @@ final class EditProfileViewController: UIViewController {
             frame: CGRect(origin: .zero, size: ConstansEditVC.editImageViewSize))
         userImageEditLabelView.text = ConstLocalizable.editUserImage
         userImageEditLabelView.backgroundColor =
-            .blackUniversal.withAlphaComponent(ConstansEditVC.editImageViewAlphaComponent)
+        Asset.Colors.blackUniversal.color.withAlphaComponent(ConstansEditVC.editImageViewAlphaComponent)
         userImageEditLabelView.numberOfLines = ConstansEditVC.editLabelNumberOfLines
         userImageEditLabelView.textAlignment = .center
         userImageEditLabelView.textColor = Asset.Colors.whiteUniversal.color
-        userImageEditLabelView.font = .headline6
+        userImageEditLabelView.font = .SF10bold
         userImageEditLabelView.frame = userImageView.frame
         
         return userImageEditLabelView
@@ -76,7 +76,7 @@ final class EditProfileViewController: UIViewController {
     private lazy var editLoadImageButton: UIButton = {
         let editLoadImageButton = UIButton()
         editLoadImageButton.backgroundColor = .clear
-        editLoadImageButton.titleLabel?.font = .bodyRegular
+        editLoadImageButton.titleLabel?.font = .SF17regular
         editLoadImageButton.setTitle( ConstLocalizable.editVCLoadImage, for: .normal)
         editLoadImageButton.addTarget(nil, action: #selector(editLoadImageButtonTap), for: .touchUpInside)
         editLoadImageButton.setTitleColor(Asset.Colors.black.color, for: .normal)
@@ -140,7 +140,7 @@ final class EditProfileViewController: UIViewController {
         descriptionTextView.layer.cornerRadius = ConstansEditVC.textFieldCornerRadius
         descriptionTextView.layer.masksToBounds = true
         descriptionTextView.layoutManager.delegate = self
-        descriptionTextView.font = .bodyRegular
+        descriptionTextView.font = .SF17regular
         descriptionTextView.textColor = Asset.Colors.black.color
         descriptionTextView.backgroundColor = Asset.Colors.lightGray.color
         
@@ -314,15 +314,15 @@ private extension EditProfileViewController {
          linkTextField ].forEach {
             $0.layer.cornerRadius = ConstansEditVC.textFieldCornerRadius
             $0.layer.masksToBounds = true
-            $0.textColor = .segmentActive
-            $0.backgroundColor = .segmentInactive
+            $0.textColor = Asset.Colors.black.color
+            $0.backgroundColor = Asset.Colors.lightGray.color
         }
         
         [editImageLinkLabel,
          nameLabelView,
          descriptionLabelView,
          linkLabelView].forEach {
-            $0.font = .headline3
+            $0.font = .SF22bold
             $0.textColor = Asset.Colors.black.color
             $0.textAlignment = .left
         }

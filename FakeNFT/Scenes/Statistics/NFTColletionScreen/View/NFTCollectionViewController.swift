@@ -18,7 +18,7 @@ final class NFTCollectionViewController: UIViewController, LoadingView, ErrorVie
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .whiteModeThemes
+        view.backgroundColor = Asset.Colors.white.color
 
         setupNavBar()
         setupCollectionView()
@@ -45,7 +45,7 @@ final class NFTCollectionViewController: UIViewController, LoadingView, ErrorVie
 
     private func setupNavBar() {
         let backButton = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
-        backButton.tintColor = UIColor.segmentActive
+        backButton.tintColor = Asset.Colors.black.color
         navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         title = NSLocalizedString("NFTCollection.screenTitle", comment: "screen title")
     }

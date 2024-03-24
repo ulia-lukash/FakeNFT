@@ -68,11 +68,11 @@ final class RatingViewController: UIViewController, LoadingView, ErrorView {
         navigationController?.navigationBar.shadowImage = UIImage()
 
         let sortButton = UIBarButtonItem(
-            image: UIImage(named: "sortButton"),
+            image: UIImage(systemName: "text.justify.leading"),
             style: .plain,
             target: self,
             action: #selector(Self.sortButtonDidTap))
-        sortButton.tintColor = UIColor.segmentActive
+        sortButton.tintColor = Asset.Colors.black.color
 
         navigationItem.rightBarButtonItem = sortButton
     }

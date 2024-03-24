@@ -7,16 +7,16 @@ final class UserInfoViewController: UIViewController {
     private lazy var usernameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor.segmentActive
-        label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        label.textColor = Asset.Colors.black.color
+        label.font = .SF22bold
         return label
     }()
 
     private lazy var userDescription: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor.segmentActive
-        label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        label.textColor = Asset.Colors.black.color
+        label.font = .SF13regular
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
@@ -33,7 +33,7 @@ final class UserInfoViewController: UIViewController {
     private lazy var userWebsiteButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.borderColor = UIColor.segmentActive.cgColor
+        button.layer.borderColor = Asset.Colors.black.color.cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 16
         button.setTitle(
@@ -42,9 +42,8 @@ final class UserInfoViewController: UIViewController {
                 comment: "goto user website"
             ),
             for: .normal)
-        button.setTitleColor(UIColor.segmentActive, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-        button.backgroundColor = UIColor.whiteModeThemes
+        button.setTitleColor(Asset.Colors.black.color, for: .normal)
+        button.titleLabel?.font = .SF15regular
         button.addTarget(
             self,
             action: #selector(didTapUserWebsiteButton),
@@ -56,13 +55,13 @@ final class UserInfoViewController: UIViewController {
     private lazy var nftCollectionButtonLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .segmentActive
+        label.font = .SF17bold
+        label.textColor = Asset.Colors.black.color
         return label
     }()
 
     private lazy var nftCollectionButtonImageView: UIImageView = {
-        let image = UIImage(named: "forward")
+        let image = UIImage(systemName: "chevron.right")
         let imageView = UIImageView(image: image)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -89,7 +88,7 @@ final class UserInfoViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .whiteModeThemes
+        view.backgroundColor = Asset.Colors.white.color
 
         setupViewModel()
         setupUI()
@@ -154,7 +153,7 @@ final class UserInfoViewController: UIViewController {
 
     private func setupNavBar() {
         let backButton = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
-        backButton.tintColor = UIColor.segmentActive
+        backButton.tintColor = Asset.Colors.black.color
         navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
     }
 

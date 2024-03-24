@@ -14,7 +14,7 @@ final class ProfileTableViewCell: UITableViewCell, ReuseIdentifying {
     private lazy var myNFTLabel: UILabel = {
         let myNFTLabel = UILabel()
         myNFTLabel.textColor = Asset.Colors.black.color
-        myNFTLabel.font = .bodyBold
+        myNFTLabel.font = .SF17bold
         
         return myNFTLabel
     }()
