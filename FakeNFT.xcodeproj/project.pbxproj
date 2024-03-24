@@ -98,6 +98,11 @@
 		26248B1C2BAF02A6005C5240 /* UserImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26248B1B2BAF02A5005C5240 /* UserImageView.swift */; };
 		26248B1E2BB0141E005C5240 /* XCAssets+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26248B1D2BB0141E005C5240 /* XCAssets+Generated.swift */; };
 		26248B202BB01C87005C5240 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26248B1F2BB01C87005C5240 /* RatingView.swift */; };
+		26248B222BB0217F005C5240 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 26248B212BB0217F005C5240 /* GoogleService-Info.plist */; };
+		26248B232BB0217F005C5240 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 26248B212BB0217F005C5240 /* GoogleService-Info.plist */; };
+		26248B242BB0217F005C5240 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 26248B212BB0217F005C5240 /* GoogleService-Info.plist */; };
+		26248B272BB023AF005C5240 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 26248B262BB023AF005C5240 /* FirebaseAnalytics */; };
+		26248B292BB023AF005C5240 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 26248B282BB023AF005C5240 /* FirebaseAnalyticsSwift */; };
 		2624D8372B868771002DDC95 /* NftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2624D8362B868771002DDC95 /* NftService.swift */; };
 		2624D8392B86877E002DDC95 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2624D8382B86877E002DDC95 /* ProfileService.swift */; };
 		2624D83B2B868791002DDC95 /* OrderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2624D83A2B868791002DDC95 /* OrderService.swift */; };
@@ -290,6 +295,7 @@
 		26248B1B2BAF02A5005C5240 /* UserImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserImageView.swift; sourceTree = "<group>"; };
 		26248B1D2BB0141E005C5240 /* XCAssets+Generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = SOURCE_ROOT; };
 		26248B1F2BB01C87005C5240 /* RatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingView.swift; sourceTree = "<group>"; };
+		26248B212BB0217F005C5240 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2624D8362B868771002DDC95 /* NftService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftService.swift; sourceTree = "<group>"; };
 		2624D8382B86877E002DDC95 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		2624D83A2B868791002DDC95 /* OrderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderService.swift; sourceTree = "<group>"; };
@@ -382,9 +388,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26248B292BB023AF005C5240 /* FirebaseAnalyticsSwift in Frameworks */,
 				1A47CCF12B821E7100BE9A3D /* Cosmos in Frameworks */,
 				3F603CD029DB4A74000C43D7 /* Kingfisher in Frameworks */,
 				3F603CCD29DB4A53000C43D7 /* ProgressHUD in Frameworks */,
+				26248B272BB023AF005C5240 /* FirebaseAnalytics in Frameworks */,
 				17A544242B90FF2D008E8C1A /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -796,6 +804,7 @@
 		3F68069529CBBAF100B4F915 /* FakeNFT */ = {
 			isa = PBXGroup;
 			children = (
+				26248B212BB0217F005C5240 /* GoogleService-Info.plist */,
 				3F68069629CBBAF100B4F915 /* AppDelegate.swift */,
 				3F68069829CBBAF100B4F915 /* SceneDelegate.swift */,
 				E1CD40DA2A96BE9B00BE7FE8 /* Resources */,
@@ -1039,6 +1048,8 @@
 				3F603CCC29DB4A53000C43D7 /* ProgressHUD */,
 				3F603CCF29DB4A74000C43D7 /* Kingfisher */,
 				1A47CCF02B821E7100BE9A3D /* Cosmos */,
+				26248B262BB023AF005C5240 /* FirebaseAnalytics */,
+				26248B282BB023AF005C5240 /* FirebaseAnalyticsSwift */,
 			);
 			productName = FakeNFT;
 			productReference = 3F68069329CBBAF100B4F915 /* FakeNFT.app */;
@@ -1117,6 +1128,7 @@
 				3F603CCB29DB4A53000C43D7 /* XCRemoteSwiftPackageReference "ProgressHUD" */,
 				3F603CCE29DB4A74000C43D7 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				1A47CCEF2B821E7100BE9A3D /* XCRemoteSwiftPackageReference "Cosmos" */,
+				26248B252BB023AF005C5240 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 3F68069429CBBAF100B4F915 /* Products */;
 			projectDirPath = "";
@@ -1136,6 +1148,7 @@
 			files = (
 				3F6806A329CBBAF200B4F915 /* LaunchScreen.storyboard in Resources */,
 				E1CD40DC2A96BECC00BE7FE8 /* Localizable.strings in Resources */,
+				26248B222BB0217F005C5240 /* GoogleService-Info.plist in Resources */,
 				3F6806A029CBBAF200B4F915 /* Assets.xcassets in Resources */,
 				3F68069E29CBBAF100B4F915 /* Main.storyboard in Resources */,
 			);
@@ -1145,6 +1158,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26248B232BB0217F005C5240 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1152,6 +1166,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26248B242BB0217F005C5240 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1699,6 +1714,14 @@
 				minimumVersion = 24.0.0;
 			};
 		};
+		26248B252BB023AF005C5240 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.23.0;
+			};
+		};
 		3F603CCB29DB4A53000C43D7 /* XCRemoteSwiftPackageReference "ProgressHUD" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/relatedcode/ProgressHUD";
@@ -1722,6 +1745,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1A47CCEF2B821E7100BE9A3D /* XCRemoteSwiftPackageReference "Cosmos" */;
 			productName = Cosmos;
+		};
+		26248B262BB023AF005C5240 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 26248B252BB023AF005C5240 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		26248B282BB023AF005C5240 /* FirebaseAnalyticsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 26248B252BB023AF005C5240 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsSwift;
 		};
 		3F603CCC29DB4A53000C43D7 /* ProgressHUD */ = {
 			isa = XCSwiftPackageProductDependency;

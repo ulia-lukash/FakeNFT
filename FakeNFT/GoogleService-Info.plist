@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyBj_8cfmry_9Fv3NOCsnN37nwZlm0pJKvA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>285524239804</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.practicum.FakeNFT.chrnivan</string>
+	<key>PROJECT_ID</key>
+	<string>fakenft-51c11</string>
+	<key>STORAGE_BUCKET</key>
+	<string>fakenft-51c11.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:285524239804:ios:186e8218ea1b37cdbaf7b9</string>
+</dict>
+</plist>
