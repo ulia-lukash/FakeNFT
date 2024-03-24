@@ -14,7 +14,7 @@ protocol FavoriteCollectionCellDelegate: AnyObject {
 }
 
 // MARK: - FavoriteCollectionCell
-final class FavoriteCollectionCell: UICollectionViewCell {
+final class FavoriteCollectionCell: UICollectionViewCell, ReuseIdentifying {
     private enum ConstantsCell: String {
         static let imageCornerRadius = CGFloat(12)
         case favouritesIcons
@@ -49,7 +49,7 @@ final class FavoriteCollectionCell: UICollectionViewCell {
         likeButton.backgroundColor = .clear
         likeButton.isUserInteractionEnabled = true
         let image = UIImage(named: ConstantsCell.favouritesIcons.rawValue)
-        likeButton.tintColor = .redUniversal
+        likeButton.tintColor = Asset.Colors.red.color
         likeButton.setImage(image?.withRenderingMode(.alwaysTemplate), for: .normal)
         likeButton.addTarget(self, action: #selector(didLike), for: .touchUpInside)
         
@@ -61,7 +61,7 @@ final class FavoriteCollectionCell: UICollectionViewCell {
     private lazy var nameNFTLabel: UILabel = {
         let nameNFTLabel = UILabel()
         nameNFTLabel.font = .bodyBold
-        nameNFTLabel.textColor = .blackUniversal
+        nameNFTLabel.textColor = Asset.Colors.black.color
         
         return nameNFTLabel
     }()
@@ -69,8 +69,7 @@ final class FavoriteCollectionCell: UICollectionViewCell {
     private lazy var starRatingView: CosmosView = {
         let starRatingView = CosmosView()
         starRatingView.rating = 0
-        starRatingView.settings.starSize = 12
-        starRatingView.settings.filledImage = UIImage(named: ImagesName.starsCell.rawValue)
+        starRatingView.settings.starSize = 15
         starRatingView.settings.filledColor = .yellowUniversal
         starRatingView.settings.starMargin = 2
         starRatingView.settings.emptyColor = .lightGreyUniversal
@@ -83,7 +82,7 @@ final class FavoriteCollectionCell: UICollectionViewCell {
     private lazy var priceValueLabel: UILabel = {
         let priceValueLabel = UILabel()
         priceValueLabel.textAlignment = .center
-        priceValueLabel.textColor = .blackUniversal
+        priceValueLabel.textColor = Asset.Colors.black.color
         priceValueLabel.font = .caption1
         
         return priceValueLabel

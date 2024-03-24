@@ -27,13 +27,11 @@ final class Router: BaseRouter {
         let favoriteAssembly = FavoriteAssembly(
             service: FavoriteNftServiceImp(networkClient: DefaultNetworkClient()))
         guard let vc = favoriteAssembly.build() as? FavoriteViewController,
-              let soursVc = sourceViewController as? ProfileViewController
-        else { return }
-        soursVc.favoriteDelegate = vc
-        vc.delegate = soursVc
-        let navVc = UINavigationController(rootViewController: vc)
-        navVc.modalPresentationStyle = .fullScreen
-        sourceViewController?.present(navVc, animated: true)
+            let sourceVc = sourceViewController as? ProfileViewController
+              else { return }
+        sourceVc.favoriteDelegate = vc
+        vc.delegate = sourceVc
+        sourceVc.navigationController?.pushViewController(vc, animated: true)
     }
     
     func showWebView(request: URLRequest) {

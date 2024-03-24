@@ -192,7 +192,7 @@ final class NftViewController: UIViewController, ErrorView, LoadingView {
    }
 
    private func setLikeButtonState() {
-       likeButton.tintColor = viewModel.isLiked(nft: nftId) ? .redUniversal : .whiteUniversal
+       likeButton.tintColor = viewModel.isLiked(nft: nftId) ? Asset.Colors.red.color : .whiteUniversal
    }
 
    private func setCartButtonState() {
@@ -294,7 +294,7 @@ final class NftViewController: UIViewController, ErrorView, LoadingView {
    @objc private func likeButtonTapped() {
        viewModel.didTapLikeFor(nft: nftId)
 
-       likeButton.tintColor = likeButton.tintColor == .redUniversal ? .whiteUniversal : .redUniversal
+       likeButton.tintColor = likeButton.tintColor == Asset.Colors.red.color ? .whiteUniversal : Asset.Colors.red.color
    }
 
    @objc private func addToCart() {

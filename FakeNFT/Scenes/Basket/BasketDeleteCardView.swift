@@ -45,7 +45,7 @@ final class BasketDeleteCardView: UIView {
     private lazy var deleteCardButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = .segmentActive
-        button.tintColor = .redUniversal
+        button.tintColor = Asset.Colors.red.color
         button.setTitle(ConstLocalizable.basketRemove, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.layer.masksToBounds = true

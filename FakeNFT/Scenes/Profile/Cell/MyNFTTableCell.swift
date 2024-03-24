@@ -187,7 +187,7 @@ extension MyNFTTableCell {
     }
     
     func like(flag: Bool) {
-        likeButton.tintColor = flag ? .redUniversal : .white
+        likeButton.tintColor = flag ? Asset.Colors.red.color : .white
     }
     
     func config(model: MyNFTCellModel) {

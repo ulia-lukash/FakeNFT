@@ -111,7 +111,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
        self.isLiked = isLiked
        self.isInCart = isInCart
        self.nftId = nft.id
-       likeButton.tintColor = isLiked ? UIColor.redUniversal : UIColor.whiteUniversal
+       likeButton.tintColor = isLiked ? Asset.Colors.red.color : UIColor.whiteUniversal
        cartButton.setImage(UIImage(named: isInCart ? "tabler_trash-x" : "tabler_trash"), for: .normal)
    }
 
@@ -119,7 +119,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
 
    private func configCellLayout() {
 
-       imageView.tintColor = .redUniversal
+       imageView.tintColor = Asset.Colors.red.color
        [imageView, cartButton, ratingView, labelView, likeButton].forEach {
            contentView.addSubview($0)
            $0.translatesAutoresizingMaskIntoConstraints = false
@@ -166,7 +166,7 @@ final class NftCollectionCell: UICollectionViewCell, ReuseIdentifying {
 
    @objc private func didTapLikeButton() {
        isLiked.toggle()
-       likeButton.tintColor = isLiked ? UIColor.redUniversal : UIColor.whiteUniversal
+       likeButton.tintColor = isLiked ? Asset.Colors.red.color : UIColor.whiteUniversal
        guard let id = self.nftId else { return }
        delegate?.didTapLikeFor(nft: id)
    }
