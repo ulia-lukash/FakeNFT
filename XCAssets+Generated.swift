@@ -25,19 +25,6 @@ internal typealias AssetImageTypeAlias = ImageAsset.Image
 // swiftlint:disable identifier_name line_length nesting type_body_length type_name
 internal enum Asset {
   internal static let accentColor = ColorAsset(name: "AccentColor")
-  internal enum Basket {
-    internal static let basketNoActive = ImageAsset(name: "BasketNoActive")
-    internal static let sort = ImageAsset(name: "Sort")
-    internal static let chevronBasket = ImageAsset(name: "chevronBasket")
-    internal static let deleteCard = ImageAsset(name: "deleteCard")
-    internal static let raiting0Stub = ImageAsset(name: "raiting0Stub")
-    internal static let raiting1Stub = ImageAsset(name: "raiting1Stub")
-    internal static let raiting2Stub = ImageAsset(name: "raiting2Stub")
-    internal static let raiting3Stub = ImageAsset(name: "raiting3Stub")
-    internal static let raiting4Stub = ImageAsset(name: "raiting4Stub")
-    internal static let raiting5Stub = ImageAsset(name: "raiting5Stub")
-    internal static let successfulPurchase = ImageAsset(name: "successfulPurchase")
-  }
   internal enum Colors {
     internal static let background = ColorAsset(name: "Background")
     internal static let blackUniversal = ColorAsset(name: "Black Universal")
@@ -52,52 +39,13 @@ internal enum Asset {
     internal static let yellow = ColorAsset(name: "Yellow")
   }
   internal static let logo = ImageAsset(name: "Logo")
-  internal enum Statistics {
-    internal enum Avatars {
-      internal static let userpickAlex = ImageAsset(name: "UserpickAlex")
-      internal static let userpickEric = ImageAsset(name: "UserpickEric")
-      internal static let userpickLea = ImageAsset(name: "UserpickLea")
-      internal static let userpickMads = ImageAsset(name: "UserpickMads")
-      internal static let userpickTimon = ImageAsset(name: "UserpickTimon")
-      internal static let noAvatar = ImageAsset(name: "noAvatar")
-    }
-    internal enum Nfts {
-      internal static let archie = ImageAsset(name: "Archie")
-      internal static let emma = ImageAsset(name: "Emma")
-      internal static let grace = ImageAsset(name: "Grace")
-      internal static let stella = ImageAsset(name: "Stella")
-      internal static let toast = ImageAsset(name: "Toast")
-      internal static let zeus = ImageAsset(name: "Zeus")
-      internal static let zoe = ImageAsset(name: "Zoe")
-    }
-    internal static let sortButton = ImageAsset(name: "sortButton")
-    internal static let statisticsTabBarItem = ImageAsset(name: "statisticsTabBarItem")
-  }
-  internal static let yaWhite = ColorAsset(name: "YaWhite")
-  internal static let backProfile = ImageAsset(name: "backProfile")
-  internal static let backward = ImageAsset(name: "backward")
-  internal static let backwardProfile = ImageAsset(name: "backwardProfile")
-  internal static let basket = ImageAsset(name: "basket")
-  internal static let basketX = ImageAsset(name: "basketX")
-  internal static let chevronForward = ImageAsset(name: "chevron.forward")
-  internal static let close = ImageAsset(name: "close")
-  internal static let editProfile = ImageAsset(name: "editProfile")
-  internal static let favouritesIcons = ImageAsset(name: "favouritesIcons")
-  internal static let favouritesIconsActive = ImageAsset(name: "favouritesIconsActive")
-  internal static let filledStar = ImageAsset(name: "filledStar")
-  internal static let forward = ImageAsset(name: "forward")
-  internal static let like = ImageAsset(name: "like")
-  internal static let noLike = ImageAsset(name: "noLike")
   internal static let onboarding1 = ImageAsset(name: "onboarding-1")
   internal static let onboarding2 = ImageAsset(name: "onboarding-2")
   internal static let onboarding3 = ImageAsset(name: "onboarding-3")
   internal static let placeholderUser = ImageAsset(name: "placeholderUser")
-  internal static let profilActive = ImageAsset(name: "profilActive")
-  internal static let sortProfile = ImageAsset(name: "sortProfile")
-  internal static let starsCell = ImageAsset(name: "starsCell")
+  internal static let successfulPurchase = ImageAsset(name: "successfulPurchase")
   internal static let tablerTrashX = ImageAsset(name: "tabler_trash-x")
   internal static let tablerTrash = ImageAsset(name: "tabler_trash")
-  internal static let unfilledStar = ImageAsset(name: "unfilledStar")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name
 

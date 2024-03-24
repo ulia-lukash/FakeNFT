@@ -6,7 +6,6 @@
 //
 
 import Kingfisher
-import Cosmos
 import UIKit
 
 protocol FavoriteCollectionCellDelegate: AnyObject {
@@ -66,18 +65,7 @@ final class FavoriteCollectionCell: UICollectionViewCell, ReuseIdentifying {
         return nameNFTLabel
     }()
     
-    private lazy var starRatingView: CosmosView = {
-        let starRatingView = CosmosView()
-        starRatingView.rating = 0
-        starRatingView.settings.starSize = 15
-        starRatingView.settings.filledColor = Asset.Colors.yellow.color
-        starRatingView.settings.starMargin = 2
-        starRatingView.settings.emptyColor = Asset.Colors.lightGray.color
-        starRatingView.settings.emptyBorderColor = .clear
-        starRatingView.settings.filledBorderColor = .clear
-        
-        return starRatingView
-    }()
+    private lazy var ratingView = RatingView()
     
     private lazy var priceValueLabel: UILabel = {
         let priceValueLabel = UILabel()
@@ -132,8 +120,8 @@ extension FavoriteCollectionCell {
             
             nftView.heightAnchor.constraint(equalToConstant: 66),
             
-            starRatingView.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
-            starRatingView.centerYAnchor.constraint(equalTo: nftView.centerYAnchor),
+            ratingView.leadingAnchor.constraint(equalTo: nftView.leadingAnchor),
+            ratingView.centerYAnchor.constraint(equalTo: nftView.centerYAnchor),
             priceValueLabel.bottomAnchor.constraint(equalTo: nftView.bottomAnchor),
             priceValueLabel.leadingAnchor.constraint(equalTo: nftView.leadingAnchor)
         ])
@@ -147,7 +135,7 @@ extension FavoriteCollectionCell {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.backgroundColor = .clear
         }
-        [nameNFTLabel, starRatingView, priceValueLabel].forEach {
+        [nameNFTLabel, ratingView, priceValueLabel].forEach {
             nftView.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.backgroundColor = .clear
@@ -157,7 +145,7 @@ extension FavoriteCollectionCell {
     func config(model: FavCollCellModel) {
         nftImageView.kf.setImage(with: model.urlNFT)
         nameNFTLabel.text = model.nameNFT.components(separatedBy: " ").first
-        starRatingView.rating = model.rating >= 5.0 ? 5.0 : model.rating
+        ratingView.rating = model.rating >= 5.0 ? 5.0 : model.rating
         priceValueLabel.text = "\(model.priceETN) ETN"
     }
 }

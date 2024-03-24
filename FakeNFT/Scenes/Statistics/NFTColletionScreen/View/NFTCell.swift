@@ -33,21 +33,12 @@ final class NFTCell: UICollectionViewCell {
         return label
     }()
 
-    private lazy var nftRatingStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-        stackView.alignment = .center
-        stackView.spacing = Constants.ratingStarsSpacing
-        return stackView
-    }()
+    private lazy var ratingView = RatingView()
 
     private lazy var likeButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "noLike"), for: .normal)
-        button.setImage(UIImage(named: "like"), for: .selected)
+        button.setImage(UIImage(systemName: "heart.fill"), for: .normal)
         button.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
         return button
     }()
@@ -60,7 +51,7 @@ final class NFTCell: UICollectionViewCell {
         return button
     }()
 
-    private var nftRating = 0 {
+    private var nftRating: Double = 0 {
         didSet {
             updateRatingStarViews()
         }
@@ -134,11 +125,11 @@ final class NFTCell: UICollectionViewCell {
     }
 
     private func setupNFTRatingStackView() {
-        contentView.addSubview(nftRatingStackView)
+        contentView.addSubview(ratingView)
         updateRatingStarViews()
         NSLayoutConstraint.activate([
-            nftRatingStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            nftRatingStackView.topAnchor.constraint(
+            ratingView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            ratingView.topAnchor.constraint(
                 equalTo: nftImageView.bottomAnchor,
                 constant: Constants.ratingStackTopInset
             )
@@ -150,7 +141,7 @@ final class NFTCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             nftNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             nftNameLabel.topAnchor.constraint(
-                equalTo: nftRatingStackView.bottomAnchor,
+                equalTo: ratingView.bottomAnchor,
                 constant: Constants.nameTopInset
             )
         ])
@@ -181,19 +172,7 @@ final class NFTCell: UICollectionViewCell {
     }
 
     private func updateRatingStarViews() {
-        if !nftRatingStackView.arrangedSubviews.isEmpty {
-            nftRatingStackView.arrangedSubviews.forEach { subView in
-                nftRatingStackView.removeArrangedSubview(subView)
-                subView.removeFromSuperview()
-            }
-        }
-
-        for i in 1...5 {
-            let starImageView = UIImageView()
-            starImageView.image = i <= nftRating ? UIImage(named: "filledStar") : UIImage(named: "unfilledStar")
-            starImageView.contentMode = .scaleAspectFit
-            nftRatingStackView.addArrangedSubview(starImageView)
-        }
+        ratingView.rating = nftRating > 5 ? 5 : nftRating
     }
 
     private func updateBasketButtonImage() {
@@ -202,8 +181,7 @@ final class NFTCell: UICollectionViewCell {
     }
 
     private func updateLikeButtonImage() {
-        let image = isLiked ? UIImage(named: "like") : UIImage(named: "noLike")
-        likeButton.setImage(image, for: .normal)
+        likeButton.tintColor = isLiked ? Asset.Colors.red.color : Asset.Colors.whiteUniversal.color
     }
 
     @objc private func didTapLikeButton() {
@@ -221,7 +199,6 @@ private enum Constants {
     static let likeImageViewInset: CGFloat = 12
     static let imageHeight: CGFloat = 108
     static let contentBottomInset: CGFloat = 21
-    static let ratingStarsSpacing: CGFloat = 2
     static let ratingStackTopInset: CGFloat = 8
     static let nameTopInset: CGFloat = 5
     static let priceTopInset: CGFloat = 4

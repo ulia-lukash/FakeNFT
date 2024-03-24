@@ -6,7 +6,6 @@
 //
 
 import Kingfisher
-import Cosmos
 import UIKit
 
 protocol MyNFTTableCellDelegate: AnyObject {
@@ -48,17 +47,7 @@ final class MyNFTTableCell: UITableViewCell, ReuseIdentifying {
         return nameNFTLabel
     }()
     
-    private lazy var starRatingView: CosmosView = {
-        let starRatingView = CosmosView()
-        starRatingView.rating = 0
-        starRatingView.settings.starSize = 15
-        starRatingView.settings.filledColor = Asset.Colors.yellow.color
-        starRatingView.settings.starMargin = 2
-        starRatingView.settings.emptyColor = Asset.Colors.lightGray.color
-        starRatingView.settings.emptyBorderColor = .clear
-        starRatingView.settings.filledBorderColor = .clear
-        return starRatingView
-    }()
+    private lazy var ratingView = RatingView()
     
     private lazy var nameAuthorLabel: UILabel = {
         let nameAuthorLabel = UILabel()
@@ -142,12 +131,12 @@ extension MyNFTTableCell {
 
             nameNFTLabel.heightAnchor.constraint(equalToConstant: 22),
             nameNFTLabel.leadingAnchor.constraint(equalTo: nameStack.leadingAnchor),
-            nameNFTLabel.bottomAnchor.constraint(equalTo: starRatingView.topAnchor, constant: -4),
+            nameNFTLabel.bottomAnchor.constraint(equalTo: ratingView.topAnchor, constant: -4),
             
-            starRatingView.centerYAnchor.constraint(equalTo: nftImageView.centerYAnchor),
-            starRatingView.leadingAnchor.constraint(equalTo: nameStack.leadingAnchor),
+            ratingView.centerYAnchor.constraint(equalTo: nftImageView.centerYAnchor),
+            ratingView.leadingAnchor.constraint(equalTo: nameStack.leadingAnchor),
             
-            nameAuthorLabel.topAnchor.constraint(equalTo: starRatingView.bottomAnchor, constant: 4),
+            nameAuthorLabel.topAnchor.constraint(equalTo: ratingView.bottomAnchor, constant: 4),
             nameAuthorLabel.widthAnchor.constraint(equalToConstant: 114),
             nameAuthorLabel.leadingAnchor.constraint(equalTo: nameStack.leadingAnchor),
             
@@ -178,7 +167,7 @@ extension MyNFTTableCell {
         [nftImageView, likeButton, nameStack, priceStack].forEach {
             addSubview($0)
         }
-        [nameNFTLabel, starRatingView, nameAuthorLabel].forEach {
+        [nameNFTLabel, ratingView, nameAuthorLabel].forEach {
             nameStack.addSubview($0)
         }
         [priceLabel, priceValueLabel].forEach {
@@ -187,13 +176,13 @@ extension MyNFTTableCell {
     }
     
     func like(flag: Bool) {
-        likeButton.tintColor = flag ? Asset.Colors.red.color : .white
+        likeButton.tintColor = flag ? Asset.Colors.red.color : Asset.Colors.whiteUniversal.color
     }
     
     func config(model: MyNFTCellModel) {
         nftImageView.kf.setImage(with: model.urlNFT)
         nameNFTLabel.text = model.nameNFT.components(separatedBy: " ").first
-        starRatingView.rating = model.rating >= 5.0 ? 5.0 : model.rating
+        ratingView.rating = model.rating >= 5.0 ? 5.0 : model.rating
         nameAuthorLabel.text = "от \(model.nameAuthor.split(separator: ".")[0])"
         priceValueLabel.text = "\(model.priceETN) ETN"
     }
